@@ -125,9 +125,9 @@ function Home() {
 						/>
 					</svg>
 					{/* Layout Box Game */}
-					<div className="flex flex-col justify-start w-full h-full mb-m:p-4 p-2 items-center gap-2 backdrop-blur-md bg-white/50 lg:text-base text-sm">
+					<div className="flex flex-col justify-start w-full h-full mb-m:p-4 p-2 items-center gap-2 backdrop-blur-md bg-black/50 lg:text-base text-sm">
 						<div
-							className="flex flex-row gap-2 items-center border-b border-current text-orange-500"
+							className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-base"
 							style={{
 								textShadow: '3px 3px 5px #f97316',
 							}}>
@@ -135,7 +135,7 @@ function Home() {
 							<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
 							<SiGamejolt />
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Mã phiên:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -143,7 +143,7 @@ function Home() {
 								670ae5a88785d1615f2cdc73
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Máy Chủ:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -151,7 +151,7 @@ function Home() {
 								{server === 7 ? '8-9-10' : server < 7 ? server + 1 : server + 3}
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Kết Quả Trước:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -159,7 +159,7 @@ function Home() {
 								71
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Thời Gian Còn:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -167,7 +167,7 @@ function Home() {
 								<span className="loading loading-dots loading-xs"></span>
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Chẵn Lẻ:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -175,7 +175,7 @@ function Home() {
 								0
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Tài Xỉu:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -183,7 +183,7 @@ function Home() {
 								0
 							</p>
 						</div>
-						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-xs mb-l:text-base mb-m:font-chakra-petch font-bold uppercase">
+						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Thời Gian Hoạt Động:</p>
 							<p
 								className="text-orange-500 drop-shadow-md"
@@ -192,7 +192,7 @@ function Home() {
 							</p>
 						</div>
 						<div className="flex flex-col gap- justify-start w-full">
-							<div className="flex flex-row w-full justify-start items-center gap-2 font-chakra-petch font-bold uppercase">
+							<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
 								<p>CL:</p>
 								<ul className="menu menu-horizontal lg:gap-2 lg:text-base text-sm">
 									{Array.from({ length: 10 }).map((_, i) => (
@@ -206,7 +206,7 @@ function Home() {
 									))}
 								</ul>
 							</div>
-							<div className="flex flex-row w-full justify-start items-center gap-2 font-chakra-petch font-bold uppercase">
+							<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
 								<p>TX:</p>
 								<ul className="menu menu-horizontal lg:gap-2">
 									{Array.from({ length: 10 }).map((_, i) => (
