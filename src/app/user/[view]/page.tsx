@@ -99,7 +99,7 @@ function Profile() {
 				<div className="flex lg:flex-row flex-col gap-2 items-center">
 					<div className="avatar">
 						<div className="w-24 rounded-full">
-							<img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+							<img src="/image/avatar/avt_1.jpg" />
 						</div>
 					</div>
 					<div className="flex flex-col items-start justify-between p-2 font-protest-strike-regular uppercase gap-2">

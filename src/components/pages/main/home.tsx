@@ -272,11 +272,7 @@ function Home() {
 									setTypeBet(event.target.value as TypeBet);
 								}}
 								className="outline-none border-0 z-10 w-full py-3 capitalize bg-transparent">
-								<option
-									value={'cl'}
-									selected>
-									Chẵn Lẻ - Tài Xỉu
-								</option>
+								<option value={'cl'}>Chẵn Lẻ - Tài Xỉu</option>
 								<option value={'x'}>Xiên</option>
 								<option value={'g'}>Dự đoán kết quả</option>
 							</select>
