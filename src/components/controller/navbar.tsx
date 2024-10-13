@@ -24,31 +24,31 @@ function Navbar() {
 						className="h-auto sm:w-[150px] w-[120px]"
 					/>
 				</Link>
-				<ul className="menu lg:menu-horizontal flex-1 justify-center hidden font-protest-strike-regular uppercase">
+				<ul className="menu lg:menu-horizontal flex-1 gap-4 justify-center hidden font-protest-strike-regular uppercase">
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl"
+							className="bg-black rounded-full text-xl btn btn-ghost"
 							href={'/'}>
 							Trang Chủ
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl"
+							className="bg-black rounded-full text-xl btn btn-ghost"
 							href={'/deposit'}>
 							Nạp Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl"
+							className="bg-black rounded-full text-xl btn btn-ghost"
 							href={'/withdraw'}>
 							Rút Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl"
+							className="bg-black rounded-full text-xl btn btn-ghost"
 							href={'/user/profile'}>
 							RIN
 						</Link>
