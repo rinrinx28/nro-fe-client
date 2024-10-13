@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { RiHome3Fill, RiLoginBoxFill, RiLogoutBoxFill } from 'react-icons/ri';
 import { PiHandDepositFill, PiHandWithdrawFill } from 'react-icons/pi';
+import { FaExchangeAlt, FaRegUser, FaTable } from 'react-icons/fa';
+import { MdOutlineHistory } from 'react-icons/md';
 
 function Navbar() {
 	return (
-		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[999]">
+		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[1000] text-orange-500">
 			{/* Logo */}
 			<div className="flex flex-row items-center gap-2">
 				<Link
@@ -22,21 +24,39 @@ function Navbar() {
 						className="h-auto sm:w-[150px] w-[120px]"
 					/>
 				</Link>
-				<ul className="menu lg:menu-horizontal flex-1 justify-center hidden font-protest-strike-regular text-4xl uppercase">
-					<li className="btn btn-ghost rounded-full fill-amber-300">
-						Trang Chủ
+				<ul className="menu lg:menu-horizontal flex-1 justify-center hidden font-protest-strike-regular uppercase">
+					<li>
+						<Link
+							className="bg-black rounded-full text-xl"
+							href={'/'}>
+							Trang Chủ
+						</Link>
 					</li>
-					<li className="btn btn-ghost rounded-full">Nạp Vàng</li>
-					<li className="btn btn-ghost rounded-full">Mua Vàng</li>
+					<li>
+						<Link
+							className="bg-black rounded-full text-xl"
+							href={'/deposit'}>
+							Nạp Vàng
+						</Link>
+					</li>
+					<li>
+						<Link
+							className="bg-black rounded-full text-xl"
+							href={'/withdraw'}>
+							Rút Vàng
+						</Link>
+					</li>
 				</ul>
 			</div>
 			{/* Navigate */}
 			<div className="flex flex-row items-center gap-4 font-protest-strike-regular uppercase">
 				<ThemeSwitch classHidden="lg:inline-block hidden" />
-				<button className="btn btn-outline rounded-box lg:inline-block hidden">
+				<Link
+					href="/login"
+					className="px-4 py-2 border bg-black border-orange-500 rounded-box  lg:inline-block hidden uppercase text-orange-500">
 					Đăng Nhập
-				</button>
-				<button className="btn btn-outline rounded-box lg:hidden inline-block">
+				</Link>
+				<button className="px-4 py-2 border bg-black border-orange-500 rounded-box text-orange-500 lg:hidden inline-block">
 					<RiLoginBoxFill size={24} />
 				</button>
 				<div className="drawer drawer-end w-full lg:hidden inline-flex">
@@ -65,36 +85,82 @@ function Navbar() {
 						<div className="flex flex-col justify-between w-56 py-5 min-h-full text-current font-bold text-lg bg-white rounded-l-box border border-current">
 							<ul className="menu">
 								<li>
-									<a
-										href="#"
-										className="link decoration-transparent flex justify-center w-full items-center">
+									<div className="link decoration-transparent flex justify-center w-full items-center">
 										<p>Theme</p>
 										<ThemeSwitch classHidden="lg:hidden inline-block" />
-									</a>
+									</div>
 								</li>
 								<li>
-									<a
-										href="#"
+									<Link
+										href="/"
 										className="link decoration-transparent flex justify-start items-center gap-2">
-										<RiHome3Fill />
+										<RiHome3Fill size={24} />
 										<p>Trang Chủ</p>
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a
-										href="#"
+									<Link
+										href="/deposit"
 										className="link decoration-transparent flex justify-start items-center gap-2">
-										<PiHandDepositFill />
+										<PiHandDepositFill size={24} />
 										<p>Nạp vàng</p>
-									</a>
+									</Link>
 								</li>
 								<li>
-									<a
-										href="#"
+									<Link
+										href="/withdraw"
 										className="link decoration-transparent flex justify-start items-center gap-2">
-										<PiHandWithdrawFill />
+										<PiHandWithdrawFill size={24} />
 										<p>Rút vàng</p>
-									</a>
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/profile'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<FaRegUser size={24} />
+										Cài Đặt Tài Khoản
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/trade_gold'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<FaExchangeAlt size={24} />
+										Chuyển Vàng
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/history_service'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<MdOutlineHistory size={24} />
+										Lịch Sử giao dịch
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/history_bet'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<MdOutlineHistory size={24} />
+										Lịch sử cược
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/history_activity'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<MdOutlineHistory size={24} />
+										Lịch Sử Hoạt Động
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/table_misson'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<FaTable size={24} />
+										Bảng Nhiệm Vụ
+									</Link>
 								</li>
 							</ul>
 							<ul className="menu">

@@ -13,7 +13,7 @@ const ThemeSwitch = ({ classHidden }: { classHidden?: string }) => {
 			}
 			className={`${
 				classHidden ?? ''
-			} toggle col-span-2 col-start-1 row-start-1 border-amber-500 bg-neutral-content [--tglbg:theme(colors.amber.500)] checked:border-gray-600 checked:bg-gray-300 checked:[--tglbg:theme(colors.gray.900)]`}
+			} toggle col-span-2 col-start-1 row-start-1 border-orange-500 bg-orange-500 [--tglbg:theme(colors.black)] checked:border-gray-600 checked:bg-gray-300 checked:[--tglbg:theme(colors.gray.900)]`}
 		/>
 	);
 };

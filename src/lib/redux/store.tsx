@@ -1,8 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+import server from './storage/server';
 
 export const makeStore = () => {
 	return configureStore({
-		reducer: {},
+		reducer: {
+			server: server,
+		},
 	});
 };
 

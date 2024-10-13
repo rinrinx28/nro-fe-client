@@ -10,7 +10,7 @@ function TablesTop() {
 				{/* Table Top User */}
 				<div className="lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400">
 					<div
-						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-slate-500 font-mono font-bold"
+						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-slate-500 font-protest-strike-regular uppercase"
 						style={{
 							textShadow: '1px 2px 8px #64748b',
 						}}>
@@ -23,7 +23,7 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center cursor-pointer flash flex justify-between w-full max-w-lg rounded-full items-center text-white font-bold font-protest-strike-regular uppercase">
+									className="snap-center cursor-pointer flash flex justify-between w-full max-w-lg rounded-full items-center text-white font-protest-strike-regular uppercase">
 									<div className="avatar">
 										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl">
 											<img
@@ -48,7 +48,7 @@ function TablesTop() {
 				{/* Table Top Clan Rank */}
 				<div className="lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700">
 					<div
-						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-amber-500 font-mono font-bold"
+						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-amber-500 font-protest-strike-regular uppercase"
 						style={{
 							textShadow: '1px 2px 8px #f59e0b',
 						}}>
@@ -61,7 +61,7 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-bold font-protest-strike-regular uppercase">
+									className="snap-center flash cursor-pointer flex justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase">
 									<div className="avatar">
 										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl z-50">
 											<img

@@ -35,6 +35,8 @@ const config: Config = {
 		fontFamily: {
 			'protest-strike-regular': ['Protest Strike', 'sans-serif'],
 			'chakra-petch': ['Chakra Petch', 'sans-serif'],
+			michelangelo: ['Michelangelo', 'sans-serif'],
+			'sf-trans-robotics': ['SF TransRobotics', 'sans-serif'],
 		},
 		screens: {
 			'mb-m': '375px',

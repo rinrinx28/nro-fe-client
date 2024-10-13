@@ -8,7 +8,7 @@ function History() {
 			className="w-full flex items-center justify-center p-8">
 			<div className="max-w-7xl w-full select-none flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
 				<div
-					className="flex flex-row w-full justify-start items-center gap-2 text-2xl font-mono font-bold"
+					className="flex flex-row w-full justify-start items-center gap-2 text-2xl font-protest-strike-regular uppercase"
 					style={{
 						textShadow: '1px 2px 8px var(--fallback-bc,oklch(var(--bc)/1))',
 					}}>
