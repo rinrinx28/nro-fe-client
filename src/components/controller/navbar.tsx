@@ -46,6 +46,13 @@ function Navbar() {
 							Rút Vàng
 						</Link>
 					</li>
+					<li>
+						<Link
+							className="bg-black rounded-full text-xl"
+							href={'/user/profile'}>
+							RIN
+						</Link>
+					</li>
 				</ul>
 			</div>
 			{/* Navigate */}
