@@ -3,6 +3,7 @@ import { ThemeProvider } from 'next-themes';
 import './globals.css';
 import Providers from '@/lib/redux/Provider';
 import Navbar from '@/components/controller/navbar';
+import Footer from '@/components/controller/footer';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -20,11 +21,14 @@ export default function RootLayout({
 			data-theme="luxury"
 			suppressHydrationWarning>
 			<body
-				className={`antialiased min-h-screen transition-all duration-300 px-5`}>
+				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
 				<Providers>
 					{/* <SocketProvider> */}
-					<Navbar />
-					<ThemeProvider>{children}</ThemeProvider>
+					<ThemeProvider>
+						<Navbar />
+						{children}
+						<Footer />
+					</ThemeProvider>
 					{/* </SocketProvider> */}
 				</Providers>
 			</body>
