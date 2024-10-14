@@ -1,5 +1,6 @@
 'use client';
 import '@/components/css/chat.css';
+import { useEffect } from 'react';
 import { FaMinus, FaRobot } from 'react-icons/fa';
 import { IoIosSend } from 'react-icons/io';
 import { IoChatbubbleEllipsesSharp } from 'react-icons/io5';
@@ -12,10 +13,18 @@ export const openChatBox = () => {
 };
 
 function Chat() {
+	useEffect(() => {
+		let chat_box_screen = document.getElementById(
+			'chat_box_screen',
+		) as HTMLDivElement;
+		if (chat_box_screen) {
+			chat_box_screen.scrollTop = chat_box_screen.scrollHeight;
+		}
+	}, []);
 	return (
 		<div
 			id="chat-box"
-			className="fixed bottom-4 lg:right-4 right-0 slide-top max-h-[650px] w-full h-full max-w-[500px] z-[100] p-2 backdrop-blur-lg select-none hidden">
+			className="fixed lg:bottom-2 top-1/4 lg:right-4 right-0 slide-top lg:max-h-[650px] w-full lg:h-full max-w-[500px] z-[100] p-2 backdrop-blur-lg select-none">
 			<div className=" bg-black/80 rounded-box border-ani border-none w-full h-full flex flex-col">
 				<svg
 					className="svg"
@@ -66,7 +75,9 @@ function Chat() {
 					</div>
 					{/* Chat */}
 					<div className="p-2 z-50 w-full">
-						<div className="border border-orange-500 w-full h-[350px] overflow-auto rounded-box p-2">
+						<div
+							id="chat_box_screen"
+							className="border border-orange-500 w-full lg:h-[350px] h-[200px] overflow-auto scroll-smooth rounded-box p-2">
 							{Array.from({ length: 24 }).map((_, i) => {
 								return (
 									<div
