@@ -1,0 +1,105 @@
+.container {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+}
+
+.menu-toggle {
+  position: absolute;
+  z-index: 50;
+  bottom: 0;
+  right: 0;
+}
+.menu-toggle .fa {
+  transition: 0.4s;
+}
+.menu-toggle.open .fa {
+  transform: rotate(135deg);
+}
+
+.btn-app {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.menu-round {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 25;
+}
+.menu-round .btn-app {
+  bottom: 0.25em;
+  right: 0.25em;
+}
+.menu-round.open .btn-app:nth-of-type(1) {
+  right: 0.5em;
+  bottom: 4.25em;
+  transition-delay: 0.2s;
+  transition: 0.4s;
+}
+.menu-round.open .btn-app:nth-of-type(2) {
+  right: 3.5em;
+  bottom: 3.5em;
+  transition-delay: 0.1s;
+  transition: 0.4s;
+}
+.menu-round.open .btn-app:nth-of-type(3) {
+  right: 4.25em;
+  bottom: 0.5em;
+  transition: 0.4s;
+}
+
+.menu-line {
+  position: absolute;
+  z-index: 25;
+  bottom: 0;
+  right: 0;
+}
+.menu-line .btn-app {
+  bottom: 0;
+  right: 0.5em;
+}
+
+.menu-line.open .btn-app:nth-of-type(1) {
+  bottom: 4.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(1) {
+  bottom: 7.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(2) {
+  bottom: 10.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(3) {
+  bottom: 13.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(4) {
+  bottom: 16.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(5) {
+  bottom: 19.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(6) {
+  bottom: 22.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}
+.menu-line.open .btn-app:nth-of-type(7) {
+  bottom: 25.25em;
+  transition: 0.3s;
+  transition-delay: 0.5s;
+}

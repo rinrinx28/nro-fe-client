@@ -19,21 +19,28 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { setServer } from '@/lib/redux/storage/server';
+import {
+	FaBook,
+	FaBookmark,
+	FaExchangeAlt,
+	FaFacebook,
+	FaRegUser,
+	FaTable,
+} from 'react-icons/fa';
+import Link from 'next/link';
+import { PiHandDepositFill, PiHandWithdrawFill } from 'react-icons/pi';
+import Modal from '@/components/controller/Modal';
+
+export const getNumbetFromString = (value: string) => {
+	let num = value.replace(/[^\d]/g, '');
+	return num ? new Intl.NumberFormat().format(parseInt(num, 10)) : '';
+};
 
 function Home() {
 	const [swiperRef, setSwiperRef] = useState<any>(null);
 	const server = useAppSelector((state) => state.server);
 	const dispatch = useAppDispatch();
-	const { theme } = useTheme();
 	const [typeBet, setTypeBet] = useState<TypeBet>('cl');
-	const [themeType, setThemeType] = useState('');
-
-	// Auto set theme
-	useEffect(() => {
-		if (theme) {
-			setThemeType(theme);
-		}
-	}, [theme]);
 
 	// Auto Scroll to slides
 	useEffect(() => {
@@ -41,10 +48,18 @@ function Home() {
 			swiperRef.slideTo(server, 0);
 		}
 	}, [swiperRef]);
+
+	// Auto show ads
+	// useEffect(() => {
+	// 	const modal = document.getElementById('home_ads') as HTMLDialogElement;
+	// 	if (modal) {
+	// 		modal.show();
+	// 	}
+	// }, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/2.png')" }}
-			className="min-h-screen flex flex-col w-full justify-center items-center gap-5 px-4 bg-no-repeat bg-cover bg-right select-none">
+			className="min-h-screen flex flex-col w-full justify-center items-center gap-5 px-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Button Game */}
 			<div className="max-w-7xl w-full">
 				<Swiper
@@ -87,9 +102,13 @@ function Home() {
 										/>
 									</div>
 								</div>
-								<div className="flex flex-col w-full justify-center text-center">
+								<div className="flex flex-col w-full justify-center text-center gap-1">
 									<p className="text-#f97316-300">
-										Server {k === 7 ? `Liên Server` : k > 7 ? k + 3 : k + 1}
+										Máy Chủ {k === 7 ? `Chung` : k > 7 ? k + 3 : k + 1}
+									</p>
+									<p>
+										Thời gian còn:{' '}
+										<span className="loading loading-dots loading-xs"></span>
 									</p>
 									<button
 										className={`btn ${
@@ -106,10 +125,86 @@ function Home() {
 				</Swiper>
 			</div>
 			<div className="h-14"></div>
+			{/* Group Func Quick */}
+			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5">
+				<div className="dropdown dropdown-bottom dropdown-end">
+					<div
+						tabIndex={0}
+						role="button"
+						className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+						<FaBook />
+						Chức Năng
+					</div>
+					<ul
+						tabIndex={0}
+						className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow text-white">
+						<li>
+							<Link
+								href="/deposit"
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<PiHandDepositFill size={24} />
+								<p>Nạp vàng</p>
+							</Link>
+						</li>
+						<li>
+							<Link
+								href="/withdraw"
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<PiHandWithdrawFill size={24} />
+								<p>Rút vàng</p>
+							</Link>
+						</li>
+						<li>
+							<Link
+								href={'/user/profile'}
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<FaRegUser size={24} />
+								Cài Đặt Tài Khoản
+							</Link>
+						</li>
+						<li>
+							<Link
+								href={'/user/trade_gold'}
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<FaExchangeAlt size={24} />
+								Chuyển Vàng
+							</Link>
+						</li>
+						<li>
+							<Link
+								href={'/user/table_misson'}
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<FaTable size={24} />
+								Bảng Nhiệm Vụ
+							</Link>
+						</li>
+					</ul>
+				</div>
+				<button
+					onClick={() => {
+						const model = document.getElementById(
+							'home_tutorial',
+						) as HTMLDialogElement;
+						if (model) {
+							model.show();
+						}
+					}}
+					className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					<FaBookmark />
+					Hướng Dẫn
+				</button>
+				<Link
+					href={'/'}
+					target="_blank"
+					className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					<FaFacebook />
+					Fanpage
+				</Link>
+			</div>
 			{/* Game Info */}
 			<div className="flex lg:flex-row flex-col justify-around max-w-7xl w-full gap-4 select-none">
 				{/* Background game */}
-				<div className="lg:w-1/2 w-full flex flex-col h-[400px] justify-center items-center bg-auto bg-no-repeat bg-right rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
+				<div className="lg:w-1/2 w-full flex flex-col h-[450px] justify-center items-center bg-auto bg-no-repeat bg-right rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
 					<svg
 						className="svg"
 						height="100%"
@@ -126,11 +221,7 @@ function Home() {
 					</svg>
 					{/* Layout Box Game */}
 					<div className="flex flex-col justify-start w-full h-full mb-m:p-4 p-2 items-center gap-2 backdrop-blur-md bg-black/50 lg:text-base text-sm">
-						<div
-							className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-base"
-							style={{
-								textShadow: '3px 3px 5px #f97316',
-							}}>
+						<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 							<SiGamejolt />
 							<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
 							<SiGamejolt />
@@ -164,24 +255,55 @@ function Home() {
 							<p
 								className="text-orange-500 drop-shadow-md"
 								style={{ textShadow: '3px 3px 5px #f97316' }}>
-								<span className="loading loading-dots loading-xs"></span>
+								{new Intl.NumberFormat('vi').format(
+									Math.floor(Math.random() * 200),
+								)}
+								{/* <span className="loading loading-dots loading-xs"></span> */}
 							</p>
 						</div>
 						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-							<p>Chẵn Lẻ:</p>
-							<p
-								className="text-orange-500 drop-shadow-md"
-								style={{ textShadow: '3px 3px 5px #f97316' }}>
-								0
-							</p>
+							<div className="flex flex-row gap-2">
+								<p>Chẵn:</p>
+								<p
+									className="text-orange-500 drop-shadow-md"
+									style={{ textShadow: '3px 3px 5px #f97316' }}>
+									{new Intl.NumberFormat('vi').format(
+										Math.floor(Math.random() * 1000),
+									)}
+								</p>
+							</div>
+							<div className="flex flex-row gap-2">
+								<p>Lẻ:</p>
+								<p
+									className="text-orange-500 drop-shadow-md"
+									style={{ textShadow: '3px 3px 5px #f97316' }}>
+									{new Intl.NumberFormat('vi').format(
+										Math.floor(Math.random() * 1000),
+									)}
+								</p>
+							</div>
 						</div>
 						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-							<p>Tài Xỉu:</p>
-							<p
-								className="text-orange-500 drop-shadow-md"
-								style={{ textShadow: '3px 3px 5px #f97316' }}>
-								0
-							</p>
+							<div className="flex flex-row gap-2">
+								<p>Tài:</p>
+								<p
+									className="text-orange-500 drop-shadow-md"
+									style={{ textShadow: '3px 3px 5px #f97316' }}>
+									{new Intl.NumberFormat('vi').format(
+										Math.floor(Math.random() * 1000),
+									)}
+								</p>
+							</div>
+							<div className="flex flex-row gap-2">
+								<p>Xỉu:</p>
+								<p
+									className="text-orange-500 drop-shadow-md"
+									style={{ textShadow: '3px 3px 5px #f97316' }}>
+									{new Intl.NumberFormat('vi').format(
+										Math.floor(Math.random() * 1000),
+									)}
+								</p>
+							</div>
 						</div>
 						<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 							<p>Thời Gian Hoạt Động:</p>
@@ -224,7 +346,7 @@ function Home() {
 					</div>
 				</div>
 				{/* Game Controll */}
-				<div className="lg:w-1/2 w-full h-[400px] flex flex-col justify-center items-center bg-cover rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
+				<div className="lg:w-1/2 w-full h-[450px] flex flex-col justify-center items-center bg-cover rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
 					<svg
 						className="svg"
 						height="100%"
@@ -240,31 +362,22 @@ function Home() {
 						/>
 					</svg>
 					<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md bg-black/50">
-						<div
-							className="flex flex-row gap-2 items-center border-b border-current text-amber-500"
-							style={{
-								textShadow: '3px 3px 5px #f59e0b',
-							}}>
+						<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 							<IoLogoGameControllerB size={24} />
 							<p className="uppercase font-sf-trans-robotics">Thao Tác</p>
 							<IoLogoGameControllerB size={24} />
 						</div>
-						<div className="flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-amber-500 rounded-md p-2">
+						<div className="flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
 							<GrMoney
 								size={24}
-								className={`${
-									themeType === 'luxury' ? 'text-white' : 'text-amber-500'
-								}`}
+								className={`text-white`}
 							/>
-							<p
-								className={`${
-									themeType === 'luxury' ? 'text-white' : 'text-amber-500'
-								}`}>
+							<p className={`text-white`}>
 								{new Intl.NumberFormat('vi').format(9999)}
 							</p>
 						</div>
 						{/* Select Type Bet */}
-						<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-amber-500 text-amber-500 font-chakra-petch font-bold uppercase border border-amber-500 px-2 rounded-btn">
+						<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn">
 							<IoLogoGameControllerB size={24} />
 							<select
 								defaultValue={'cl'}
@@ -281,19 +394,19 @@ function Home() {
 						{typeBet === 'cl' && (
 							<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full">
 								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-									<button className="font-chakra-petch font-bold uppercase w-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♥️ Chẵn ♥️
+									<button className="bg-black text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Chẵn
 									</button>
-									<button className="font-chakra-petch font-bold uppercase w-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♦️ Tài ♦️
+									<button className="bg-orange-500 text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Lẻ
 									</button>
 								</div>
 								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-									<button className="font-chakra-petch font-bold uppercase w-full border border-green-500 text-green-500 hover:bg-green-500 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♠️ Lẻ ♠️
+									<button className="bg-black text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Tài
 									</button>
-									<button className="font-chakra-petch font-bold uppercase w-full border border-green-500 text-green-500 hover:bg-green-500 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♣️ Xỉu ♣️
+									<button className="bg-orange-500 text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Xỉu
 									</button>
 								</div>
 							</div>
@@ -301,25 +414,25 @@ function Home() {
 						{typeBet === 'x' && (
 							<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full">
 								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-									<button className="font-chakra-petch font-bold uppercase w-full border border-red-500 text-red-500 hover:bg-red-500 hover:duration-300 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♥️ Chẵn Tài ♥️
+									<button className="bg-black text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Chẵn Tài
 									</button>
-									<button className="font-chakra-petch font-bold uppercase w-full border border-red-500 text-red-500 hover:bg-red-500 hover:duration-300 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♦️ Chẵn Xỉu ♦️
+									<button className="bg-orange-500 text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Chẵn Xỉu
 									</button>
 								</div>
 								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-									<button className="font-chakra-petch font-bold uppercase w-full border border-green-500 text-green-500 hover:bg-green-500 hover:duration-300 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♠️ Lẻ Tài ♠️
+									<button className="bg-black text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Lẻ Tài
 									</button>
-									<button className="font-chakra-petch font-bold uppercase w-full border border-green-500 text-green-500 hover:bg-green-500 hover:duration-300 hover:text-white active:hover:scale-95 active:hover:duration-1000 py-2 rounded-btn">
-										♣️ Lẻ Xỉu ♣️
+									<button className="bg-orange-500 text-white w-full p-4 rounded-box uppercase active:hover:scale-90 hover:duration-300">
+										Lẻ Xỉu
 									</button>
 								</div>
 							</div>
 						)}
 						{typeBet === 'g' && (
-							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-amber-500 text-amber-500 font-chakra-petch font-bold uppercase border border-amber-500 px-2 rounded-btn z-10">
+							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn z-10">
 								<AiOutlineFieldNumber size={24} />
 								<input
 									type="number"
@@ -329,15 +442,22 @@ function Home() {
 							</div>
 						)}
 
-						<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-amber-500 text-amber-500 font-sf-trans-robotics uppercase border border-amber-500 px-2 rounded-btn z-10">
+						<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-sf-trans-robotics uppercase border border-orange-500 px-2 rounded-btn z-10">
 							<GrMoney size={24} />
 							<input
-								type="number"
+								onChange={(e) => {
+									// Extract numeric part (removes any non-digit characters)
+									let value = getNumbetFromString(e.target.value);
+
+									// Update the input value with the formatted number
+									e.target.value = value;
+								}}
+								type="text"
 								className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent"
 							/>
 						</div>
 						<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase z-10">
-							<button className="btn capitalize max-w-xs w-full text-amber-500">
+							<button className="btn capitalize max-w-xs w-full text-orange-500">
 								<GiPerspectiveDiceSixFacesTwo size={24} />
 								Cược Ngay
 							</button>
@@ -345,6 +465,144 @@ function Home() {
 					</div>
 				</div>
 			</div>
+			<Modal
+				id="home_tutorial"
+				key={'tutorial'}>
+				<div className="flex flex-col gap-5">
+					<h3>Hướng Dẫn</h3>
+					<div className="flex flex-col gap-1 ">
+						<p className="font-bold">Hệ thống chẳn lẻ Game Ngọc Rồng Online</p>
+						<p className="font-bold">
+							Lấy chức năng "
+							<span className="text-amber-500">Con số may mắn</span>" trong game
+							làm kết quả
+						</p>
+						<p className="font-bold">
+							Bạn đều có thể đặt cược, lấy kết quả ở{' '}
+							<span className="text-amber-500">Máy Chủ</span> tùy thích
+						</p>
+						<p className="text-amber-500 font-bold">Thể lệ gồm các trò chơi:</p>
+						<p className="">
+							-{' '}
+							<span className="text-orange-500 font-bold">Dự đoán chẵn lẻ</span>
+							: kết quả số chẵn hoặc số lẻ
+						</p>
+						<p className="">
+							Tỷ lệ:{' '}
+							<span className="text-red-500 font-bold">
+								x1.9 (đặt 10tr được 19tr vàng)
+							</span>
+						</p>
+						<p className="">
+							Ví dụ con số may mắn là 1 số chẵn như 0, 2, 4, 6, 8, 10, 12... thì
+							đặt bên Chẵn thắng, ngược lại con số may mắn là số lẻ như 1, 3, 5,
+							7, 9, 11... thì đặt bên Lẻ thắng
+						</p>
+						<p className="">
+							-{' '}
+							<span className="text-orange-500 font-bold">Dự đoán tài xỉu</span>
+							: kết quả từ 50-99 là tài còn từ 0-49 là xỉu
+						</p>
+						<p className="">
+							Tỷ lệ:{' '}
+							<span className="text-red-500 font-bold">
+								x1.9 (đặt 10tr được 19tr vàng)
+							</span>
+						</p>
+						<p className="">
+							Ví dụ kết quả của con số là 35,16,27,58,09 thì kết quả được tính
+							là 1 số cuối. Tương tự lần lượt là: 5-9 là bên Tài thắng, ngược
+							lại số cuối từ 0-4 sẽ là Xỉu thắng
+						</p>
+						<p className="">
+							-{' '}
+							<span className="text-orange-500 font-bold">Dự đoán kết quả</span>
+							: kết quả là con số may mắn từ 0 tới 99
+						</p>
+						<p className="">
+							Tỷ lệ:{' '}
+							<span className="text-red-500 font-bold">
+								x70 (đặt 10tr được 700tr vàng)
+							</span>
+						</p>
+						<p className="">
+							Liên kết:{' '}
+							<Link
+								className="text-orange-500"
+								href={'/deposit'}>
+								Nạp vàng
+							</Link>{' '}
+							|{' '}
+							<Link
+								className="text-orange-500"
+								href={'/withdraw'}>
+								Rút vàng
+							</Link>
+						</p>
+					</div>
+				</div>
+			</Modal>
+
+			{/*ADS*/}
+			<Modal
+				id="home_ads"
+				customClass="w-full max-w-xl">
+				<div className="flex flex-col gap-5">
+					<h1 className="text-xl">Chương Trình Khuyến Mãi</h1>
+					<div className="flex flex-col gap-2">
+						<div className="flex flex-row gap-2 items-center text-lg">
+							<video
+								autoPlay
+								loop
+								muted
+								preload="auto"
+								src="/image/gif/dragon_hot.webm"
+								aria-label="Dragon Hot"
+								style={{ width: '52px' }}></video>
+							<p className="text-wrap">
+								Nhận ngay{' '}
+								<span className="text-red-500 font-bold">
+									{new Intl.NumberFormat('vi').format(1e6)} vàng
+								</span>{' '}
+								khi tạo tài khoản trên web
+							</p>
+						</div>
+						<div className="flex flex-row gap-2 items-center text-lg">
+							<video
+								autoPlay
+								loop
+								muted
+								preload="auto"
+								src="/image/gif/dragon_hot.webm"
+								aria-label="Dragon Hot"
+								style={{ width: '52px' }}></video>
+							<p>Tặng thỏi vàng miễn phí mỗi ngày</p>
+						</div>
+						<div className="flex flex-row gap-2 items-center text-lg">
+							<video
+								autoPlay
+								loop
+								muted
+								preload="auto"
+								src="/image/gif/dragon_hot.webm"
+								aria-label="Dragon Hot"
+								style={{ width: '52px' }}></video>
+							<p>Nạp Thỏi Vàng tích điểm nhận thành viên VIP</p>
+						</div>
+						<div className="flex flex-row gap-2 items-center text-lg">
+							<video
+								autoPlay
+								loop
+								muted
+								preload="auto"
+								src="/image/gif/dragon_hot.webm"
+								aria-label="Dragon Hot"
+								style={{ width: '52px' }}></video>
+							<p>Nhiều Event Hấp Dẫn</p>
+						</div>
+					</div>
+				</div>
+			</Modal>
 		</div>
 	);
 }

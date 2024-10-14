@@ -1,4 +1,5 @@
 'use client';
+import { getNumbetFromString } from '@/components/pages/main/home';
 import { GrMoney } from 'react-icons/gr';
 
 function Withdraw() {
@@ -10,7 +11,7 @@ function Withdraw() {
 				<h1 className="w-full text-center font-chakra-petch font-bold uppercase text-4xl text-amber-800">
 					Rút Vàng
 				</h1>
-				<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-white p-2 rounded-box bg-orange-500/30 font-bold">
+				<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
 					<p>Hệ thống rút vàng tự động</p>
 					<p>Bước 1: Đặt đơn rút vàng trên website</p>
 					<p>
@@ -49,7 +50,7 @@ function Withdraw() {
 									<option
 										key={i + 'resigter_server'}
 										value={i}>
-										Máy Chủ {i}
+										Máy Chủ {i === 7 ? 'Gộp' : i < 7 ? i + 1 : i + 3}
 									</option>
 								))}
 							</select>
@@ -89,20 +90,43 @@ function Withdraw() {
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<GrMoney />
 								<input
-									type="number"
+									type="text"
 									className="grow"
 									placeholder="nhập số vàng rút"
+									onChange={(e) => {
+										// Extract numeric part (removes any non-digit characters)
+										let value = getNumbetFromString(e.target.value);
+
+										// Update the input value with the formatted number
+										e.target.value = value;
+									}}
 								/>
 							</div>
 							<div className="label hidden">
 								<span className="label-text-alt">Bottom Left label</span>
 							</div>
 						</label>
+						<div className="p-2">
+							<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+								<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
+								<p>Đã sử dụng: 0</p>
+								<p>Vui lòng chơi để nâng thêm hạn mức !</p>
+								<p>
+									Hệ thống thỏi vàng tự động quy đổi{' '}
+									<span className="text-red-500">1 thỏi vàng</span> là{' '}
+									<span className="text-red-500">500tr vàng</span>
+								</p>
+								<p>
+									Tối đa một lần rút:{' '}
+									<span className="text-red-500">40 thỏi vàng /1 lần</span>
+								</p>
+							</div>
+						</div>
 						<div className="p-4 w-full">
 							<button
 								className="font-protest-strike-regular w-full uppercase py-4 px-2 bg-orange-500 text-white rounded-box hover:border-orange-500 hover:border hover:bg-transparent hover:text-orange-500 hover:duration-300 active:hover:scale-90"
 								type="submit">
-								Nạp ngay
+								Rút ngay
 							</button>
 						</div>
 					</form>
@@ -175,7 +199,7 @@ function Withdraw() {
 											)}
 										</td>
 										<td>
-											<div className="badge badge-success font-chakra-petch capitalize">
+											<div className="badge bg-green-500 font-sf-trans-robotics capitalize text-black">
 												Thành công
 											</div>
 										</td>

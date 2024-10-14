@@ -250,7 +250,7 @@ function TradeGold() {
 				</h1>
 			</div>
 			<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-white p-2 rounded-box bg-orange-500/30 font-bold">
-				<p>Bạn chỉ có thể chuyển tới những người chơi ở Server 5</p>
+				<p>Bạn chỉ có thể chuyển tới những người chơi ở Máy Chủ 1</p>
 			</div>
 			<div className="flex flex-col gap-2">
 				{/* Username */}
@@ -327,6 +327,10 @@ function TradeGold() {
 					<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
 					<p>Đã sử dụng: 0</p>
 					<p>Vui lòng chơi để nâng thêm hạn mức !</p>
+					<p>
+						Bạn chuyển trên <span className="text-red-500">500tr</span> sẽ chịu{' '}
+						<span className="text-red-500">10% fee</span> dịch vụ!
+					</p>
 				</div>
 				<button className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
 					<FaExchangeAlt size={24} />
@@ -379,7 +383,7 @@ function HistoryService() {
 										</div>
 									</td>
 									<td>
-										<div className="badge badge-success font-chakra-petch capitalize">
+										<div className="badge bg-green-500 font-sf-trans-robotics capitalize text-black">
 											Thành công
 										</div>
 									</td>
@@ -448,7 +452,7 @@ function HistoryBet() {
 										</div>
 									</td>
 									<td>
-										<div className="badge badge-success font-chakra-petch capitalize">
+										<div className="badge bg-green-500 font-sf-trans-robotics capitalize text-black">
 											Thành công
 										</div>
 									</td>

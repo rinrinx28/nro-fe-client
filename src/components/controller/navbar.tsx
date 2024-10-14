@@ -27,28 +27,28 @@ function Navbar() {
 				<ul className="menu lg:menu-horizontal flex-1 gap-4 justify-center hidden font-protest-strike-regular uppercase">
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl btn btn-ghost"
+							className="bg-black rounded-full text-lg btn btn-ghost"
 							href={'/'}>
 							Trang Chủ
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl btn btn-ghost"
+							className="bg-black rounded-full text-lg btn btn-ghost"
 							href={'/deposit'}>
 							Nạp Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl btn btn-ghost"
+							className="bg-black rounded-full text-lg btn btn-ghost"
 							href={'/withdraw'}>
 							Rút Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
-							className="bg-black rounded-full text-xl btn btn-ghost"
+							className="bg-black rounded-full text-lg btn btn-ghost"
 							href={'/user/profile'}>
 							RIN
 						</Link>
@@ -57,7 +57,7 @@ function Navbar() {
 			</div>
 			{/* Navigate */}
 			<div className="flex flex-row items-center gap-4 font-protest-strike-regular uppercase">
-				<ThemeSwitch classHidden="lg:inline-block hidden" />
+				{/* <ThemeSwitch classHidden="lg:inline-block hidden" /> */}
 				<Link
 					href="/login"
 					className="px-4 py-2 border bg-black border-orange-500 rounded-box  lg:inline-block hidden uppercase text-orange-500">
@@ -91,12 +91,12 @@ function Navbar() {
 							className="drawer-overlay"></label>
 						<div className="flex flex-col justify-between w-56 py-5 min-h-full text-current font-bold text-lg bg-white rounded-l-box border border-current">
 							<ul className="menu">
-								<li>
+								{/* <li>
 									<div className="link decoration-transparent flex justify-center w-full items-center">
 										<p>Theme</p>
 										<ThemeSwitch classHidden="lg:hidden inline-block" />
 									</div>
-								</li>
+								</li> */}
 								<li>
 									<Link
 										href="/"

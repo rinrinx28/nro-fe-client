@@ -1,7 +1,6 @@
-'use client';
-import Home from '@/components/pages/main/home';
 import History from '@/components/pages/main/history';
 import TablesTop from '@/components/pages/main/tables-top';
+import Home from '@/components/pages/main/home';
 
 // CL: Chẵn Lẽ - Tài Xỉu; x: Xiên; g: Dự Đoán
 export type TypeBet = 'cl' | 'x' | 'g';

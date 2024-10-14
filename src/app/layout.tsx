@@ -1,9 +1,13 @@
+import './globals.css';
 import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
-import './globals.css';
 import Providers from '@/lib/redux/Provider';
 import Navbar from '@/components/controller/navbar';
 import Footer from '@/components/controller/footer';
+import { Suspense } from 'react';
+import Loading from '@/components/controller/Loading';
+import CircularMenu from '@/components/controller/circularMenu';
+import Chat from '@/components/controller/chat';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -44,7 +48,10 @@ export default function RootLayout({
 					{/* <SocketProvider> */}
 					<ThemeProvider>
 						<Navbar />
-						{children}
+						<Suspense fallback={<Loading />}>{children}</Suspense>
+						{/* {children} */}
+						<CircularMenu />
+						<Chat />
 						<Footer />
 					</ThemeProvider>
 					{/* </SocketProvider> */}

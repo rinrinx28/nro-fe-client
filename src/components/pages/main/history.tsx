@@ -8,9 +8,9 @@ function History() {
 			className="w-full flex items-center justify-center p-8">
 			<div className="max-w-7xl w-full select-none flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
 				<div
-					className="flex flex-row w-full justify-start items-center gap-2 text-2xl font-protest-strike-regular uppercase"
+					className="flex flex-row w-full justify-start items-center gap-2 text-2xl font-protest-strike-regular uppercase text-amber-500"
 					style={{
-						textShadow: '1px 2px 8px var(--fallback-bc,oklch(var(--bc)/1))',
+						textShadow: '1px 2px 8px #f59e0b',
 					}}>
 					<MdOutlineHistoryEdu />
 					<h1>Lịch Sử Cược</h1>
@@ -58,12 +58,17 @@ function History() {
 										<td>Tài</td>
 										<td>Xỉu</td>
 										<td>
-											<div className="badge badge-success">
-												+{new Intl.NumberFormat('vi').format(0)}
+											<div className="badge bg-red-500 font-sf-trans-robotics capitalize text-black">
+												-
+												{new Intl.NumberFormat('vi').format(
+													Math.floor(Math.random() * 1e9),
+												)}
 											</div>
 										</td>
 										<td>
-											<div className="badge badge-error">Thua</div>
+											<div className="badge bg-red-500 font-sf-trans-robotics capitalize text-black">
+												Thua
+											</div>
 										</td>
 										<th></th>
 									</tr>

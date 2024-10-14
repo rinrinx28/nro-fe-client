@@ -1,4 +1,5 @@
 'use client';
+import { getNumbetFromString } from '@/components/pages/main/home';
 import { GrMoney } from 'react-icons/gr';
 
 type TypeDeposit = 'gold' | 'rgold';
@@ -52,7 +53,7 @@ function Deposit() {
 									<option
 										key={i + 'resigter_server'}
 										value={i}>
-										Máy Chủ {i}
+										Máy Chủ {i === 7 ? 'Gộp' : i < 7 ? i + 1 : i + 3}
 									</option>
 								))}
 							</select>
@@ -92,7 +93,14 @@ function Deposit() {
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<GrMoney />
 								<input
-									type="number"
+									onChange={(e) => {
+										// Extract numeric part (removes any non-digit characters)
+										let value = getNumbetFromString(e.target.value);
+
+										// Update the input value with the formatted number
+										e.target.value = value;
+									}}
+									type="text"
 									className="grow"
 									placeholder="nhập số vàng nạp"
 								/>
@@ -101,6 +109,15 @@ function Deposit() {
 								<span className="label-text-alt">Bottom Left label</span>
 							</div>
 						</label>
+						<div className="p-2">
+							<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black rounded-lg p-2 bg-orange-500/30 font-bold">
+								<p>
+									Hệ thống thỏi vàng tự động quy đổi{' '}
+									<span className="text-red-500">1 thỏi vàng</span> là{' '}
+									<span className="text-red-500">500tr vàng</span>
+								</p>
+							</div>
+						</div>
 						<div className="p-4 w-full">
 							<button
 								className="font-protest-strike-regular w-full uppercase py-4 px-2 bg-orange-500 text-white rounded-box hover:border-orange-500 hover:border hover:bg-transparent hover:text-orange-500 hover:duration-300 active:hover:scale-90"
@@ -178,7 +195,7 @@ function Deposit() {
 											)}
 										</td>
 										<td>
-											<div className="badge badge-success font-chakra-petch capitalize">
+											<div className="badge bg-green-500 font-sf-trans-robotics capitalize text-black">
 												Thành công
 											</div>
 										</td>
