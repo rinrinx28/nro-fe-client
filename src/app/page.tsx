@@ -8,7 +8,7 @@ export type TypeBet = 'cl' | 'x' | 'g';
 
 export default function Page() {
 	return (
-		<div className="flex flex-col gap-10 justify-center items-center w-full">
+		<div className="flex flex-col gap-10 justify-center items-center w-full select-none">
 			<Home />
 			<div
 				style={{ backgroundImage: "url('/image/background/banner_1.jpg')" }}

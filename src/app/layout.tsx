@@ -1,13 +1,11 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { ThemeProvider } from 'next-themes';
 import Providers from '@/lib/redux/Provider';
 import Navbar from '@/components/controller/navbar';
 import Footer from '@/components/controller/footer';
 import { Suspense } from 'react';
 import Loading from '@/components/controller/Loading';
 import CircularMenu from '@/components/controller/circularMenu';
-import Chat from '@/components/controller/chat';
 import Clans from '@/components/controller/clans';
 
 export const metadata: Metadata = {
@@ -58,14 +56,11 @@ export default function RootLayout({
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
 				<Providers>
 					{/* <SocketProvider> */}
-					<ThemeProvider>
-						<Navbar />
-						<Suspense fallback={<Loading />}>{children}</Suspense>
-						<CircularMenu />
-						{/* <Chat /> */}
-						<Clans />
-						<Footer />
-					</ThemeProvider>
+					<Navbar />
+					<Suspense fallback={<Loading />}>{children}</Suspense>
+					<CircularMenu />
+					<Clans />
+					<Footer />
 					{/* </SocketProvider> */}
 				</Providers>
 			</body>

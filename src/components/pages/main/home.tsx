@@ -87,8 +87,8 @@ function Home() {
 			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
 			<div className="max-w-md flex flex-col items-center gap-2">
-				<h1 className="text-xl font-bold uppercase">nrogame.me</h1>
-				<div className="py-6">
+				<h1 className="text-3xl font-bold uppercase">nrogame.me</h1>
+				<div className="py-6 text-2xl">
 					<Typewriter
 						options={{
 							strings: slogans,
@@ -109,15 +109,13 @@ function Home() {
 							dispatch(setServer(k));
 							autoScrollChatBox();
 						}}
-						className={`font-bold flex flex-row p-4 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
+						className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
 							server === k
 								? 'shadow-orange-500 bg-orange-500 text-white'
 								: 'shadow-current bg-base-200'
 						}`}>
 						{/* <IoLogoGameControllerB size={24} /> */}
-						<p className="text-#f97316-300">
-							Máy Chủ {k === 7 ? `Gộp` : k > 7 ? k + 3 : k + 1}
-						</p>
+						<p>Máy Chủ {k === 7 ? `Gộp` : k > 7 ? k + 3 : k + 1}</p>
 					</button>
 				))}
 			</div>
@@ -127,7 +125,7 @@ function Home() {
 					<div
 						tabIndex={0}
 						role="button"
-						className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+						className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 						<FaBook />
 						Chức Năng
 					</div>
@@ -185,14 +183,14 @@ function Home() {
 							model.show();
 						}
 					}}
-					className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 					<FaBookmark />
 					Hướng Dẫn
 				</button>
 				<Link
 					href={'/'}
 					target="_blank"
-					className="flex flex-row gap-2 items-center rounded-box p-4 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 					<FaFacebook />
 					Fanpage
 				</Link>
