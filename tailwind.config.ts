@@ -37,6 +37,8 @@ const config: Config = {
 			'chakra-petch': ['Chakra Petch', 'sans-serif'],
 			michelangelo: ['Michelangelo', 'sans-serif'],
 			'sf-trans-robotics': ['SF TransRobotics', 'sans-serif'],
+			'number-font': ['Chakra Petch', 'sans-serif'],
+			protest: ['Protest Strike', 'sans-serif'],
 		},
 		screens: {
 			'mb-m': '375px',

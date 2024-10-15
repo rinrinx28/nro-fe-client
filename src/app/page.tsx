@@ -1,3 +1,4 @@
+'use client';
 import History from '@/components/pages/main/history';
 import TablesTop from '@/components/pages/main/tables-top';
 import Home from '@/components/pages/main/home';

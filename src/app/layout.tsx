@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import Loading from '@/components/controller/Loading';
 import CircularMenu from '@/components/controller/circularMenu';
 import Chat from '@/components/controller/chat';
+import Clans from '@/components/controller/clans';
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -26,6 +27,10 @@ export default function RootLayout({
 			suppressHydrationWarning>
 			<head>
 				<link
+					href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap"
+					rel="stylesheet"
+				/>
+				<link
 					rel="stylesheet"
 					href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap"
 				/>
@@ -41,6 +46,13 @@ export default function RootLayout({
 					href="https://fonts.cdnfonts.com/css/sf-transrobotics-2"
 					rel="stylesheet"
 				/>
+				<link
+					href="https://fonts.cdnfonts.com/css/neue-helvetica-bq"
+					rel="stylesheet"></link>
+				<link
+					href="https://fonts.cdnfonts.com/css/dynotherm"
+					rel="stylesheet"
+				/>
 			</head>
 			<body
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
@@ -49,9 +61,9 @@ export default function RootLayout({
 					<ThemeProvider>
 						<Navbar />
 						<Suspense fallback={<Loading />}>{children}</Suspense>
-						{/* {children} */}
 						<CircularMenu />
-						<Chat />
+						{/* <Chat /> */}
+						<Clans />
 						<Footer />
 					</ThemeProvider>
 					{/* </SocketProvider> */}

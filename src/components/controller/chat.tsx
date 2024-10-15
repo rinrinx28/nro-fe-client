@@ -21,7 +21,7 @@ function Chat() {
 	return (
 		<div
 			id="chat-box"
-			className="fixed lg:bottom-2 top-1/4 lg:right-4 right-0 slide-top w-full lg:h-full max-w-[500px] z-[100] p-2 backdrop-blur-lg select-none hidden">
+			className="fixed lg:bottom-2 top-52 lg:right-4 right-0 slide-top w-full max-w-[500px] z-[100] p-2 backdrop-blur-lg select-none hidden">
 			<div className=" bg-black/80 rounded-box border-ani border-none w-full h-full flex flex-col">
 				<svg
 					className="svg"
@@ -52,7 +52,9 @@ function Chat() {
 					{/* Change Server Chat */}
 					<div className="flex flex-row items-center gap-2 z-50 ">
 						<h2 className="text-lg">Kênh:</h2>
-						<select className="select select-bordered w-full max-w-xs capitalize">
+						<select
+							defaultValue={'sv_0'}
+							className="select select-bordered w-full max-w-xs capitalize">
 							<option
 								value={'team_dev'}
 								key={'clan' + 'room_chat_box'}>
@@ -62,7 +64,6 @@ function Chat() {
 								return (
 									<option
 										value={'sv_' + i}
-										selected={i === 0}
 										key={i + 'room_chat_box'}>
 										Máy Chủ {i === 7 ? 'Gộp' : i < 7 ? i + 1 : i + 3}
 									</option>

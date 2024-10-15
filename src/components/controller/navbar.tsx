@@ -9,7 +9,7 @@ import { MdOutlineHistory } from 'react-icons/md';
 
 function Navbar() {
 	return (
-		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[1000] text-orange-500">
+		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[1000] text-orange-500 h-[80px]">
 			{/* Logo */}
 			<div className="flex flex-row items-center gap-2">
 				<Link

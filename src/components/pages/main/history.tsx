@@ -16,7 +16,7 @@ function History() {
 					<h1>Lịch Sử Cược</h1>
 				</div>
 				<div className="overflow-x-auto max-h-[600px]">
-					<table className="table table-zebra">
+					<table className="table table-zebra font-chakra-petch">
 						{/* head */}
 						<thead>
 							<tr>
@@ -31,7 +31,7 @@ function History() {
 								<th></th>
 							</tr>
 						</thead>
-						<tbody className="text-start">
+						<tbody className="text-start text-lg">
 							{/* row 1 */}
 							{Array.from({ length: 20 }).map((_, i) => {
 								return (
@@ -53,21 +53,23 @@ function History() {
 												</div>
 											</div>
 										</td>
-										<td>{new Intl.NumberFormat('vi').format(9999)}</td>
+										<td className="font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(9999)}
+										</td>
 										<td>Chẵn Lẻ</td>
 										<td>Tài</td>
 										<td>Xỉu</td>
 										<td>
-											<div className="badge bg-red-500 font-sf-trans-robotics capitalize text-black">
-												-
+											<div className="badge bg-green-500 capitalize text-black font-number-font font-bold">
+												+
 												{new Intl.NumberFormat('vi').format(
 													Math.floor(Math.random() * 1e9),
 												)}
 											</div>
 										</td>
 										<td>
-											<div className="badge bg-red-500 font-sf-trans-robotics capitalize text-black">
-												Thua
+											<div className="badge bg-green-500 font-chakra-petch capitalize text-black font-bold">
+												Thắng
 											</div>
 										</td>
 										<th></th>
