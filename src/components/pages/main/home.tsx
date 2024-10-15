@@ -87,8 +87,8 @@ function Home() {
 			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
 			<div className="max-w-md flex flex-col items-center gap-2">
-				<h1 className="text-3xl font-bold uppercase">nrogame.me</h1>
-				<div className="py-6 text-2xl">
+				<h1 className="lg:text-3xl text-xl font-bold uppercase">nrogame.me</h1>
+				<div className="py-6 lg:text-2xl text-sm w-full text-center">
 					<Typewriter
 						options={{
 							strings: slogans,
@@ -608,14 +608,14 @@ function Home() {
 					<h1 className="text-xl">Chương Trình Khuyến Mãi</h1>
 					<div className="flex flex-col gap-2">
 						<div className="flex flex-row gap-2 items-center text-lg">
-							<video
+							{/* <video
 								autoPlay
 								loop
 								muted
 								preload="auto"
 								src="/image/gif/dragon_hot.webm"
 								aria-label="Dragon Hot"
-								style={{ width: '52px' }}></video>
+								style={{ width: '52px' }}></video> */}
 							<p className="text-wrap">
 								Nhận ngay{' '}
 								<span className="text-red-500 font-bold">
@@ -625,36 +625,36 @@ function Home() {
 							</p>
 						</div>
 						<div className="flex flex-row gap-2 items-center text-lg">
-							<video
+							{/* <video
 								autoPlay
 								loop
 								muted
 								preload="auto"
 								src="/image/gif/dragon_hot.webm"
 								aria-label="Dragon Hot"
-								style={{ width: '52px' }}></video>
+								style={{ width: '52px' }}></video> */}
 							<p>Tặng thỏi vàng miễn phí mỗi ngày</p>
 						</div>
 						<div className="flex flex-row gap-2 items-center text-lg">
-							<video
+							{/* <video
 								autoPlay
 								loop
 								muted
 								preload="auto"
 								src="/image/gif/dragon_hot.webm"
 								aria-label="Dragon Hot"
-								style={{ width: '52px' }}></video>
+								style={{ width: '52px' }}></video> */}
 							<p>Nạp Thỏi Vàng tích điểm nhận thành viên VIP</p>
 						</div>
 						<div className="flex flex-row gap-2 items-center text-lg">
-							<video
+							{/* <video
 								autoPlay
 								loop
 								muted
 								preload="auto"
 								src="/image/gif/dragon_hot.webm"
 								aria-label="Dragon Hot"
-								style={{ width: '52px' }}></video>
+								style={{ width: '52px' }}></video> */}
 							<p>Nhiều Event Hấp Dẫn</p>
 						</div>
 					</div>
