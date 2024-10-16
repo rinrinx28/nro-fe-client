@@ -1,4 +1,5 @@
 'use client';
+import { getNumbetFromString } from '@/components/pages/main/home';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -302,23 +303,27 @@ function TradeGold() {
 							Số vàng chuyển
 						</span>
 					</div>
-					<select
-						defaultValue={0}
-						className="select select-bordered w-full text-orange-500">
-						{Array.from({ length: 10 }).map((_, i) => {
-							return (
-								<option
-									value={i}
-									key={i + 'value_trade_gold'}>
-									{new Intl.NumberFormat('vi').format((i + 1) * 1e3 * 1e3 * 10)}
-								</option>
-							);
-						})}
-					</select>
+					<input
+						className="input text-orange-500"
+						type="text"
+						placeholder="Nhập ID Người Nhận"
+					/>
 					<div className="label">
 						<span className="label-text-alt text-black">
 							Số vàng bạn muốn chuyển cho người khác
 						</span>
+						<input
+							className="input text-orange-500"
+							type="text"
+							placeholder="Nhập số vàng"
+							onChange={(e) => {
+								// Extract numeric part (removes any non-digit characters)
+								let value = getNumbetFromString(e.target.value);
+
+								// Update the input value with the formatted number
+								e.target.value = value;
+							}}
+						/>
 					</div>
 				</div>
 				{/* Thông báo */}

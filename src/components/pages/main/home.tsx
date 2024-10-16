@@ -8,7 +8,6 @@ import {
 import { GrMoney } from 'react-icons/gr';
 import { IoIosSend, IoLogoGameControllerB } from 'react-icons/io';
 import { SiGamejolt } from 'react-icons/si';
-import { TypeBet } from '@/app/page';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { setServer } from '@/lib/redux/storage/server';
 import {
@@ -25,7 +24,7 @@ import Modal from '@/components/controller/Modal';
 import { IoChatbubbleEllipsesSharp } from 'react-icons/io5';
 
 import Typewriter from 'typewriter-effect';
-import { openClansBox } from '@/components/controller/clans';
+import { typeBet, BetField, Message } from './(dto)/dto.bet';
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -42,32 +41,52 @@ export const autoScrollChatBox = () => {
 };
 
 const slogans = [
-	'Mini Game Đỏ Đen Hồi Sinh Ngọc Rồng',
+	'Mini Game CSMM Ngọc Rồng Online',
 	'Chơi Mini Game, Nhận Vàng Ngay',
 	'Tự Động - Ưu Đãi Hấp Dẫn - Uy Tín 100%',
-	'Giao Dịch Tự Động - An Toàn & Chất Lượng',
+	'Giao Dịch Tự Động - An Toàn - Chất Lượng',
 ];
 
 function Home() {
-	const [swiperRef, setSwiperRef] = useState<any>(null);
+	// Redux
 	const server = useAppSelector((state) => state.server);
 	const dispatch = useAppDispatch();
-	const [typeBet, setTypeBet] = useState<TypeBet>('cl');
+	// React State
+	const [typeBet, setTypeBet] = useState<typeBet>('cl');
+	const [betField, setBetField] = useState<BetField>({
+		amount: '',
+		betId: '',
+		place: '',
+		server: server.toString(),
+		typeBet: 'cl',
+		uid: '',
+	});
+	const [msg, setMsg] = useState<Message>({
+		content: '',
+		meta: {
+			avatar: '',
+			clan: '',
+			rank: '',
+			vip: '',
+			uid: '',
+		},
+		server: server.toString(),
+	});
 
-	// Auto Scroll to slides
-	useEffect(() => {
-		if (swiperRef) {
-			swiperRef.slideTo(server, 0);
-		}
-	}, [swiperRef]);
+	const placeBet = () => {
+		console.log(betField);
+	};
 
+	const sendMsg = () => {
+		console.log(msg);
+	};
 	// Auto show ads
-	// useEffect(() => {
-	// 	const modal = document.getElementById('home_ads') as HTMLDialogElement;
-	// 	if (modal) {
-	// 		modal.show();
-	// 	}
-	// }, []);
+	useEffect(() => {
+		const modal = document.getElementById('home_ads') as HTMLDialogElement;
+		if (modal) {
+			modal.show();
+		}
+	}, []);
 
 	// Auto Scroll ChatBox
 	useEffect(() => {
@@ -81,14 +100,26 @@ function Home() {
 		};
 		openChatBoxHook();
 	}, []);
+
+	useEffect(() => {
+		setBetField((f) => ({
+			...f,
+			amount: '',
+			place: '',
+			server: server.toString(),
+			typeBet: 'cl',
+		}));
+		setTypeBet('cl');
+		setMsg((m) => ({ ...m, server: server.toString() }));
+	}, [server]);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/2.png')" }}
 			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
-			<div className="max-w-md flex flex-col items-center gap-2">
+			<div className="max-w-md flex flex-col items-center text-orange-500 w-full">
 				<h1 className="lg:text-3xl text-xl font-bold uppercase">nrogame.me</h1>
-				<div className="py-6 lg:text-2xl text-sm w-full text-center">
+				<div className="py-2 lg:text-2xl text-sm w-full text-center">
 					<Typewriter
 						options={{
 							strings: slogans,
@@ -188,7 +219,7 @@ function Home() {
 					Hướng Dẫn
 				</button>
 				<Link
-					href={'/'}
+					href={'https://www.facebook.com/profile.php?id=61566956587074'}
 					target="_blank"
 					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 					<FaFacebook />
@@ -216,7 +247,7 @@ function Home() {
 							/>
 						</svg>
 						{/* Layout Box Game */}
-						<div className="flex flex-col justify-start w-full h-full mb-m:p-4 p-2 items-center gap-2 backdrop-blur-md bg-black/50 lg:text-base text-sm">
+						<div className="flex flex-col justify-start w-full h-full mb-m:p-3 p-2 items-center gap-2 backdrop-blur-md bg-black/80 lg:text-base text-sm">
 							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 								<SiGamejolt />
 								<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
@@ -343,7 +374,7 @@ function Home() {
 								strokeLinejoin="round"
 							/>
 						</svg>
-						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md bg-black/50">
+						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md bg-black/80">
 							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 								<IoLogoGameControllerB size={24} />
 								<p className="uppercase font-protest-strike-regular">Dự Đoán</p>
@@ -364,30 +395,62 @@ function Home() {
 								<select
 									defaultValue={'cl'}
 									onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-										setTypeBet(event.target.value as TypeBet);
+										setTypeBet(event.target.value as typeBet);
+										setBetField((f) => ({
+											...f,
+											typeBet: event.target.value as typeBet,
+										}));
 									}}
 									className="outline-none border-0 z-10 w-full py-3 capitalize bg-transparent">
-									<option value={'cl'}>Chẵn Lẻ - Tài Xỉu</option>
-									<option value={'x'}>Xiên</option>
-									<option value={'g'}>Dự đoán kết quả</option>
+									<option value={'cl'}>
+										Chẵn Lẻ - Tài Xỉu (đặt 10tr được 19.5tr vàng)
+									</option>
+									<option value={'x'}>Xiên (đặt 10tr được 32tr vàng)</option>
+									<option value={'g'}>
+										Dự đoán kết quả (đặt 10tr được 700tr vàng)
+									</option>
 								</select>
 							</div>
 							{/* Type Bet */}
 							{typeBet === 'cl' && (
 								<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full font-protest">
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-										<button className="bg-orange-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() => setBetField((f) => ({ ...f, place: 'C' }))}
+											className={`${
+												betField.place === 'C'
+													? 'bg-orange-500 text-white'
+													: 'border border-orange-500 text-orange-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Chẵn
 										</button>
-										<button className="bg-yellow-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() => setBetField((f) => ({ ...f, place: 'L' }))}
+											className={`${
+												betField.place === 'L'
+													? 'bg-yellow-500 text-white'
+													: 'border border-yellow-500 text-yellow-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Lẻ
 										</button>
 									</div>
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-										<button className="bg-green-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() => setBetField((f) => ({ ...f, place: 'T' }))}
+											className={`${
+												betField.place === 'T'
+													? 'bg-green-500 text-white'
+													: 'border border-green-500 text-green-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Tài
 										</button>
-										<button className="bg-red-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() => setBetField((f) => ({ ...f, place: 'X' }))}
+											className={`${
+												betField.place === 'X'
+													? 'bg-red-500 text-white'
+													: 'border border-red-500 text-red-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Xỉu
 										</button>
 									</div>
@@ -396,18 +459,50 @@ function Home() {
 							{typeBet === 'x' && (
 								<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full">
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-										<button className="bg-orange-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() =>
+												setBetField((f) => ({ ...f, place: 'CT' }))
+											}
+											className={`${
+												betField.place === 'CT'
+													? 'bg-orange-500 text-white'
+													: 'border border-orange-500 text-orange-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Chẵn Tài
 										</button>
-										<button className="bg-yellow-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() =>
+												setBetField((f) => ({ ...f, place: 'LT' }))
+											}
+											className={`${
+												betField.place === 'LT'
+													? 'bg-yellow-500 text-white'
+													: 'border border-yellow-500 text-yellow-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Lẻ Tài
 										</button>
 									</div>
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-										<button className="bg-green-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() =>
+												setBetField((f) => ({ ...f, place: 'CX' }))
+											}
+											className={`${
+												betField.place === 'CX'
+													? 'bg-green-500 text-white'
+													: 'border border-green-500 text-green-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Chẵn Xỉu
 										</button>
-										<button className="bg-red-500 text-white font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300">
+										<button
+											onClick={() =>
+												setBetField((f) => ({ ...f, place: 'LX' }))
+											}
+											className={`${
+												betField.place === 'LX'
+													? 'bg-red-500 text-white'
+													: 'border border-red-500 text-red-500'
+											} font-chakra-petch w-full p-4 rounded-lg uppercase active:hover:scale-90 hover:duration-300`}>
 											Lẻ Xỉu
 										</button>
 									</div>
@@ -420,6 +515,10 @@ function Home() {
 										type="number"
 										className="outline-none border-0 w-full py-3 px-2 bg-transparent text-white"
 										placeholder="Nhập kết quả dự đoán"
+										onChange={(e) =>
+											setBetField((f) => ({ ...f, place: e.target.value }))
+										}
+										value={betField.place ?? ''}
 									/>
 								</div>
 							)}
@@ -430,16 +529,23 @@ function Home() {
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
 										let value = getNumbetFromString(e.target.value);
-
-										// Update the input value with the formatted number
-										e.target.value = value;
+										let new_value = value.split(/[,.]/g).join('');
+										setBetField((f) => ({
+											...f,
+											amount: new_value,
+										}));
 									}}
 									type="text"
 									className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-bold text-white"
+									value={new Intl.NumberFormat('vi').format(
+										Number(betField.amount ?? 0),
+									)}
 								/>
 							</div>
 							<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase z-10">
-								<button className="btn capitalize max-w-xs w-full text-orange-500">
+								<button
+									onClick={placeBet}
+									className="btn capitalize max-w-xs w-full text-orange-500">
 									<GiPerspectiveDiceSixFacesTwo size={24} />
 									Cược Ngay
 								</button>
@@ -514,14 +620,21 @@ function Home() {
 								type="text"
 								placeholder="Type here"
 								className="input input-bordered w-full border-orange-500"
+								onChange={(e) => {
+									// TODO Need to Add Meta & UID User
+									setMsg((m) => ({ ...m, content: e.target.value }));
+								}}
 							/>
-							<button className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
+							<button
+								onClick={sendMsg}
+								className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
 								<IoIosSend size={32} />
 							</button>
 						</div>
 					</div>
 				</div>
 			</div>
+
 			<Modal
 				id="home_tutorial"
 				key={'tutorial'}>
@@ -547,7 +660,7 @@ function Home() {
 						<p className="">
 							Tỷ lệ:{' '}
 							<span className="text-red-500 font-bold">
-								x1.9 (đặt 10tr được 19tr vàng)
+								x1.95 (đặt 10tr được 19.5tr vàng)
 							</span>
 						</p>
 						<p className="">
@@ -558,12 +671,12 @@ function Home() {
 						<p className="">
 							-{' '}
 							<span className="text-orange-500 font-bold">Dự đoán tài xỉu</span>
-							: kết quả từ 50-99 là tài còn từ 0-49 là xỉu
+							: kết quả từ 5-9 là tài còn từ 0-4 là xỉu
 						</p>
 						<p className="">
 							Tỷ lệ:{' '}
 							<span className="text-red-500 font-bold">
-								x1.9 (đặt 10tr được 19tr vàng)
+								x1.95 (đặt 10tr được 19.5tr vàng)
 							</span>
 						</p>
 						<p className="">
@@ -660,15 +773,6 @@ function Home() {
 					</div>
 				</div>
 			</Modal>
-			<div className="fixed bottom-4 left-4 z-[100]">
-				<button
-					onClick={() => {
-						openClansBox();
-					}}
-					className="text-orange-500 p-2 size-16 rounded-full border border-orange-500 bg-black flex items-center justify-center">
-					<GiVikingLonghouse size={32} />
-				</button>
-			</div>
 		</div>
 	);
 }

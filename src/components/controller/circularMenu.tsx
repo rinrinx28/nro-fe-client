@@ -33,21 +33,27 @@ function CircularMenu() {
 				<button
 					onClick={triggerMenu}
 					className="btn-app size-10 bg-black rounded-full border border-orange-500 flex justify-center items-center">
-					<Link href={'/'}>
+					<Link
+						href={'http://m.me/61566956587074'}
+						target="_blank">
 						<FaFacebookMessenger className="fa" />
 					</Link>
 				</button>
 				<button
 					onClick={triggerMenu}
 					className="btn-app size-10 bg-black rounded-full border border-orange-500 flex justify-center items-center">
-					<Link href={'/'}>
+					<Link
+						href={'https://www.facebook.com/profile.php?id=61566956587074'}
+						target="_blank">
 						<FaFacebook className="fa" />
 					</Link>
 				</button>
 				<button
 					onClick={triggerMenu}
 					className="btn-app size-10 bg-black rounded-full border border-orange-500 flex justify-center items-center">
-					<Link href={'/'}>
+					<Link
+						href={'https://zalo.me/g/evqnqk421'}
+						target="_blank">
 						<SiZalo className="fa" />
 					</Link>
 				</button>

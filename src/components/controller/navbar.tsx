@@ -50,7 +50,7 @@ function Navbar() {
 						<Link
 							className="bg-black rounded-full text-lg btn btn-ghost"
 							href={'/user/profile'}>
-							RIN
+							NAME
 						</Link>
 					</li>
 				</ul>
@@ -62,6 +62,11 @@ function Navbar() {
 					href="/login"
 					className="px-4 py-2 border bg-black border-orange-500 rounded-box  lg:inline-block hidden uppercase text-orange-500">
 					Đăng Nhập
+				</Link>
+				<Link
+					href="/resigter"
+					className="px-4 py-2 border bg-black border-orange-500 rounded-box  lg:inline-block hidden uppercase text-orange-500">
+					Đăng Ký
 				</Link>
 				<button className="px-4 py-2 border bg-black border-orange-500 rounded-box text-orange-500 lg:hidden inline-block">
 					<RiLoginBoxFill size={24} />

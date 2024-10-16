@@ -1,8 +1,57 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
+import { useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
+import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 
 function Withdraw() {
+	const [field, setField] = useState<InputField>({
+		type: '1',
+		typeGold: 'gold',
+	});
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault(); // Prevent form submission
+
+		const playerNameElement = e.currentTarget.elements.namedItem(
+			'playerName',
+		) as HTMLInputElement;
+		const amountElement = e.currentTarget.elements.namedItem(
+			'amount',
+		) as HTMLInputElement;
+
+		// Check if the playerName is empty
+		if (!field.playerName || field.playerName.trim().length === 0) {
+			playerNameElement.setCustomValidity('Tên nhân vật là bắt buộc.');
+		} else {
+			playerNameElement.setCustomValidity(''); // Clear error if valid
+		}
+
+		// Check if the amount is empty or not a valid number
+		if (
+			!field.amount ||
+			isNaN(Number(field.amount)) ||
+			Number(field.amount) <= 0
+		) {
+			amountElement.setCustomValidity(
+				`Nhập số lượng ${
+					field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
+				} là bắt buộc.`,
+			);
+		} else {
+			amountElement.setCustomValidity(''); // Clear error if valid
+		}
+
+		// Trigger validation
+		if (
+			!playerNameElement.reportValidity() ||
+			!amountElement.reportValidity()
+		) {
+			return; // Stop submission if input is invalid
+		}
+
+		// If valid, proceed with form submission logic
+		console.log('Form submitted:', field);
+	};
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.jpg')" }}
@@ -27,9 +76,7 @@ function Withdraw() {
 				<div className="flex lg:flex-row flex-col w-full gap-2">
 					{/* Giao Dịch */}
 					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-						}}
+						onSubmit={handleSubmit}
 						className="flex flex-col w-full lg:max-w-md rounded-box border border-current bg-white">
 						<div className="w-full bg-orange-500 text-white text-center rounded-t-box py-4">
 							<h1 className="font-protest-strike-regular">
@@ -57,13 +104,15 @@ function Withdraw() {
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
-								defaultValue={'gold'}
-								className="select select-bordered w-full border-2 ">
-								<option
-									value={'gold'}
-									selected>
-									Rút vàng
-								</option>
+								defaultValue={field.typeGold}
+								className="select select-bordered w-full border-2 "
+								onChange={(e) => {
+									setField((f) => ({
+										...f,
+										typeGold: e.target.value as TypeEShop,
+									}));
+								}}>
+								<option value={'gold'}>Rút vàng</option>
 								<option value={'rgold'}>Rút thỏi vàng</option>
 							</select>
 						</label>
@@ -79,7 +128,27 @@ function Withdraw() {
 								<input
 									type="text"
 									className="grow"
-									placeholder="Tên hiển thị"
+									placeholder="Tên nhân vật"
+									name="playerName"
+									onChange={(e) => {
+										const value = e.target.value;
+
+										// Update field state
+										setField((f) => ({
+											...f,
+											playerName: value,
+										}));
+
+										// Check if playerName is empty
+										if (value.trim().length === 0) {
+											e.target.setCustomValidity('Tên nhân vật là bắt buộc.');
+										} else {
+											e.target.setCustomValidity(''); // Clear error if valid
+										}
+
+										// Optionally, you can call `reportValidity` to trigger validation visually while typing
+										e.target.reportValidity();
+									}}
 								/>
 							</div>
 							<div className="label hidden">
@@ -90,20 +159,62 @@ function Withdraw() {
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<GrMoney />
 								<input
-									type="text"
-									className="grow"
-									placeholder="nhập số vàng rút"
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
 										let value = getNumbetFromString(e.target.value);
-
-										// Update the input value with the formatted number
 										e.target.value = value;
+
+										let new_value = value.split(/[,.]/g).join('');
+										setField((f) => ({
+											...f,
+											amount: new_value,
+										}));
+
+										// Check if amount is empty or invalid
+										if (
+											!new_value ||
+											isNaN(Number(new_value)) ||
+											Number(new_value) <= 0
+										) {
+											e.target.setCustomValidity(
+												`Nhập số lượng ${
+													field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
+												} là bắt buộc.`,
+											);
+										} else {
+											e.target.setCustomValidity(''); // Clear error if valid
+										}
+
+										e.target.reportValidity();
 									}}
+									type="text"
+									name="amount"
+									className="grow"
+									placeholder={`Nhập số ${
+										field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
+									} rút`}
 								/>
 							</div>
 							<div className="label hidden">
 								<span className="label-text-alt">Bottom Left label</span>
+							</div>
+						</label>
+						<label
+							className={`form-control w-full p-2 text-orange-500 font-protest-strike-regular`}>
+							<div className="label">
+								<span className="label-text-alt">Số vàng nhận</span>
+							</div>
+							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
+								<GrMoney />
+								<input
+									type="text"
+									className="grow"
+									placeholder="Số vàng nhận"
+									value={new Intl.NumberFormat('vi').format(
+										Number(field.amount ?? 0) *
+											(field.typeGold === 'rgold' ? 1e6 * 37 : 1),
+									)}
+								/>
 							</div>
 						</label>
 						<div className="p-2">
@@ -114,7 +225,7 @@ function Withdraw() {
 								<p>
 									Hệ thống thỏi vàng tự động quy đổi{' '}
 									<span className="text-red-500">1 thỏi vàng</span> là{' '}
-									<span className="text-red-500">500tr vàng</span>
+									<span className="text-red-500">37tr vàng</span>
 								</p>
 								<p>
 									Tối đa một lần rút:{' '}
