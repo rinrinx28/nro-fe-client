@@ -10,8 +10,27 @@ import Clans from '@/components/controller/clans';
 import { SocketProvider } from '@/lib/server/socket';
 
 export const metadata: Metadata = {
-	title: 'Beta Nrogame.me',
-	description: 'It Work!',
+	title: 'NROGAME.ME | Mini Game Kiếm Vàng Ngọc Rồng',
+	description:
+		'HỆ THỐNG MINI GAME, Kiếm Vàng Ngọc Rồng Giao Dịch Tự Động Uy Tín',
+	icons: '/image/icon.png',
+	openGraph: {
+		type: 'website',
+		description:
+			'HỆ THỐNG MINI GAME, Kiếm Vàng Ngọc Rồng Giao Dịch Tự Động Uy Tín',
+		images: 'https://nrogame.me/image/icon.png',
+		title: 'NROGAME.ME | Mini Game Kiếm Vàng Ngọc Rồng',
+		url: 'https://nrogame.me/',
+	},
+	keywords: [
+		'Trò chơi điện tử ngọc rồng',
+		'Mini game kiếm vàng ngọc rồng',
+		'Mini game kiếm vàng hồi sinh ngọc rồng',
+		'trò chơi điện tử hồi sinh ngọc rồng',
+		'Trò chơi cá cược lấy cảm hứng từ hồi sinh ngọc rồng',
+		'Hồi sinh ngọc rồng với các tính năng cá cược hấp dẫn',
+		'mini game cá cược số 1 hồi sinh ngọc rồng',
+	],
 };
 
 export default function RootLayout({
