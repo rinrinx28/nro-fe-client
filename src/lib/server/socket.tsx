@@ -29,9 +29,10 @@ moment().format();
 const urlConfig = {
 	dev: 'http://localhost:3037',
 	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
 };
 
-const socket: Socket = io(urlConfig.dev, {
+const socket: Socket = io(urlConfig.sv, {
 	path: '/socket.io/',
 	transports: ['websocket'],
 	secure: true,
