@@ -1,5 +1,7 @@
 'use client';
+import { useAppSelector } from '@/lib/redux/hook';
 import { Clan } from '@/lib/redux/storage/clan/clans';
+import { EConfig } from '@/lib/redux/storage/eshop/config';
 import apiClient from '@/lib/server/apiClient';
 import { useEffect, useState } from 'react';
 import { MdLeaderboard } from 'react-icons/md';
@@ -15,6 +17,18 @@ interface TopUser {
 function TablesTop() {
 	const [topClan, setTopClan] = useState<Clan[]>([]);
 	const [topUser, setTopUser] = useState<TopUser[]>([]);
+	const econfig = useAppSelector((state) => state.econfig);
+	const [eshop, setEshop] = useState<EConfig[]>([]);
+
+	// Update data ESHOP;
+	useEffect(() => {
+		const e_shop = econfig.filter(
+			(e) => e.name === 'e_clan' || e.name === 'e_user_rank',
+		);
+		if (e_shop) {
+			setEshop(e_shop);
+		}
+	}, [econfig]);
 
 	useEffect(() => {
 		let loop = setInterval(() => {
@@ -58,6 +72,13 @@ function TablesTop() {
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
 						{topUser.map((u, i) => {
 							const { meta, name } = u;
+							const e_rank_day = eshop.find((e) => e.name === 'e_user_rank');
+							const {
+								prizes = [
+									12000000000, 8000000000, 4000000000, 1000000000, 500000000,
+									200000000, 100000000,
+								],
+							} = e_rank_day?.option ?? {};
 							return (
 								<div
 									key={i + 'top_user_winner'}
@@ -73,6 +94,10 @@ function TablesTop() {
 									<div className="flex flex-col items-center justify-center">
 										<p>
 											#{i + 1} | {name}
+										</p>
+										<p>
+											Phần Thưởng |{' '}
+											{new Intl.NumberFormat('vi').format(prizes[i])} vàng
 										</p>
 									</div>
 									<div className="flex flex-col items-center justify-center pr-10">
@@ -104,6 +129,12 @@ function TablesTop() {
 						{topClan.map((c, i) => {
 							const { score, meta = {} } = c;
 							const { type, name } = meta;
+							const e_clan = eshop.find((e) => e.name === 'e_clan');
+							const {
+								prizes = [
+									1000000000, 500000000, 300000000, 100000000, 60000000,
+								],
+							} = e_clan?.option ?? {};
 							return (
 								<div
 									key={i + 'top_user_winner'}
@@ -117,8 +148,13 @@ function TablesTop() {
 										</div>
 									</div>
 									<div className="flex flex-col items-center justify-center">
-										<p>Clan | #{i + 1}</p>
-										<p>{name}</p>
+										<p>
+											Clan {name} | TOP {i + 1}
+										</p>
+										<p>
+											Phần Thưởng |{' '}
+											{new Intl.NumberFormat('vi').format(prizes[i])}
+										</p>
 									</div>
 									<div className="flex flex-col items-center justify-center pr-10">
 										<p>{new Intl.NumberFormat('vi').format(score ?? 0)}</p>

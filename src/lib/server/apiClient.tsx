@@ -7,7 +7,7 @@ const urlConfig = {
 };
 
 const apiClient = axios.create({
-	baseURL: urlConfig.sv,
+	baseURL: urlConfig.dev,
 	headers: {
 		'Content-Type': 'application/json',
 	},

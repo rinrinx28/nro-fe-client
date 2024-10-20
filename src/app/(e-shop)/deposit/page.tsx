@@ -175,7 +175,7 @@ function Deposit() {
 		if (user.isLogin) {
 			getServices();
 		}
-	}, [user]);
+	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_deposit.jpg')" }}

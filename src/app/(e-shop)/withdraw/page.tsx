@@ -189,7 +189,7 @@ function Withdraw() {
 		if (user.isLogin) {
 			getServices();
 		}
-	}, [user]);
+	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.jpg')" }}
