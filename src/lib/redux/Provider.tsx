@@ -2,8 +2,10 @@
 import { useRef, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { makeStore, AppStore } from './store';
-import { useRouter } from 'next/navigation';
-import { setServer } from './storage/server';
+import { setServer } from './storage/minigame/server';
+import { updateUser } from './storage/user/user';
+import apiClient from '../server/apiClient';
+import { useAppDispatch } from './hook';
 
 export default function StoreProvider({
 	children,
@@ -18,18 +20,33 @@ export default function StoreProvider({
 	let server;
 
 	if (typeof window !== 'undefined' && window.localStorage) {
-		server = localStorage.getItem('server') ?? '0';
+		server = localStorage.getItem('server') ?? '24';
 	} else {
-		server = '0'; // Giá trị mặc định nếu không có localStorage
+		server = '24'; // Giá trị mặc định nếu không có localStorage
 	}
-
-	storeRef.current.dispatch(setServer(parseInt(server, 10)));
-
-	const router = useRouter();
+	storeRef.current.dispatch(setServer(server));
 
 	useEffect(() => {
+		const token = localStorage.getItem('token');
+		// relogin
+		if (token && storeRef) {
+			apiClient
+				.get('/auth/relogin', {
+					headers: {
+						Authorization: 'Bearer ' + token,
+					},
+				})
+				.then((res) => {
+					storeRef.current?.dispatch(
+						updateUser({ isLogin: true, token: token, ...res.data }),
+					);
+				})
+				.catch((err) => {
+					localStorage.removeItem('token');
+				});
+		}
 		return () => {};
-	}, [router]);
+	}, [storeRef]);
 
 	return <Provider store={storeRef.current}>{children}</Provider>;
 }

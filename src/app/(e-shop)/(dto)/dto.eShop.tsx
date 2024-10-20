@@ -5,4 +5,5 @@ export interface InputField {
 	type: string;
 	amount?: string;
 	typeGold: TypeEShop;
+	server?: string;
 }

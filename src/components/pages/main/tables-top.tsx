@@ -1,7 +1,44 @@
-import React from 'react';
+'use client';
+import { Clan } from '@/lib/redux/storage/clan/clans';
+import apiClient from '@/lib/server/apiClient';
+import { useEffect, useState } from 'react';
 import { MdLeaderboard } from 'react-icons/md';
 
+interface TopUser {
+	name?: string;
+	meta?: {
+		totalTrade: number;
+		avatar: string;
+	};
+}
+
 function TablesTop() {
+	const [topClan, setTopClan] = useState<Clan[]>([]);
+	const [topUser, setTopUser] = useState<TopUser[]>([]);
+
+	useEffect(() => {
+		let loop = setInterval(() => {
+			const rankClan = async () => {
+				try {
+					const { data } = await apiClient.get('/no-call/rank/clan');
+					setTopClan(data);
+				} catch (err: any) {
+					console.log(err.response.data.message.message);
+				}
+			};
+			const rankUser = async () => {
+				try {
+					const { data } = await apiClient.get('/no-call/rank/user');
+					setTopUser(data);
+				} catch (err: any) {
+					console.log(err.response.data.message.message);
+				}
+			};
+			rankClan();
+			rankUser();
+		}, 15e3);
+		return () => clearInterval(loop);
+	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/3.jpg')" }}
@@ -19,7 +56,8 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{Array.from({ length: 10 }).map((_, i) => {
+						{topUser.map((u, i) => {
+							const { meta, name } = u;
 							return (
 								<div
 									key={i + 'top_user_winner'}
@@ -27,16 +65,22 @@ function TablesTop() {
 									<div className="avatar">
 										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl">
 											<img
-												src={`/image/server/${8}.png`}
+												src={`/image/avatar/${meta?.avatar ?? '3'}.webp`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
 									</div>
 									<div className="flex flex-col items-center justify-center">
-										<p>#{i + 1} | Rin</p>
+										<p>
+											#{i + 1} | {name}
+										</p>
 									</div>
 									<div className="flex flex-col items-center justify-center pr-10">
-										<p>120</p>
+										<p>
+											{new Intl.NumberFormat('vi').format(
+												meta?.totalTrade ?? 0,
+											)}
+										</p>
 										<p>Điểm</p>
 									</div>
 								</div>
@@ -57,7 +101,9 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{Array.from({ length: 10 }).map((_, i) => {
+						{topClan.map((c, i) => {
+							const { score, meta = {} } = c;
+							const { type, name } = meta;
 							return (
 								<div
 									key={i + 'top_user_winner'}
@@ -65,17 +111,17 @@ function TablesTop() {
 									<div className="avatar">
 										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl z-50">
 											<img
-												src={`/image/server/${3}.png`}
+												src={`/image/banghoi/b${type ?? '1'}.gif`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
 									</div>
 									<div className="flex flex-col items-center justify-center">
 										<p>Clan | #{i + 1}</p>
-										<p>Rin Clan</p>
+										<p>{name}</p>
 									</div>
 									<div className="flex flex-col items-center justify-center pr-10">
-										<p>120</p>
+										<p>{new Intl.NumberFormat('vi').format(score ?? 0)}</p>
 										<p>Điểm</p>
 									</div>
 								</div>

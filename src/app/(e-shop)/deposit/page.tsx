@@ -3,15 +3,26 @@ import { getNumbetFromString } from '@/components/pages/main/home';
 import { useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
+import { useAppSelector } from '@/lib/redux/hook';
+import { FaMinus } from 'react-icons/fa';
+import apiClient from '@/lib/server/apiClient';
+import moment from 'moment';
 
 function Deposit() {
+	const user = useAppSelector((state) => state.user);
+	const bots = useAppSelector((state) => state.bots);
+	const services = useAppSelector((state) => state.services);
 	const [field, setField] = useState<InputField>({
 		type: '0',
 		typeGold: 'gold',
+		server: user.server ?? '',
 	});
+	const [isLoad, setLoad] = useState<boolean>(false);
+	const [msg, setMsg] = useState<string>('');
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
+		setLoad((e) => !e);
 
 		const playerNameElement = e.currentTarget.elements.namedItem(
 			'playerName',
@@ -51,7 +62,57 @@ function Deposit() {
 		}
 
 		// If valid, proceed with form submission logic
-		console.log('Form submitted:', field);
+		try {
+			const { amount, playerName, server, typeGold } = field;
+			const { data } = await apiClient.post(
+				'/service/create',
+				{
+					type: typeGold === 'gold' ? '3' : '2',
+					amount: Number(amount),
+					playerName,
+					server,
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNoticeEShop(data.message);
+		} catch (err: any) {
+			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad((e) => !e);
+		}
+	};
+
+	const showNoticeEShop = (message: string) => {
+		let dialog = document.getElementById('eshop_deposit') as HTMLDialogElement;
+		if (dialog) {
+			dialog.show();
+			setMsg(message);
+		}
+	};
+
+	const cancelService = async (serviceId: string) => {
+		try {
+			if (!user.isLogin || !user.token)
+				return showNoticeEShop('Bạn chưa đăng nhập');
+			const { data } = await apiClient.post(
+				'/service/cancel',
+				{
+					serviceId: serviceId,
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNoticeEShop(data.message);
+		} catch (err: any) {
+			showNoticeEShop(err.response.data.message.message);
+		}
 	};
 	return (
 		<div
@@ -84,22 +145,36 @@ function Deposit() {
 							<h1 className="font-protest-strike-regular">
 								Số Dư:{' '}
 								<span className="font-sf-trans-robotics">
-									{new Intl.NumberFormat('vi').format(9999)}
+									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 								</span>
 							</h1>
 						</div>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
-							<select className="select select-bordered w-full border-2 ">
+							<select
+								disabled
+								className="select select-bordered w-full border-2 ">
+								<option disabled>Chọn Máy Chủ</option>
+								{Array.from({ length: 7 }).map((_, i) => (
+									<option
+										selected={field.server === `${i + 1}`}
+										key={i + 'resigter_server'}
+										value={i + 1}>
+										Máy Chủ {i + 1}
+									</option>
+								))}
 								<option
-									disabled
-									selected>
-									Chọn Máy Chủ
+									key={'8-9-10' + 'resigter_server'}
+									selected={field.server === `8-9-10`}
+									value={'8-9-10'}>
+									Máy Chủ 8-9-10
 								</option>
-								{Array.from({ length: 11 }).map((_, i) => (
+								<option disabled>Chọn Máy Chủ</option>
+								{Array.from({ length: 3 }).map((_, i) => (
 									<option
 										key={i + 'resigter_server'}
-										value={i}>
-										Máy Chủ {i === 7 ? 'Gộp' : i < 7 ? i + 1 : i + 3}
+										selected={field.server === `${i + 11}`}
+										value={i + 11}>
+										Máy Chủ {i + 11}
 									</option>
 								))}
 							</select>
@@ -232,7 +307,11 @@ function Deposit() {
 							<button
 								className="font-protest-strike-regular w-full uppercase py-4 px-2 bg-orange-500 text-white rounded-box hover:border-orange-500 hover:border hover:bg-transparent hover:text-orange-500 hover:duration-300 active:hover:scale-90"
 								type="submit">
-								Nạp ngay
+								{isLoad ? (
+									<span className="loading loading-bars loading-sm"></span>
+								) : (
+									'Nạp Ngay'
+								)}
 							</button>
 						</div>
 					</form>
@@ -254,21 +333,29 @@ function Deposit() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{Array.from({ length: 4 }).map((_, i) => {
-									return (
-										<tr key={i + 'deposit_bot'}>
-											<th>{i + 1}</th>
-											<td>Cy Ganderton</td>
-											<td>Quality Control Specialist</td>
-											<td>Blue</td>
-											<td className="font-sf-trans-robotics">
-												{new Intl.NumberFormat('vi').format(
-													Math.floor(Math.random() * 10000),
-												)}
-											</td>
-										</tr>
-									);
-								})}
+								{bots
+									.filter((b) =>
+										field.server === '8-9-10'
+											? field.server?.includes(b.server ?? '')
+											: field.server === (b.server ?? ''),
+									)
+									.filter(
+										(b) =>
+											b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
+									)
+									.map((b, i) => {
+										return (
+											<tr key={i + 'deposit_bot'}>
+												<th>{i + 1}</th>
+												<td>{b.name ?? 'nro'}</td>
+												<td>{b.map ?? 'nro'}</td>
+												<td>{b.zone ?? 'nro'}</td>
+												<td className="font-sf-trans-robotics">
+													{new Intl.NumberFormat('vi').format(b.money ?? 0)}
+												</td>
+											</tr>
+										);
+									})}
 							</tbody>
 						</table>
 					</div>
@@ -286,37 +373,96 @@ function Deposit() {
 							<tr>
 								<th>Máy Chủ</th>
 								<th>Nhân Vật</th>
-								<th>Số vàng</th>
+								<th>Hình thức</th>
+								<th>Số Thỏi/vàng</th>
+								<th>Số vàng nhận</th>
 								<th>Tình trạng</th>
 								<th>thời gian</th>
 								<th>Tương tác</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className="font-bold text-base">
 							{/* row 1 */}
-							{Array.from({ length: 4 }).map((_, i) => {
-								return (
-									<tr key={i + 'deposit_bot'}>
-										<td>1</td>
-										<td>Cy Ganderton</td>
-										<td className="font-sf-trans-robotics">
-											{new Intl.NumberFormat('vi').format(
-												Math.floor(Math.random() * 10000),
-											)}
-										</td>
-										<td>
-											<div className="badge bg-green-500 font-sf-trans-robotics capitalize text-black">
-												Thành công
-											</div>
-										</td>
-										<td>{new Date().toDateString()}</td>
-									</tr>
-								);
-							})}
+							{services
+								.filter((s) => s.uid === user._id)
+								.filter((s) => ['2', '3'].includes(s.type ?? ''))
+								.sort(
+									(a, b) =>
+										moment(b.updatedAt).unix() - moment(a.updatedAt).unix(),
+								)
+								.map((s, i) => {
+									const {
+										server,
+										type,
+										playerName,
+										status,
+										amount,
+										updatedAt,
+										revice,
+									} = s;
+									return (
+										<tr key={i + 'deposit_bot'}>
+											<td>{server}</td>
+											<td>{playerName}</td>
+											<td>{type === '2' ? 'Nạp thỏi vàng' : 'Nạp vàng'}</td>
+											<td className="font-number-font">
+												{new Intl.NumberFormat('vi').format(amount ?? 0)}
+											</td>
+											<td className="font-number-font">
+												{new Intl.NumberFormat('vi').format(revice ?? 0)}
+											</td>
+											<td>
+												<div
+													className={`badge ${
+														status === '0'
+															? 'bg-cyan-500'
+															: status === '1'
+															? 'bg-red-500'
+															: 'bg-green-500'
+													} font-chakra-petch capitalize text-black`}>
+													{status === '0'
+														? 'Chờ giao dịch'
+														: status === '1'
+														? 'Đã hủy'
+														: 'Thành công'}
+												</div>
+											</td>
+											<td>{moment(updatedAt).format('DD/MM/YYYY HH:mm:ss')}</td>
+											<td>
+												{s.isEnd ? (
+													''
+												) : (
+													<button
+														onClick={() => cancelService(s._id ?? '')}
+														className="p-2 rounded-lg bg-red-500 text-white">
+														Hủy
+													</button>
+												)}
+											</td>
+										</tr>
+									);
+								})}
 						</tbody>
 					</table>
 				</div>
 			</div>
+			<dialog
+				id="eshop_deposit"
+				className="modal z-[1100]">
+				<div className="modal-box font-chakra-petch text-orange-500 p-2">
+					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
+						<h1 className="text-lg">Thông Báo</h1>
+						<form method="dialog">
+							<button>
+								<FaMinus size={24} />
+							</button>
+						</form>
+					</div>
+					<div className="flex flex-col gap-2 text-center">
+						<p className="">{msg}</p>
+					</div>
+				</div>
+			</dialog>
 		</div>
 	);
 }

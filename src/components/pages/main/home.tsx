@@ -1,15 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
-import {
-	GiPerspectiveDiceSixFacesTwo,
-	GiVikingLonghouse,
-} from 'react-icons/gi';
+import { GiPerspectiveDiceSixFacesTwo } from 'react-icons/gi';
 import { GrMoney } from 'react-icons/gr';
 import { IoIosSend, IoLogoGameControllerB } from 'react-icons/io';
 import { SiGamejolt } from 'react-icons/si';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
-import { setServer } from '@/lib/redux/storage/server';
+import { setServer } from '@/lib/redux/storage/minigame/server';
 import {
 	FaBook,
 	FaBookmark,
@@ -24,7 +21,13 @@ import Modal from '@/components/controller/Modal';
 import { IoChatbubbleEllipsesSharp } from 'react-icons/io5';
 
 import Typewriter from 'typewriter-effect';
-import { typeBet, BetField, Message } from './(dto)/dto.bet';
+import { BetField, MessageField, typeBet } from './(dto)/dto.bet';
+import { MiniGame } from '@/lib/redux/storage/minigame/minigame';
+import moment from 'moment';
+import { Message } from '@/lib/redux/storage/user/message';
+import apiClient from '@/lib/server/apiClient';
+import { updateUser } from '@/lib/redux/storage/user/user';
+import { useSocket } from '@/lib/server/socket';
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -49,36 +52,129 @@ const slogans = [
 
 function Home() {
 	// Redux
+	const user = useAppSelector((state) => state.user);
 	const server = useAppSelector((state) => state.server);
+	const minigame = useAppSelector((state) => state.minigame);
+	const messages = useAppSelector((state) => state.messages);
 	const dispatch = useAppDispatch();
-	// React State
-	const [typeBet, setTypeBet] = useState<typeBet>('cl');
-	const [betField, setBetField] = useState<BetField>({
+	// defautl data;
+	const betFile_defautl: BetField = {
 		amount: '',
 		betId: '',
 		place: '',
 		server: server.toString(),
 		typeBet: 'cl',
 		uid: '',
-	});
-	const [msg, setMsg] = useState<Message>({
-		content: '',
-		meta: {
-			avatar: '',
-			clan: '',
-			rank: '',
-			vip: '',
-			uid: '',
-		},
-		server: server.toString(),
-	});
+	};
+	// Socket
+	const socket = useSocket();
+	// React State
+	const [gameBox, setGameBox] = useState<MiniGame | undefined>();
+	const [channel, setChannel] = useState<Message[]>([]);
+	const [counter, setCounter] = useState<number | null>(null);
+	const [typeBet, setTypeBet] = useState<typeBet>('cl');
+	const [betField, setBetField] = useState<BetField>(betFile_defautl);
+	const [msg, setMsg] = useState<MessageField>();
+	const [notice, setNotice] = useState<string>();
+	const [isLoad, setLoad] = useState<boolean>(false);
 
-	const placeBet = () => {
-		console.log(betField);
+	const showNotice = (type: 'controll' | 'chat-box', mess: string) => {
+		switch (type) {
+			case 'controll':
+				const div_notice = document.getElementById(
+					'notice-bet-controll',
+				) as HTMLDivElement;
+				if (div_notice) {
+					div_notice.classList.toggle('hidden');
+					setNotice(mess);
+				}
+				break;
+			default:
+				const dialog_notice = document.getElementById(
+					'chat-box',
+				) as HTMLDialogElement;
+				if (dialog_notice) {
+					dialog_notice.show();
+					setNotice(mess);
+				}
+				break;
+		}
+		let autoClose = setTimeout(() => {
+			let div_notice = document.getElementById(
+				'notice-bet-controll',
+			) as HTMLDivElement;
+			let dialog_notice = document.getElementById(
+				'chat-box',
+			) as HTMLDialogElement;
+			if (dialog_notice) {
+				dialog_notice.close();
+			}
+
+			if (div_notice) {
+				div_notice.classList.toggle('hidden');
+			}
+		}, 3e3);
+		return () => {
+			clearTimeout(autoClose);
+		};
+	};
+
+	const resetBetFildAndNotice = (msg: string) => {
+		setBetField(betFile_defautl);
+		return showNotice('controll', msg);
+	};
+
+	const placeBet = async () => {
+		setLoad(true);
+		try {
+			let { amount, place, typeBet } = betField;
+			if (!user.isLogin) return resetBetFildAndNotice('Bạn chưa đăng nhập');
+
+			if (!gameBox || gameBox._id?.length === 0)
+				return resetBetFildAndNotice('Phiên cược không tồn tại');
+
+			let n_amount = Number(amount);
+			if (n_amount <= 0)
+				return resetBetFildAndNotice('Xin vui lòng đặt tiền cược');
+
+			if (place?.length === 0)
+				return resetBetFildAndNotice('Xin vui lòng đặt cược');
+			if (typeBet?.length === 0)
+				return resetBetFildAndNotice('Xin vui lòng chọn hình thức cược');
+
+			const { data, status } = await apiClient.post(
+				'/mini-game/place',
+				{ ...betField, amount: n_amount, betId: gameBox?._id, server: server },
+				{
+					headers: {
+						Authorization: 'Bearer ' + (user.token ?? ''),
+					},
+				},
+			);
+			const { message } = data;
+			dispatch(updateUser(data.user));
+			return resetBetFildAndNotice(message);
+		} catch (err: any) {
+			const { message } = err.response.data.message;
+			return resetBetFildAndNotice(message);
+		} finally {
+			setLoad(false);
+		}
 	};
 
 	const sendMsg = () => {
-		console.log(msg);
+		if (!user.isLogin) return showNotice('chat-box', 'Bạn chưa đăng nhập');
+		if (!msg) return showNotice('chat-box', 'Xin vui lòng nhập tin nhắn');
+		const { content } = msg;
+		if (content && content?.length <= 0)
+			return showNotice('chat-box', 'Xin vui lòng nhập tin nhắn');
+		socket.emit('user.chat', {
+			content,
+			server,
+			uid: user._id,
+			token: user.token,
+		});
+		setMsg({});
 	};
 	// Auto show ads
 	useEffect(() => {
@@ -111,13 +207,72 @@ function Home() {
 		}));
 		setTypeBet('cl');
 		setMsg((m) => ({ ...m, server: server.toString() }));
+		// get Data mini sv;
+		socket.emit('info.mini', server);
 	}, [server]);
+
+	// Update Realtime Minigame with Server
+	useEffect(() => {
+		if (server) {
+			const target = minigame.find((m) => m.server === server);
+			setGameBox(target);
+		}
+		return () => {
+			setGameBox({});
+		};
+	}, [server, minigame]);
+
+	useEffect(() => {
+		if (gameBox) {
+			const loop = setInterval(() => {
+				let now = moment().unix();
+				let timeEnd = moment(gameBox?.timeEnd).unix();
+				let time = Math.floor(timeEnd - now);
+				if (time < 0) {
+					setCounter(null);
+				} else {
+					setCounter(time);
+				}
+			}, 1e3);
+			return () => {
+				clearInterval(loop);
+			};
+		}
+	}, [gameBox]);
+
+	// Update realtime chat;
+	useEffect(() => {
+		if (server) {
+			const targets = messages.filter(
+				(m) => m.server === server || m.server === 'all',
+			);
+			let new_main_server = targets;
+			let new_channel: Message[] = [];
+			for (const msg of new_main_server) {
+				if (new_channel.length >= 10) {
+					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
+				}
+				new_channel.push(msg);
+				console.log(msg);
+			}
+			if (new_channel.length > 0) {
+				setChannel(
+					new_channel.sort(
+						(a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+					),
+				);
+			} else {
+				setChannel([]);
+			}
+		}
+	}, [server, messages]);
+
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/2.png')" }}
 			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
-			<div className="max-w-md flex flex-col items-center text-orange-500 w-full">
+			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full">
 				<h1 className="lg:text-3xl text-xl font-bold uppercase">nrogame.me</h1>
 				<div className="py-2 lg:text-2xl text-sm w-full text-center">
 					<Typewriter
@@ -133,22 +288,65 @@ function Home() {
 			</div>
 			{/* Button Game */}
 			<div className="max-w-7xl w-full flex flex-wrap justify-center gap-2 items-center">
-				{Array.from({ length: 11 }).map((_, k) => (
+				{Array.from({ length: 7 }).map((_, k) => (
 					<button
 						key={`${k}-button`}
+						disabled
 						onClick={() => {
-							dispatch(setServer(k));
+							dispatch(setServer(`${k + 1}`));
 							autoScrollChatBox();
 						}}
 						className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
-							server === k
+							server === `${k + 1}`
 								? 'shadow-orange-500 bg-orange-500 text-white'
 								: 'shadow-current bg-base-200'
 						}`}>
 						{/* <IoLogoGameControllerB size={24} /> */}
-						<p>Máy Chủ {k === 7 ? `Gộp` : k > 7 ? k + 3 : k + 1}</p>
+						<p>Máy Chủ {k + 1}</p>
 					</button>
 				))}
+				<button
+					disabled
+					onClick={() => {
+						dispatch(setServer('8-9-10'));
+						autoScrollChatBox();
+					}}
+					className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
+						server === '8-9-10'
+							? 'shadow-orange-500 bg-orange-500 text-white'
+							: 'shadow-current bg-base-200'
+					}`}>
+					Máy Chủ Gộp
+				</button>
+				{Array.from({ length: 3 }).map((_, k) => (
+					<button
+						disabled
+						key={`${k}-button`}
+						onClick={() => {
+							dispatch(setServer(`${k + 11}`));
+							autoScrollChatBox();
+						}}
+						className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
+							server === `${k + 11}`
+								? 'shadow-orange-500 bg-orange-500 text-white'
+								: 'shadow-current bg-base-200'
+						}`}>
+						{/* <IoLogoGameControllerB size={24} /> */}
+						<p>Máy Chủ {k + 11}</p>
+					</button>
+				))}
+				<button
+					onClick={() => {
+						dispatch(setServer('24'));
+						autoScrollChatBox();
+					}}
+					className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
+						server === '24'
+							? 'shadow-orange-500 bg-orange-500 text-white'
+							: 'shadow-current bg-base-200'
+					}`}>
+					Máy Chủ 24/24
+				</button>
 			</div>
 			{/* Group Func Quick */}
 			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5">
@@ -256,49 +454,47 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Mã phiên:</p>
 								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
-									670ae5a88785d1615f2cdc73
+									{gameBox?._id ?? (
+										<span className="loading loading-ball loading-sm"></span>
+									)}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Máy Chủ:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{server === 7
-										? '8-9-10'
-										: server < 7
-										? server + 1
-										: server + 3}
+									{server ?? (
+										<span className="loading loading-bars loading-sm"></span>
+									)}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Kết Quả Trước:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									71
+									{(gameBox?.lastResult &&
+										gameBox?.lastResult.split('-')[0]) ?? (
+										<span className="loading loading-dots loading-sm"></span>
+									)}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Còn:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{new Intl.NumberFormat('vi').format(
-										Math.floor(Math.random() * 200),
+									{counter ?? (
+										<span className="loading loading-dots loading-sm"></span>
 									)}
-									{/* <span className="loading loading-dots loading-xs"></span> */}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Chẵn:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											Math.floor(Math.random() * 1000),
-										)}
+										{gameBox?.resultUser?.c ?? 0}
 									</p>
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Lẻ:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											Math.floor(Math.random() * 1000),
-										)}
+										{gameBox?.resultUser?.l ?? 0}
 									</p>
 								</div>
 							</div>
@@ -306,53 +502,76 @@ function Home() {
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Tài:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											Math.floor(Math.random() * 1000),
-										)}
+										{gameBox?.resultUser?.t ?? 0}
 									</p>
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Xỉu:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											Math.floor(Math.random() * 1000),
-										)}
+										{gameBox?.resultUser?.x ?? 0}
 									</p>
 								</div>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Hoạt Động:</p>
 								<p className="text-white font-number-font font-bold">
-									6h - 23h50
+									{server === '24' ? '24/24' : '6h - 23h50'}
 								</p>
 							</div>
-							<div className="flex flex-col gap- justify-start w-full">
+							<div className="flex flex-col gap-2 justify-start w-full">
 								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
 									<p className="text-orange-500">CL:</p>
-									<ul className="menu menu-horizontal lg:gap-2 lg:text-base text-sm">
-										{Array.from({ length: 10 }).map((_, i) => (
-											<li
-												key={i + 'cl'}
-												className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-													i % 2 === 0 ? 'bg-orange-500' : 'bg-yellow-500'
-												}`}>
-												{i % 2 === 0 ? 'C' : 'L'}
-											</li>
-										))}
+									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+										{gameBox?.lastResult?.split('-').map((r, i) => {
+											const number_result = r.length > 1 ? r[1] : r;
+											return (
+												<li key={i + 'cl'}>
+													<div
+														className={`tooltip mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+															Number(`${number_result}`) % 2 === 0
+																? 'bg-orange-500'
+																: 'bg-yellow-500'
+														}`}
+														data-tip={r}>
+														<p className="">
+															{Number(`${number_result}`) % 2 === 0 ? 'C' : 'L'}
+														</p>
+													</div>
+												</li>
+											);
+										})}
+										{!gameBox && (
+											<span className="loading loading-ring loading-sm"></span>
+										)}
 									</ul>
 								</div>
 								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
 									<p className="text-orange-500">TX:</p>
-									<ul className="menu menu-horizontal lg:gap-2">
-										{Array.from({ length: 10 }).map((_, i) => (
-											<li
-												key={i + 'tx'}
-												className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-													i % 2 === 0 ? 'bg-green-500' : 'bg-red-500'
-												}`}>
-												{i % 2 === 0 ? 'T' : 'X'}
-											</li>
-										))}
+									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+										{gameBox?.lastResult?.split('-').map((r, i) => {
+											const number_result = r.length > 1 ? r[1] : r;
+											return (
+												<li
+													key={i + 'tx'}
+													data-tip={r}>
+													<div
+														className={`tooltip `}
+														data-tip={r}>
+														<div
+															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+																Number(`${number_result}`) < 5
+																	? 'bg-green-500'
+																	: 'bg-red-500'
+															}`}>
+															{Number(`${number_result}`) > 4 ? 'T' : 'X'}
+														</div>
+													</div>
+												</li>
+											);
+										})}
+										{!gameBox && (
+											<span className="loading loading-ring loading-sm"></span>
+										)}
 									</ul>
 								</div>
 							</div>
@@ -386,7 +605,7 @@ function Home() {
 									className={`text-orange-500`}
 								/>
 								<p className={`text-white font-number-font font-bold`}>
-									{new Intl.NumberFormat('vi').format(9999)}
+									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 								</p>
 							</div>
 							{/* Select Type Bet */}
@@ -396,10 +615,6 @@ function Home() {
 									defaultValue={'cl'}
 									onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
 										setTypeBet(event.target.value as typeBet);
-										setBetField((f) => ({
-											...f,
-											typeBet: event.target.value as typeBet,
-										}));
 									}}
 									className="outline-none border-0 z-10 w-full py-3 capitalize bg-transparent">
 									<option value={'cl'}>
@@ -416,7 +631,13 @@ function Home() {
 								<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full font-protest">
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
-											onClick={() => setBetField((f) => ({ ...f, place: 'C' }))}
+											onClick={() =>
+												setBetField((f) => ({
+													...f,
+													place: 'C',
+													typeBet: 'cl',
+												}))
+											}
 											className={`${
 												betField.place === 'C'
 													? 'bg-orange-500 text-white'
@@ -425,7 +646,13 @@ function Home() {
 											Chẵn
 										</button>
 										<button
-											onClick={() => setBetField((f) => ({ ...f, place: 'L' }))}
+											onClick={() =>
+												setBetField((f) => ({
+													...f,
+													place: 'L',
+													typeBet: 'cl',
+												}))
+											}
 											className={`${
 												betField.place === 'L'
 													? 'bg-yellow-500 text-white'
@@ -436,7 +663,13 @@ function Home() {
 									</div>
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
-											onClick={() => setBetField((f) => ({ ...f, place: 'T' }))}
+											onClick={() =>
+												setBetField((f) => ({
+													...f,
+													place: 'T',
+													typeBet: 'cl',
+												}))
+											}
 											className={`${
 												betField.place === 'T'
 													? 'bg-green-500 text-white'
@@ -445,7 +678,13 @@ function Home() {
 											Tài
 										</button>
 										<button
-											onClick={() => setBetField((f) => ({ ...f, place: 'X' }))}
+											onClick={() =>
+												setBetField((f) => ({
+													...f,
+													place: 'X',
+													typeBet: 'cl',
+												}))
+											}
 											className={`${
 												betField.place === 'X'
 													? 'bg-red-500 text-white'
@@ -461,7 +700,11 @@ function Home() {
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
 											onClick={() =>
-												setBetField((f) => ({ ...f, place: 'CT' }))
+												setBetField((f) => ({
+													...f,
+													place: 'CT',
+													typeBet: 'x',
+												}))
 											}
 											className={`${
 												betField.place === 'CT'
@@ -472,7 +715,11 @@ function Home() {
 										</button>
 										<button
 											onClick={() =>
-												setBetField((f) => ({ ...f, place: 'LT' }))
+												setBetField((f) => ({
+													...f,
+													place: 'LT',
+													typeBet: 'x',
+												}))
 											}
 											className={`${
 												betField.place === 'LT'
@@ -485,7 +732,11 @@ function Home() {
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
 											onClick={() =>
-												setBetField((f) => ({ ...f, place: 'CX' }))
+												setBetField((f) => ({
+													...f,
+													place: 'CX',
+													typeBet: 'x',
+												}))
 											}
 											className={`${
 												betField.place === 'CX'
@@ -496,7 +747,11 @@ function Home() {
 										</button>
 										<button
 											onClick={() =>
-												setBetField((f) => ({ ...f, place: 'LX' }))
+												setBetField((f) => ({
+													...f,
+													place: 'LX',
+													typeBet: 'x',
+												}))
 											}
 											className={`${
 												betField.place === 'LX'
@@ -516,7 +771,11 @@ function Home() {
 										className="outline-none border-0 w-full py-3 px-2 bg-transparent text-white"
 										placeholder="Nhập kết quả dự đoán"
 										onChange={(e) =>
-											setBetField((f) => ({ ...f, place: e.target.value }))
+											setBetField((f) => ({
+												...f,
+												place: e.target.value,
+												typeBet: 'g',
+											}))
 										}
 										value={betField.place ?? ''}
 									/>
@@ -542,12 +801,39 @@ function Home() {
 									)}
 								/>
 							</div>
+							<div
+								id="notice-bet-controll"
+								role="alert"
+								className={`alert shadow-lg hidden`}>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									className="stroke-info h-6 w-6 shrink-0">
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+								</svg>
+								<div>
+									<h3 className="font-bold">Thông báo!</h3>
+									<div className="text-xs">{notice}</div>
+								</div>
+							</div>
 							<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase z-10">
 								<button
 									onClick={placeBet}
+									disabled={isLoad}
 									className="btn capitalize max-w-xs w-full text-orange-500">
-									<GiPerspectiveDiceSixFacesTwo size={24} />
-									Cược Ngay
+									{!isLoad ? (
+										<>
+											<GiPerspectiveDiceSixFacesTwo size={24} />
+											Cược Ngay
+										</>
+									) : (
+										<span className="loading loading-bars loading-sm"></span>
+									)}
 								</button>
 							</div>
 						</div>
@@ -583,29 +869,38 @@ function Home() {
 							<div
 								id="chat_box_screen"
 								className="border border-orange-500 backdrop-blur-lg w-full h-[650px] overflow-auto scroll-smooth rounded-box p-2">
-								{Array.from({ length: 24 }).map((_, i) => {
+								{channel.map((m, i) => {
+									const { content, meta, uid } = m;
 									return (
 										<div
 											key={i + 'chat_box'}
 											className={`chat ${
-												i % 2 === 0 ? 'chat-start' : 'chat-end'
+												uid !== (user._id ?? '') ? 'chat-start' : 'chat-end'
 											}`}>
 											<div className="chat-image avatar">
 												<div className="w-10 rounded-box border border-orange-500">
 													<img
 														alt="Tailwind CSS chat bubble component"
 														src={`/image/avatar/${
-															i % 2 === 0 ? '2.webp' : '3.webp'
+															uid === 'local'
+																? '2.webp'
+																: (meta?.avatar ?? '3') + '.webp'
 														}`}
 													/>
 												</div>
 											</div>
 											<div className="chat-header">
-												{i % 2 === 0 ? 'Rin' : 'Anh'}
+												{uid === 'local'
+													? 'Hệ thống'
+													: uid === (user._id ?? '')
+													? 'Bạn'
+													: meta?.name}
 												{/* <time className="text-xs opacity-50">12:45</time> */}
 											</div>
 											<div className="chat-bubble">
-												You were the Chosen One!
+												{content?.split('\n').map((c) => (
+													<p key={c}>{c}</p>
+												))}
 											</div>
 											{/* <div className="chat-footer opacity-50">Delivered</div> */}
 										</div>
@@ -620,9 +915,13 @@ function Home() {
 								type="text"
 								placeholder="Type here"
 								className="input input-bordered w-full border-orange-500"
+								value={msg?.content ?? ''}
 								onChange={(e) => {
 									// TODO Need to Add Meta & UID User
-									setMsg((m) => ({ ...m, content: e.target.value }));
+									setMsg((m) => ({
+										...m,
+										content: e.target.value,
+									}));
 								}}
 							/>
 							<button
@@ -771,6 +1070,16 @@ function Home() {
 							<p>Nhiều Event Hấp Dẫn</p>
 						</div>
 					</div>
+				</div>
+			</Modal>
+
+			{/*Notice Chat Box*/}
+			<Modal
+				id="chat-box"
+				customClass="w-full max-w-xl">
+				<div className="flex flex-col gap-5">
+					<h1 className="text-xl">Chat Box - Thông Báo</h1>
+					{notice}
 				</div>
 			</Modal>
 		</div>

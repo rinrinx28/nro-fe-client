@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import Loading from '@/components/controller/Loading';
 import CircularMenu from '@/components/controller/circularMenu';
 import Clans from '@/components/controller/clans';
+import { SocketProvider } from '@/lib/server/socket';
 
 export const metadata: Metadata = {
 	title: 'Beta Nrogame.me',
@@ -55,13 +56,13 @@ export default function RootLayout({
 			<body
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
 				<Providers>
-					{/* <SocketProvider> */}
-					<Navbar />
-					<Suspense fallback={<Loading />}>{children}</Suspense>
-					<CircularMenu />
-					<Clans />
-					<Footer />
-					{/* </SocketProvider> */}
+					<SocketProvider>
+						<Navbar />
+						{children}
+						<CircularMenu />
+						<Clans />
+						<Footer />
+					</SocketProvider>
 				</Providers>
 			</body>
 		</html>

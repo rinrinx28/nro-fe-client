@@ -1,8 +1,45 @@
 'use client';
 
-import Link from 'next/link';
+import { useAppSelector } from '@/lib/redux/hook';
+import apiClient from '@/lib/server/apiClient';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { FaMinus } from 'react-icons/fa';
 
+interface ResigterField {
+	username?: string;
+	name?: string;
+	password?: string;
+	server?: string;
+}
 function Resigter() {
+	const user = useAppSelector((state) => state.user);
+	const [field, setField] = useState<ResigterField>({});
+	const [msg, setMsg] = useState<string>('');
+	const [isLoad, setLoad] = useState<boolean>(false);
+
+	const router = useRouter();
+
+	const showNotice = (message: string) => {
+		setLoad(false);
+		let div = document.getElementById('notice_resigter') as HTMLDialogElement;
+		if (div) {
+			div.show();
+			setMsg(message);
+		}
+		return;
+	};
+
+	useEffect(() => {
+		let autoClose = setTimeout(() => {
+			let div = document.getElementById('notice_resigter') as HTMLDialogElement;
+			if (div) {
+				div.close();
+			}
+		}, 5e3);
+		return () => clearTimeout(autoClose);
+	}, [msg]);
+
 	return (
 		<div className="min-h-screen w-full flex justify-center items-center p-2">
 			<div className="flex md:flex-row-reverse flex-col-reverse w-full lg:max-w-4xl bg-white rounded-box shadow-xl">
@@ -10,6 +47,22 @@ function Resigter() {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
+						setLoad(true);
+						if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
+						if (!field || !field.password || field.password?.length < 6)
+							return showNotice('Độ dài mật khẩu tối thiểu là 6 ký tự');
+						apiClient
+							.post('/auth/resigter', field)
+							.then((res) => {
+								setLoad(false);
+								router.push('/login');
+							})
+							.catch((err) => {
+								const {
+									data: { message },
+								} = err.response;
+								showNotice(message.message);
+							});
 					}}
 					className="flex flex-col gap-2 w-full justify-around py-4 px-2 text-orange-500">
 					<div className="flex flex-col gap-5 w-full">
@@ -29,6 +82,9 @@ function Resigter() {
 									type="text"
 									className="grow"
 									placeholder="Tên đăng nhập"
+									onChange={(e) =>
+										setField((f) => ({ ...f, username: e.target.value }))
+									}
 								/>
 							</div>
 							<div className="label hidden">
@@ -48,6 +104,9 @@ function Resigter() {
 									type="text"
 									className="grow"
 									placeholder="Tên hiển thị"
+									onChange={(e) =>
+										setField((f) => ({ ...f, name: e.target.value }))
+									}
 								/>
 							</div>
 							<div className="label hidden">
@@ -71,6 +130,9 @@ function Resigter() {
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu"
+									onChange={(e) =>
+										setField((f) => ({ ...f, password: e.target.value }))
+									}
 								/>
 							</div>
 							<div className="label hidden">
@@ -78,36 +140,49 @@ function Resigter() {
 							</div>
 						</label>
 						<label className="form-control w-full">
-							<select className="select select-bordered select-lg w-full bg-black">
+							<select
+								onChange={(e) =>
+									setField((f) => ({ ...f, server: e.target.value }))
+								}
+								className="select select-bordered select-lg w-full bg-black">
 								<option
 									disabled
 									selected>
 									Chọn Máy Chủ
 								</option>
-								{Array.from({ length: 11 }).map((_, i) => (
+								{Array.from({ length: 7 }).map((_, i) => (
 									<option
 										key={i + 'resigter_server'}
-										value={i}>
-										Máy Chủ {i}
+										value={i + 1}>
+										Máy Chủ {i + 1}
+									</option>
+								))}
+								<option value={'8-9-10'}>Máy Chủ 8-9-10</option>
+								{Array.from({ length: 1 }).map((_, i) => (
+									<option
+										key={i + 'resigter_server'}
+										value={i + 11}>
+										Máy Chủ {i + 11}
 									</option>
 								))}
 							</select>
 						</label>
+						<p
+							id="notice-resigter"
+							className="px-2 text-red-500 hidden">
+							{msg}
+						</p>
 					</div>
 					<div className="flex flex-col gap-2 w-full">
 						<button
 							type="submit"
 							className="btn btn-active text-white uppercase bg-orange-500">
-							Đăng Ký
+							{isLoad ? (
+								<span className="loading loading-bars loading-lg"></span>
+							) : (
+								'Đăng Ký'
+							)}
 						</button>
-						<p className="w-full text-center text-black">
-							Bạn đã có tài khoản? Xin vui lòng đăng nhập{' '}
-							<Link
-								href="/login"
-								className="text-orange-500 underline">
-								tại đây
-							</Link>
-						</p>
 					</div>
 				</form>
 				{/*  */}
@@ -117,6 +192,24 @@ function Resigter() {
 					}}
 					className="h-[600px] w-full bg-no-repeat bg-cover bg-center rounded-l-box md:inline-block hidden"></div>
 			</div>
+			{/* You can open the modal using document.getElementById('ID').showModal() method */}
+			<dialog
+				id="notice_resigter"
+				className="modal z-[1100]">
+				<div className="modal-box font-chakra-petch text-orange-500 p-2">
+					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold z-50">
+						<h1 className="text-lg">Thông Báo - Đăng Ký</h1>
+						<form method="dialog">
+							<button>
+								<FaMinus size={24} />
+							</button>
+						</form>
+					</div>
+					<div className="flex flex-col gap-2 p-2 w-full text-center">
+						{msg}
+					</div>
+				</div>
+			</dialog>
 		</div>
 	);
 }
