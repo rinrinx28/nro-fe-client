@@ -165,7 +165,7 @@ function History() {
 											</td>
 											<td>
 												{typeBet === 'cl'
-													? 'CL'
+													? 'Chẵn Lẻ'
 													: typeBet === 'g'
 													? 'Dự Đoán Số'
 													: 'Xiên'}
@@ -181,12 +181,20 @@ function History() {
 											<td>
 												<div
 													className={`badge ${
-														revice > 0
+														status === 1
+															? 'bg-yellow-500 text-black'
+															: revice > 0
 															? 'bg-green-500 text-black'
 															: 'bg-red-500 text-white'
 													} capitalize font-number-font font-bold`}>
-													{revice > 0 ? '+' : '-'}
-													{new Intl.NumberFormat('vi').format(revice)}
+													{status === 1 ? (
+														<>Đã Hoàn</>
+													) : (
+														<>
+															{revice > 0 ? '+' : '-'}
+															{new Intl.NumberFormat('vi').format(revice)}
+														</>
+													)}
 												</div>
 											</td>
 											<td>

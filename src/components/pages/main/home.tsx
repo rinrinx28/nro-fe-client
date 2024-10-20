@@ -228,7 +228,7 @@ function Home() {
 				let now = moment().unix();
 				let timeEnd = moment(gameBox?.timeEnd).unix();
 				let time = Math.floor(timeEnd - now);
-				if (time < 0) {
+				if (time < 0 && gameBox.server === '24') {
 					setCounter(null);
 				} else {
 					setCounter(time);
@@ -242,7 +242,7 @@ function Home() {
 
 	// Update realtime chat;
 	useEffect(() => {
-		if (server) {
+		if (server && messages && messages.length > 0) {
 			const targets = messages.filter(
 				(m) => m.server === server || m.server === 'all',
 			);
@@ -253,7 +253,6 @@ function Home() {
 					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
 				}
 				new_channel.push(msg);
-				console.log(msg);
 			}
 			if (new_channel.length > 0) {
 				setChannel(
@@ -291,7 +290,6 @@ function Home() {
 				{Array.from({ length: 7 }).map((_, k) => (
 					<button
 						key={`${k}-button`}
-						disabled
 						onClick={() => {
 							dispatch(setServer(`${k + 1}`));
 							autoScrollChatBox();
@@ -306,13 +304,12 @@ function Home() {
 					</button>
 				))}
 				<button
-					disabled
 					onClick={() => {
-						dispatch(setServer('8-9-10'));
+						dispatch(setServer('8'));
 						autoScrollChatBox();
 					}}
 					className={`font-bold flex flex-row p-3 rounded-box shadow-sm gap-2 text-nowrap items-center transition-colors ease-linear ${
-						server === '8-9-10'
+						server === '8'
 							? 'shadow-orange-500 bg-orange-500 text-white'
 							: 'shadow-current bg-base-200'
 					}`}>
@@ -320,7 +317,6 @@ function Home() {
 				</button>
 				{Array.from({ length: 3 }).map((_, k) => (
 					<button
-						disabled
 						key={`${k}-button`}
 						onClick={() => {
 							dispatch(setServer(`${k + 11}`));
@@ -462,7 +458,7 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Máy Chủ:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{server ?? (
+									{server.replace('8', '8-9-10') ?? (
 										<span className="loading loading-bars loading-sm"></span>
 									)}
 								</p>
@@ -560,8 +556,8 @@ function Home() {
 														<div
 															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
 																Number(`${number_result}`) < 5
-																	? 'bg-green-500'
-																	: 'bg-red-500'
+																	? 'bg-red-500'
+																	: 'bg-green-500'
 															}`}>
 															{Number(`${number_result}`) > 4 ? 'T' : 'X'}
 														</div>

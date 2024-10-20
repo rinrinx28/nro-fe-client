@@ -84,7 +84,7 @@ function Navbar() {
 							{user.name}
 						</div>
 						-
-						<div className="flex flex-row items-center gap-2">
+						<div className="flex flex-row items-center gap-2 font-bold">
 							<p className="font-number-font">
 								{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 							</p>

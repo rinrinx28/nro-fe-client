@@ -1,24 +1,28 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
+import { EConfig } from '@/lib/redux/storage/eshop/config';
+import { Bot } from '@/lib/redux/storage/eshop/bots';
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
 	const bots = useAppSelector((state) => state.bots);
 	const services = useAppSelector((state) => state.services);
+	const econfig = useAppSelector((state) => state.econfig);
 	const [field, setField] = useState<InputField>({
 		type: '1',
 		typeGold: 'gold',
-		server: user.server ?? '',
 	});
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
+	const [eshop, setEshop] = useState<EConfig>({});
+	const [botD, setBotD] = useState<Bot[]>([]);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
@@ -63,14 +67,14 @@ function Withdraw() {
 
 		// If valid, proceed with form submission logic
 		try {
-			const { typeGold, amount, playerName, server } = field;
+			const { typeGold, amount, playerName } = field;
 			const { data } = await apiClient.post(
 				'/service/create',
 				{
 					type: typeGold === 'gold' ? '1' : '0',
 					amount: Number(amount),
 					playerName,
-					server,
+					server: user.server,
 				},
 				{
 					headers: {
@@ -114,6 +118,18 @@ function Withdraw() {
 			showNoticeEShop(err.response.data.message.message);
 		}
 	};
+	// Auto Update Bot
+	useEffect(() => {
+		setBotD(bots);
+	}, [bots]);
+
+	// Update data ESHOP;
+	useEffect(() => {
+		const e_shop = econfig.find((e) => e.name === 'e_shop');
+		if (e_shop) {
+			setEshop(e_shop);
+		}
+	}, [econfig]);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.jpg')" }}
@@ -155,7 +171,7 @@ function Withdraw() {
 								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
-										selected={field.server === `${i + 1}`}
+										selected={user.server === `${i + 1}`}
 										key={i + 'withdraw'}
 										value={i + 1}>
 										Máy Chủ {i + 1}
@@ -163,7 +179,7 @@ function Withdraw() {
 								))}
 								<option
 									key={'8-9-10' + 'withdraw'}
-									selected={field.server === `8-9-10`}
+									selected={user.server === `8-9-10`}
 									value={'8-9-10'}>
 									Máy Chủ 8-9-10
 								</option>
@@ -171,7 +187,7 @@ function Withdraw() {
 								{Array.from({ length: 3 }).map((_, i) => (
 									<option
 										key={i + 'withdraw'}
-										selected={field.server === `${i + 11}`}
+										selected={user.server === `${i + 11}`}
 										value={i + 11}>
 										Máy Chủ {i + 11}
 									</option>
@@ -186,6 +202,7 @@ function Withdraw() {
 									setField((f) => ({
 										...f,
 										typeGold: e.target.value as TypeEShop,
+										amount: '0',
 									}));
 								}}>
 								<option value={'gold'}>Rút vàng</option>
@@ -235,6 +252,7 @@ function Withdraw() {
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<GrMoney />
 								<input
+									value={getNumbetFromString(field.amount ?? '')}
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
 										let value = getNumbetFromString(e.target.value);
@@ -307,6 +325,38 @@ function Withdraw() {
 									Tối đa một lần rút:{' '}
 									<span className="text-red-500">40 thỏi vàng /1 lần</span>
 								</p>
+								<p>
+									Mức nạp tối thiểu:{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.min_gold ?? 50e6,
+										)}{' '}
+										vàng
+									</span>{' '}
+									/{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.min_rgold ?? 5,
+										)}{' '}
+										thỏi vàng
+									</span>
+								</p>
+								<p>
+									Mức nạp tối đa:{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.max_gold ?? 600e6,
+										)}{' '}
+										vàng
+									</span>{' '}
+									/{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.max_rgold ?? 40,
+										)}{' '}
+										thỏi vàng
+									</span>
+								</p>
 							</div>
 						</div>
 						<div className="p-4 w-full">
@@ -339,11 +389,11 @@ function Withdraw() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{bots
+								{botD
 									.filter((b) =>
-										field.server === '8-9-10'
-											? field.server?.includes(b.server ?? '24')
-											: field.server === (b.server ?? '24'),
+										user.server === '8-9-10'
+											? user.server?.includes(b.server ?? '24')
+											: user.server === (b.server ?? '24'),
 									)
 									.filter(
 										(b) =>

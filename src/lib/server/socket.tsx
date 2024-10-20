@@ -159,6 +159,43 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 	}, [dispatch]);
 
+	// Auto update when got event from the Server
+	useEffect(() => {
+		const reLoadClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const reLoadUser = async () => {
+			let token = localStorage.getItem('token');
+			apiClient
+				.get('/auth/relogin', {
+					headers: {
+						Authorization: 'Bearer ' + token,
+					},
+				})
+				.then((res) => {
+					dispatch(updateUser({ isLogin: true, token: token, ...res.data }));
+				})
+				.catch((err) => {
+					localStorage.removeItem('token');
+				});
+		};
+		socket.on('clan.reload', (msg: string) => {
+			reLoadClan();
+		});
+		socket.on('user.reload', (msg: string) => {
+			reLoadUser();
+		});
+		return () => {
+			socket.off('clan.reload');
+			socket.off('user.reload');
+		};
+	}, []);
+
 	// Auto update use realtime;
 	useEffect(() => {
 		if (user.isLogin) {
@@ -187,7 +224,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				console.log(err.response.data.message.message);
 			}
 		};
-
 		const listBot = async () => {
 			try {
 				const { data } = await apiClient.get('/bot/list');

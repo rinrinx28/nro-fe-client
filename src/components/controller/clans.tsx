@@ -4,12 +4,12 @@ import '@/components/css/clans.css';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { Clan } from '@/lib/redux/storage/clan/clans';
 import { setInviteClan } from '@/lib/redux/storage/clan/invite';
-import { MsgClan, setMsgClans } from '@/lib/redux/storage/clan/msgClan';
+import { setMsgClans } from '@/lib/redux/storage/clan/msgClan';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import apiClient from '@/lib/server/apiClient';
 import { useSocket } from '@/lib/server/socket';
 import moment from 'moment';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	FaAddressBook,
 	FaMinus,
@@ -23,7 +23,7 @@ import { IoIosSend } from 'react-icons/io';
 import { IoLogOut } from 'react-icons/io5';
 import { MdChatBubble, MdDeleteSweep } from 'react-icons/md';
 
-export const openClansBox = (type?: string) => {
+export const openClansBox = () => {
 	let clan_box_o = document.getElementById(
 		'clan_box_screen',
 	) as HTMLDialogElement;
@@ -81,6 +81,11 @@ interface MemberClan {
 	money: number;
 	meta: Record<string, any>;
 }
+interface FieldCreateClan {
+	type?: string;
+	name?: string;
+	description?: string;
+}
 
 function Clans() {
 	// Redux
@@ -101,7 +106,7 @@ function Clans() {
 
 	// Auto Select My Clans
 	useEffect(() => {
-		if (user.isLogin && user.meta) {
+		if (user.isLogin && user.meta && user.meta.clanId) {
 			const { clanId = null } = user.meta;
 			if (clanId) {
 				setView('members');
@@ -159,7 +164,7 @@ function Clans() {
 				console.log(err.response.data.message.message);
 			}
 		};
-		if (user.isLogin && myClan) {
+		if (user.isLogin && myClan && myClan._id) {
 			if (myClan.ownerId === user?._id) {
 				listColleter(myClan._id ?? '');
 			}
@@ -225,7 +230,7 @@ function Clans() {
 			<div className="fixed bottom-4 left-4 z-[100]">
 				<button
 					onClick={() => {
-						openClansBox('o');
+						openClansBox();
 					}}
 					className="text-orange-500 p-2 size-16 rounded-full border border-orange-500 bg-black flex items-center justify-center">
 					<GiVikingLonghouse size={32} />
@@ -590,20 +595,24 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 
 	// Auto Update List Clan
 	useEffect(() => {
-		const targets = clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0));
-		let new_main_server = targets;
-		let new_channel: Clan[] = [];
-		for (const msg of new_main_server) {
-			if (new_channel.length >= 10) {
-				new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
+		if (clans && clans.length > 0) {
+			const targets = clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0));
+			let new_main_server = targets;
+			let new_channel: Clan[] = [];
+			for (const msg of new_main_server) {
+				if (new_channel.length >= 10) {
+					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
+				}
+				new_channel.push(msg);
+				console.log(msg);
 			}
-			new_channel.push(msg);
-			console.log(msg);
-		}
-		if (new_channel.length > 0) {
-			setChannel(new_channel.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)));
-		} else {
-			setChannel([]);
+			if (new_channel.length > 0) {
+				setChannel(
+					new_channel.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)),
+				);
+			} else {
+				setChannel([]);
+			}
 		}
 	}, [clans]);
 
@@ -748,10 +757,8 @@ const ClanColleter = (props: { showNoticeClan: any }) => {
 	const { showNoticeClan } = props;
 	const invites = useAppSelector((state) => state.invites);
 	const user = useAppSelector((state) => state.user);
-	const [isLoad, setLoad] = useState<boolean>(false);
 
 	const addMember = async (inviteId: string) => {
-		setLoad((e) => !e);
 		try {
 			if (!user.isLogin) return;
 			const { data } = await apiClient.post(
@@ -768,12 +775,9 @@ const ClanColleter = (props: { showNoticeClan: any }) => {
 			showNoticeClan(data.message);
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
-		} finally {
-			setLoad((e) => !e);
 		}
 	};
 	const removeMember = async (inviteId: string) => {
-		setLoad((e) => !e);
 		try {
 			if (!user.isLogin) return;
 			const { data } = await apiClient.post(
@@ -790,8 +794,6 @@ const ClanColleter = (props: { showNoticeClan: any }) => {
 			showNoticeClan(data.message);
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
-		} finally {
-			setLoad((e) => !e);
 		}
 	};
 	return (
@@ -841,12 +843,6 @@ const ClanColleter = (props: { showNoticeClan: any }) => {
 		</div>
 	);
 };
-
-interface FieldCreateClan {
-	type?: string;
-	name?: string;
-	description?: string;
-}
 const ClanCreateQ = ({ setView }: { setView: any }) => {
 	const user = useAppSelector((state) => state.user);
 	const [field, setField] = useState<FieldCreateClan>({});

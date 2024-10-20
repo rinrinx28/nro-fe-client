@@ -1,21 +1,26 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
+import { Bot } from '@/lib/redux/storage/eshop/bots';
+import { EConfig } from '@/lib/redux/storage/eshop/config';
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
 	const bots = useAppSelector((state) => state.bots);
+	const econfig = useAppSelector((state) => state.econfig);
 	const services = useAppSelector((state) => state.services);
+
+	const [eshop, setEshop] = useState<EConfig>({});
+	const [botD, setBotD] = useState<Bot[]>([]);
 	const [field, setField] = useState<InputField>({
 		type: '0',
 		typeGold: 'gold',
-		server: user.server ?? '',
 	});
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
@@ -30,6 +35,14 @@ function Deposit() {
 		const amountElement = e.currentTarget.elements.namedItem(
 			'amount',
 		) as HTMLInputElement;
+
+		// Config with ESHOP;
+		const {
+			min_gold = 50e6,
+			min_rgold = 5,
+			max_gold = 600e6,
+			max_rgold = 40,
+		} = eshop.option ?? {};
 
 		// Check if the playerName is empty
 		if (!field.playerName || field.playerName.trim().length === 0) {
@@ -53,6 +66,36 @@ function Deposit() {
 			amountElement.setCustomValidity(''); // Clear error if valid
 		}
 
+		if (field.typeGold === 'gold') {
+			if (Number(field.amount) < min_gold)
+				amountElement.setCustomValidity(
+					`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
+						min_gold,
+					)} vàng`,
+				);
+			if (Number(field.amount) > max_gold)
+				amountElement.setCustomValidity(
+					`Bạn không thể nạp lớn hơn ${new Intl.NumberFormat('vi').format(
+						max_gold,
+					)} vàng`,
+				);
+		}
+
+		if (field.typeGold === 'rgold') {
+			if (Number(field.amount) < min_rgold)
+				amountElement.setCustomValidity(
+					`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
+						min_rgold,
+					)} thỏi vàng`,
+				);
+			if (Number(field.amount) > max_rgold)
+				amountElement.setCustomValidity(
+					`Bạn không thể nạp lớn hơn ${new Intl.NumberFormat('vi').format(
+						max_rgold,
+					)} thỏi vàng`,
+				);
+		}
+
 		// Trigger validation
 		if (
 			!playerNameElement.reportValidity() ||
@@ -63,14 +106,14 @@ function Deposit() {
 
 		// If valid, proceed with form submission logic
 		try {
-			const { amount, playerName, server, typeGold } = field;
+			const { amount, playerName, typeGold } = field;
 			const { data } = await apiClient.post(
 				'/service/create',
 				{
 					type: typeGold === 'gold' ? '3' : '2',
 					amount: Number(amount),
 					playerName,
-					server,
+					server: user.server,
 				},
 				{
 					headers: {
@@ -114,6 +157,19 @@ function Deposit() {
 			showNoticeEShop(err.response.data.message.message);
 		}
 	};
+
+	// Auto Update Bot
+	useEffect(() => {
+		setBotD(bots);
+	}, [bots]);
+
+	// Update data ESHOP;
+	useEffect(() => {
+		const e_shop = econfig.find((e) => e.name === 'e_shop');
+		if (e_shop) {
+			setEshop(e_shop);
+		}
+	}, [econfig]);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_deposit.jpg')" }}
@@ -156,7 +212,7 @@ function Deposit() {
 								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
-										selected={field.server === `${i + 1}`}
+										selected={user.server === `${i + 1}`}
 										key={i + 'resigter_server'}
 										value={i + 1}>
 										Máy Chủ {i + 1}
@@ -164,7 +220,7 @@ function Deposit() {
 								))}
 								<option
 									key={'8-9-10' + 'resigter_server'}
-									selected={field.server === `8-9-10`}
+									selected={user.server === `8-9-10`}
 									value={'8-9-10'}>
 									Máy Chủ 8-9-10
 								</option>
@@ -172,7 +228,7 @@ function Deposit() {
 								{Array.from({ length: 3 }).map((_, i) => (
 									<option
 										key={i + 'resigter_server'}
-										selected={field.server === `${i + 11}`}
+										selected={user.server === `${i + 11}`}
 										value={i + 11}>
 										Máy Chủ {i + 11}
 									</option>
@@ -187,6 +243,7 @@ function Deposit() {
 									setField((f) => ({
 										...f,
 										typeGold: e.target.value as TypeEShop,
+										amount: '0',
 									}));
 								}}>
 								<option value={'gold'}>Giao dịch vàng</option>
@@ -236,6 +293,7 @@ function Deposit() {
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<GrMoney />
 								<input
+									value={getNumbetFromString(field.amount ?? '')}
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
 										let value = getNumbetFromString(e.target.value);
@@ -301,6 +359,38 @@ function Deposit() {
 									<span className="text-red-500">1 thỏi vàng</span> là{' '}
 									<span className="text-red-500">37tr vàng</span>
 								</p>
+								<p>
+									Mức nạp tối thiểu:{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.min_gold ?? 50e6,
+										)}{' '}
+										vàng
+									</span>{' '}
+									/{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.min_rgold ?? 5,
+										)}{' '}
+										thỏi vàng
+									</span>
+								</p>
+								<p>
+									Mức nạp tối đa:{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.max_gold ?? 600e6,
+										)}{' '}
+										vàng
+									</span>{' '}
+									/{' '}
+									<span className="text-red-500">
+										{new Intl.NumberFormat('vi').format(
+											eshop?.option?.max_rgold ?? 40,
+										)}{' '}
+										thỏi vàng
+									</span>
+								</p>
 							</div>
 						</div>
 						<div className="p-4 w-full">
@@ -333,11 +423,11 @@ function Deposit() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{bots
+								{botD
 									.filter((b) =>
-										field.server === '8-9-10'
-											? field.server?.includes(b.server ?? '')
-											: field.server === (b.server ?? ''),
+										user.server === '8-9-10'
+											? user.server.includes(b.server ?? '')
+											: user.server === (b.server ?? ''),
 									)
 									.filter(
 										(b) =>

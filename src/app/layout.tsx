@@ -58,10 +58,12 @@ export default function RootLayout({
 				<Providers>
 					<SocketProvider>
 						<Navbar />
-						{children}
-						<CircularMenu />
-						<Clans />
-						<Footer />
+						<Suspense fallback={<Loading />}>
+							{children}
+							<CircularMenu />
+							<Clans />
+							<Footer />
+						</Suspense>
 					</SocketProvider>
 				</Providers>
 			</body>

@@ -1,5 +1,4 @@
 'use client';
-import { getNumbetFromString } from '@/components/pages/main/home';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { Service, setService } from '@/lib/redux/storage/eshop/service';
 import { setServer } from '@/lib/redux/storage/minigame/server';
@@ -7,9 +6,8 @@ import { UserActive } from '@/lib/redux/storage/user/userActive';
 import { setUserBet, UserBet } from '@/lib/redux/storage/user/userBet';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
-import { pages } from 'next/dist/build/templates/app-page';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt, FaMinus, FaRegUser, FaTable } from 'react-icons/fa';
 import { GiDragonShield, GiSeaDragon } from 'react-icons/gi';
@@ -709,15 +707,13 @@ function HistoryService() {
 							<option
 								key={`${k}-button`}
 								value={s}>
-								<p>
-									{s === '0'
-										? 'Rút thỏi vàng'
-										: s === '1'
-										? 'Rút vàng'
-										: s === '2'
-										? 'Nạp thỏi vàng'
-										: 'Nạp vàng'}
-								</p>
+								{s === '0'
+									? 'Rút thỏi vàng'
+									: s === '1'
+									? 'Rút vàng'
+									: s === '2'
+									? 'Nạp thỏi vàng'
+									: 'Nạp vàng'}
 							</option>
 						))}
 					</select>
