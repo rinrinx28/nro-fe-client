@@ -27,6 +27,10 @@ export default function StoreProvider({
 	storeRef.current.dispatch(setServer(server));
 
 	useEffect(() => {
+		window.scrollTo(0, 0); // Scroll to top when the page reloads
+	}, []); // Empty dependency array means it runs once when the component mounts
+
+	useEffect(() => {
 		const token = localStorage.getItem('token');
 		// relogin
 		if (token && storeRef) {

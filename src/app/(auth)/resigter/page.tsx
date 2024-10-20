@@ -31,6 +31,24 @@ function Resigter() {
 		return;
 	};
 
+	const resigter = async () => {
+		try {
+			setLoad(true);
+			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
+			if (!field || !field.password || field.password?.length < 6)
+				return showNotice('Độ dài mật khẩu tối thiểu là 6 ký tự');
+			await apiClient.post('/auth/resigter', field);
+			router.push('/login');
+		} catch (err: any) {
+			const {
+				data: { message },
+			} = err.response;
+			showNotice(message.message);
+		} finally {
+			setLoad(false);
+		}
+	};
+
 	useEffect(() => {
 		let autoClose = setTimeout(() => {
 			let div = document.getElementById('notice_resigter') as HTMLDialogElement;
@@ -48,22 +66,7 @@ function Resigter() {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						setLoad(true);
-						if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
-						if (!field || !field.password || field.password?.length < 6)
-							return showNotice('Độ dài mật khẩu tối thiểu là 6 ký tự');
-						apiClient
-							.post('/auth/resigter', field)
-							.then((res) => {
-								setLoad(false);
-								router.push('/login');
-							})
-							.catch((err) => {
-								const {
-									data: { message },
-								} = err.response;
-								showNotice(message.message);
-							});
+						resigter();
 					}}
 					className="flex flex-col gap-2 w-full justify-around py-4 px-2 text-orange-500">
 					<div className="flex flex-col gap-5 w-full">
@@ -185,8 +188,9 @@ function Resigter() {
 									</option>
 								))}
 								<option value={'8'}>Máy Chủ 8-9-10</option>
-								{Array.from({ length: 1 }).map((_, i) => (
+								{Array.from({ length: 3 }).map((_, i) => (
 									<option
+										disabled
 										key={i + 'resigter_server'}
 										value={i + 11}>
 										Máy Chủ {i + 11}

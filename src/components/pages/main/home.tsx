@@ -1027,7 +1027,7 @@ function Home() {
 							<p className="text-wrap">
 								Nhận ngay{' '}
 								<span className="text-red-500 font-bold">
-									{new Intl.NumberFormat('vi').format(1e6)} vàng
+									{new Intl.NumberFormat('vi').format(5e6)} vàng
 								</span>{' '}
 								khi tạo tài khoản trên web
 							</p>
@@ -1041,7 +1041,7 @@ function Home() {
 								src="/image/gif/dragon_hot.webm"
 								aria-label="Dragon Hot"
 								style={{ width: '52px' }}></video> */}
-							<p>Tặng thỏi vàng miễn phí mỗi ngày</p>
+							<p>Tặng vàng miễn phí mỗi ngày</p>
 						</div>
 						<div className="flex flex-row gap-2 items-center text-lg">
 							{/* <video

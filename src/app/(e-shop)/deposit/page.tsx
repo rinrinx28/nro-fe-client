@@ -3,18 +3,20 @@ import { getNumbetFromString } from '@/components/pages/main/home';
 import { useEffect, useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
-import { useAppSelector } from '@/lib/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import { Bot } from '@/lib/redux/storage/eshop/bots';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
+import { setService } from '@/lib/redux/storage/eshop/service';
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
 	const bots = useAppSelector((state) => state.bots);
 	const econfig = useAppSelector((state) => state.econfig);
 	const services = useAppSelector((state) => state.services);
+	const dispatch = useAppDispatch();
 
 	const [eshop, setEshop] = useState<EConfig>({});
 	const [botD, setBotD] = useState<Bot[]>([]);
@@ -37,12 +39,7 @@ function Deposit() {
 		) as HTMLInputElement;
 
 		// Config with ESHOP;
-		const {
-			min_gold = 50e6,
-			min_rgold = 5,
-			max_gold = 600e6,
-			max_rgold = 40,
-		} = eshop.option ?? {};
+		const { min_gold = 50e6, min_rgold = 5 } = eshop.option ?? {};
 
 		// Check if the playerName is empty
 		if (!field.playerName || field.playerName.trim().length === 0) {
@@ -73,12 +70,6 @@ function Deposit() {
 						min_gold,
 					)} vàng`,
 				);
-			if (Number(field.amount) > max_gold)
-				amountElement.setCustomValidity(
-					`Bạn không thể nạp lớn hơn ${new Intl.NumberFormat('vi').format(
-						max_gold,
-					)} vàng`,
-				);
 		}
 
 		if (field.typeGold === 'rgold') {
@@ -86,12 +77,6 @@ function Deposit() {
 				amountElement.setCustomValidity(
 					`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
 						min_rgold,
-					)} thỏi vàng`,
-				);
-			if (Number(field.amount) > max_rgold)
-				amountElement.setCustomValidity(
-					`Bạn không thể nạp lớn hơn ${new Intl.NumberFormat('vi').format(
-						max_rgold,
 					)} thỏi vàng`,
 				);
 		}
@@ -124,9 +109,9 @@ function Deposit() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
-		} finally {
-			setLoad((e) => !e);
 		}
+
+		setLoad((e) => !e);
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -170,6 +155,27 @@ function Deposit() {
 			setEshop(e_shop);
 		}
 	}, [econfig]);
+
+	useEffect(() => {
+		const getServices = async () => {
+			try {
+				const res = await apiClient.get(`/service/history`, {
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				});
+				const { data, page, totalItems, totalPages } = res.data;
+				for (const service of data) {
+					dispatch(setService(service));
+				}
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		if (user.isLogin) {
+			getServices();
+		}
+	}, [user]);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_deposit.jpg')" }}
@@ -378,17 +384,11 @@ function Deposit() {
 								<p>
 									Mức nạp tối đa:{' '}
 									<span className="text-red-500">
-										{new Intl.NumberFormat('vi').format(
-											eshop?.option?.max_gold ?? 600e6,
-										)}{' '}
-										vàng
+										{new Intl.NumberFormat('vi').format(9e8)} vàng
 									</span>{' '}
 									/{' '}
 									<span className="text-red-500">
-										{new Intl.NumberFormat('vi').format(
-											eshop?.option?.max_rgold ?? 40,
-										)}{' '}
-										thỏi vàng
+										{new Intl.NumberFormat('vi').format(999)} thỏi vàng
 									</span>
 								</p>
 							</div>

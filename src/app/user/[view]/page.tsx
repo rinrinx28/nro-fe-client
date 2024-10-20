@@ -7,7 +7,7 @@ import { setUserBet, UserBet } from '@/lib/redux/storage/user/userBet';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaExchangeAlt, FaMinus, FaRegUser, FaTable } from 'react-icons/fa';
 import { GiDragonShield, GiSeaDragon } from 'react-icons/gi';
@@ -28,10 +28,18 @@ interface FieldPage {
 	totalPages: number;
 	totalItems?: number;
 }
+interface FieldChangPwd {
+	pwd_n?: string;
+	pwd_c?: string;
+}
 
 function UserContext() {
 	const user = useAppSelector((state) => state.user);
 	const params = useParams<{ view: PageView }>();
+	const [msg, setMsg] = useState<string>('');
+	const [fieldChangePwd, setFieldChangePwd] = useState<FieldChangPwd>({});
+
+	const router = useRouter();
 
 	const showChangePwd = () => {
 		let dialog = document.getElementById('change_pwd_q') as HTMLDialogElement;
@@ -39,10 +47,45 @@ function UserContext() {
 			dialog.show();
 		}
 	};
+
+	const closeChangePwd = () => {
+		let dialog = document.getElementById('change_pwd_q') as HTMLDialogElement;
+		if (dialog) {
+			dialog.close();
+		}
+	};
+
+	const showNotice = (message: string) => {
+		let dialog = document.getElementById('profile_notice') as HTMLDialogElement;
+		if (dialog) {
+			dialog.show();
+			setMsg(message);
+		}
+	};
+
+	const changePwd = async () => {
+		try {
+			if (!user.isLogin) return showNotice('Bạn chưa đăng nhập');
+			const { data } = await apiClient.post(
+				'/auth/change/pwd',
+				{ ...fieldChangePwd },
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNotice(data.message);
+			closeChangePwd();
+			router.push('/user/profile');
+		} catch (err: any) {
+			showNotice(err.response.data.message.message);
+		}
+	};
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_user.jpg')" }}
-			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8 select-none">
+			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8">
 			<div className="flex flex-row w-full gap-2 max-w-7xl h-full">
 				{/* Navigate User */}
 				<div className="lg:flex hidden flex-col bg-white/30 backdrop-blur-lg rounded-box w-fit text-nowrap py-4 px-8 gap-5 text-black">
@@ -120,6 +163,7 @@ function UserContext() {
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
+							changePwd();
 						}}
 						className="flex flex-col gap-2 p-4">
 						<label className="form-control w-full">
@@ -139,6 +183,10 @@ function UserContext() {
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu cũ"
+									onChange={(e) =>
+										setFieldChangePwd((f) => ({ ...f, pwd_c: e.target.value }))
+									}
+									required
 								/>
 							</div>
 						</label>
@@ -159,6 +207,10 @@ function UserContext() {
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu mới"
+									onChange={(e) =>
+										setFieldChangePwd((f) => ({ ...f, pwd_n: e.target.value }))
+									}
+									required
 								/>
 							</div>
 						</label>
@@ -168,6 +220,23 @@ function UserContext() {
 							Đổi Mật Khẩu
 						</button>
 					</form>
+				</div>
+			</dialog>
+			<dialog
+				id="profile_notice"
+				className="modal z-[1100]">
+				<div className="modal-box font-chakra-petch text-orange-500 p-2">
+					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
+						<h1 className="text-lg">Thông Báo - Bang Hội</h1>
+						<form method="dialog">
+							<button>
+								<FaMinus size={24} />
+							</button>
+						</form>
+					</div>
+					<div className="flex flex-col gap-2 text-center">
+						<p className="">{msg}</p>
+					</div>
 				</div>
 			</dialog>
 		</div>
@@ -1245,11 +1314,13 @@ function HistoryActivity() {
 								m_current = 0,
 								m_new = 0,
 							} = ac.active ?? {};
+							const name_res =
+								KeyConfig.find((k) => k.key === name)?.name ?? name;
 							return (
 								<tr key={i + 'history_activity'}>
 									<td>1</td>
 									<td>{user.name}</td>
-									<td>{name}</td>
+									<td>{name_res}</td>
 									<td>
 										<div className="font-number-font badge badge-outline bg-red-500">
 											{new Intl.NumberFormat('vi').format(m_current)}
@@ -1335,3 +1406,22 @@ function TableMission() {
 }
 
 export default UserContext;
+
+const KeyConfig = [
+	{ key: 'w_gold', name: 'Rút vàng' },
+	{ key: 'cancel_w_gold', name: 'Hủy rút vàng' },
+	{ key: 'd_gold', name: 'Nạp vàng' },
+	{ key: 'cancel_d_gold', name: 'Hủy nạp vàng' },
+	{ key: 'd_rgold', name: 'Nạp thỏi vàng' },
+	{ key: 'cancel_d_rgold', name: 'Hủy nạp thỏi vàng' },
+	{ key: 'w_rgold', name: 'Rút thỏi vàng' },
+	{ key: 'cancel_w_rgold', name: 'Hủy rút thỏi vàng' },
+	{ key: 'winer_bet', name: 'Thắng cược' },
+	{ key: 'place_bet', name: 'Cược' },
+	{ key: 'cancel_bet', name: 'Hủy Cược' },
+	{ key: 'top_clan', name: 'TOP Clan' },
+	{ key: 'top_day', name: 'TOP Day' },
+	{ key: 'login', name: 'Đăng nhập' },
+	{ key: 'resigter', name: 'Đăng ký' },
+	{ key: 'change_pwd', name: 'Đổi mật khẩu' },
+];

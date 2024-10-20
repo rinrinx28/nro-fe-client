@@ -108,7 +108,7 @@ function History() {
 				<div className="overflow-x-auto max-h-[600px]">
 					<table className="table table-zebra font-chakra-petch">
 						{/* head */}
-						<thead>
+						<thead className="text-center">
 							<tr>
 								<th>Máy Chủ</th>
 								<th>Nhân Vật</th>
@@ -121,7 +121,7 @@ function History() {
 								<th></th>
 							</tr>
 						</thead>
-						<tbody className="text-start text-lg">
+						<tbody className="text-center text-lg">
 							{/* row 1 */}
 							{data
 								.sort(
@@ -142,6 +142,7 @@ function History() {
 										isEnd,
 									} = bet;
 									const { name = 'rno', avatar = null } = meta;
+									const res = show_res(place ?? '');
 									return (
 										<tr key={i + 'row_history_bet_server'}>
 											<td>{server}</td>
@@ -170,7 +171,7 @@ function History() {
 													? 'Dự Đoán Số'
 													: 'Xiên'}
 											</td>
-											<td>{place}</td>
+											<td>{res}</td>
 											<td>
 												{!isEnd ? (
 													<span className="loading loading-dots loading-sm"></span>
@@ -302,5 +303,33 @@ function History() {
 		</div>
 	);
 }
+
+const show_res = (res: string) => {
+	if (res === 'C') {
+		return 'Chẵn';
+	}
+	if (res === 'L') {
+		return 'Lẻ';
+	}
+	if (res === 'T') {
+		return 'Tài';
+	}
+	if (res === 'X') {
+		return 'Xỉu';
+	}
+	if (res === 'CT') {
+		return 'Chẵn Tài';
+	}
+	if (res === 'CX') {
+		return 'Chẵn Xỉu';
+	}
+	if (res === 'LT') {
+		return 'Lẻ Tài';
+	}
+	if (res === 'LX') {
+		return 'Lẻ Xỉu';
+	}
+	return;
+};
 
 export default History;

@@ -3,18 +3,21 @@ import { getNumbetFromString } from '@/components/pages/main/home';
 import { useEffect, useState } from 'react';
 import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
-import { useAppSelector } from '@/lib/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import { Bot } from '@/lib/redux/storage/eshop/bots';
+import { setService } from '@/lib/redux/storage/eshop/service';
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
 	const bots = useAppSelector((state) => state.bots);
 	const services = useAppSelector((state) => state.services);
 	const econfig = useAppSelector((state) => state.econfig);
+	const dispatch = useAppDispatch();
+
 	const [field, setField] = useState<InputField>({
 		type: '1',
 		typeGold: 'gold',
@@ -27,6 +30,13 @@ function Withdraw() {
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
 		setLoad((e) => !e);
+		// Config with ESHOP;
+		const {
+			min_gold = 50e6,
+			min_rgold = 5,
+			max_gold = 600e6,
+			max_rgold = 40,
+		} = eshop.option ?? {};
 
 		const playerNameElement = e.currentTarget.elements.namedItem(
 			'playerName',
@@ -65,6 +75,36 @@ function Withdraw() {
 			return; // Stop submission if input is invalid
 		}
 
+		if (field.typeGold === 'gold') {
+			if (Number(field.amount) < min_gold)
+				amountElement.setCustomValidity(
+					`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
+						min_gold,
+					)} vàng`,
+				);
+			if (Number(field.amount) > max_gold)
+				amountElement.setCustomValidity(
+					`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
+						max_gold,
+					)} vàng`,
+				);
+		}
+
+		if (field.typeGold === 'rgold') {
+			if (Number(field.amount) < min_rgold)
+				amountElement.setCustomValidity(
+					`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
+						min_rgold,
+					)} thỏi vàng`,
+				);
+			if (Number(field.amount) > max_rgold)
+				amountElement.setCustomValidity(
+					`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
+						max_rgold,
+					)} thỏi vàng`,
+				);
+		}
+
 		// If valid, proceed with form submission logic
 		try {
 			const { typeGold, amount, playerName } = field;
@@ -85,9 +125,8 @@ function Withdraw() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
-		} finally {
-			setLoad((e) => !e);
 		}
+		setLoad((e) => !e);
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -130,6 +169,27 @@ function Withdraw() {
 			setEshop(e_shop);
 		}
 	}, [econfig]);
+
+	useEffect(() => {
+		const getServices = async () => {
+			try {
+				const res = await apiClient.get(`/service/history`, {
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				});
+				const { data, page, totalItems, totalPages } = res.data;
+				for (const service of data) {
+					dispatch(setService(service));
+				}
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		if (user.isLogin) {
+			getServices();
+		}
+	}, [user]);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.jpg')" }}
@@ -331,26 +391,6 @@ function Withdraw() {
 								</p>
 								<p>
 									Tối đa một lần rút:{' '}
-									<span className="text-red-500">40 thỏi vàng /1 lần</span>
-								</p>
-								<p>
-									Mức nạp tối thiểu:{' '}
-									<span className="text-red-500">
-										{new Intl.NumberFormat('vi').format(
-											eshop?.option?.min_gold ?? 50e6,
-										)}{' '}
-										vàng
-									</span>{' '}
-									/{' '}
-									<span className="text-red-500">
-										{new Intl.NumberFormat('vi').format(
-											eshop?.option?.min_rgold ?? 5,
-										)}{' '}
-										thỏi vàng
-									</span>
-								</p>
-								<p>
-									Mức nạp tối đa:{' '}
 									<span className="text-red-500">
 										{new Intl.NumberFormat('vi').format(
 											eshop?.option?.max_gold ?? 600e6,

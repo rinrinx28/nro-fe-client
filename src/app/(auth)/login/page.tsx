@@ -31,6 +31,29 @@ function Login() {
 		return;
 	};
 
+	const login = async () => {
+		try {
+			setLoad(true);
+			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
+			const { data } = await apiClient.post('/auth/login', field);
+			const { access_token } = data;
+			localStorage.setItem('token', access_token);
+			dispatch(
+				updateUser({
+					...data.user,
+					isLogin: true,
+					token: access_token,
+				}),
+			);
+			router.push('/');
+		} catch (err: any) {
+			const { message } = err.response.data;
+			showNotice(message.message);
+		} finally {
+			setLoad(false);
+		}
+	};
+
 	useEffect(() => {
 		let autoClose = setTimeout(() => {
 			let div = document.getElementById('notice_login') as HTMLDialogElement;
@@ -47,30 +70,7 @@ function Login() {
 				<form
 					onSubmit={(e) => {
 						e.preventDefault();
-						if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
-						setLoad(true);
-						apiClient
-							.post('/auth/login', field)
-							.then((res) => {
-								const { access_token } = res.data;
-								setLoad(false);
-								localStorage.setItem('token', access_token);
-								dispatch(
-									updateUser({
-										...res.data.user,
-										isLogin: true,
-										token: access_token,
-									}),
-								);
-								router.push('/user/profile');
-							})
-							.catch((err) => {
-								const {
-									data: { message },
-								} = err.response;
-								showNotice(message.message);
-								setLoad(false);
-							});
+						login();
 					}}
 					className="flex flex-col gap-2 w-full justify-around py-4 px-2">
 					<div className="flex flex-col gap-5 w-full">
