@@ -313,8 +313,16 @@ function Withdraw() {
 						</label>
 						<div className="p-2">
 							<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-								<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
-								<p>Đã sử dụng: 0</p>
+								<p>
+									Hạn mức hôm nay (0h00p sẽ reset):{' '}
+									{new Intl.NumberFormat('vi').format(
+										user?.meta?.limitTrade ?? 0,
+									)}
+								</p>
+								<p>
+									Đã sử dụng:{' '}
+									{new Intl.NumberFormat('vi').format(user?.meta?.trade ?? 0)}
+								</p>
 								<p>Vui lòng chơi để nâng thêm hạn mức !</p>
 								<p>
 									Hệ thống thỏi vàng tự động quy đổi{' '}

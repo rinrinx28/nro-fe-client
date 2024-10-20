@@ -11,6 +11,7 @@ interface ResigterField {
 	name?: string;
 	password?: string;
 	server?: string;
+	email?: string;
 }
 function Resigter() {
 	const user = useAppSelector((state) => state.user);
@@ -104,8 +105,32 @@ function Resigter() {
 									type="text"
 									className="grow"
 									placeholder="Tên hiển thị"
+									required
 									onChange={(e) =>
 										setField((f) => ({ ...f, name: e.target.value }))
+									}
+								/>
+							</div>
+							<div className="label hidden">
+								<span className="label-text-alt">Bottom Left label</span>
+							</div>
+						</label>
+						<label className="form-control w-full">
+							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									className="h-4 w-4 opacity-70">
+									<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+								</svg>
+								<input
+									type="email"
+									className="grow"
+									placeholder="Nhập Email"
+									required
+									onChange={(e) =>
+										setField((f) => ({ ...f, email: e.target.value }))
 									}
 								/>
 							</div>
@@ -130,6 +155,7 @@ function Resigter() {
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu"
+									required
 									onChange={(e) =>
 										setField((f) => ({ ...f, password: e.target.value }))
 									}
@@ -141,6 +167,7 @@ function Resigter() {
 						</label>
 						<label className="form-control w-full">
 							<select
+								required
 								onChange={(e) =>
 									setField((f) => ({ ...f, server: e.target.value }))
 								}
@@ -157,7 +184,7 @@ function Resigter() {
 										Máy Chủ {i + 1}
 									</option>
 								))}
-								<option value={'8-9-10'}>Máy Chủ 8-9-10</option>
+								<option value={'8'}>Máy Chủ 8-9-10</option>
 								{Array.from({ length: 1 }).map((_, i) => (
 									<option
 										key={i + 'resigter_server'}
