@@ -32,7 +32,7 @@ const urlConfig = {
 	sv: 'https://api.nrogame.me',
 };
 
-const socket: Socket = io(urlConfig.dev, {
+const socket: Socket = io(urlConfig.sv, {
 	path: '/socket.io/',
 	transports: ['websocket'],
 	secure: true,
