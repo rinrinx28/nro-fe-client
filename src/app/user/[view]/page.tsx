@@ -681,12 +681,12 @@ function HistoryService() {
 					<tbody className="font-bold text-base">
 						{/* row 1 */}
 						{data
-							.filter((s) => s.type === typeS)
-							.sort(
+							?.filter((s) => s.type === typeS)
+							?.sort(
 								(a, b) =>
-									moment(b.createdAt).unix() - moment(a.createdAt).unix(),
+									moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
 							)
-							.map((service, i) => {
+							?.map((service, i) => {
 								const {
 									server,
 									playerName,
@@ -1027,11 +1027,11 @@ function HistoryBet() {
 					<tbody className="font-bold">
 						{/* row 1 */}
 						{data
-							.sort(
+							?.sort(
 								(a, b) =>
-									moment(b.createdAt).unix() - moment(a.createdAt).unix(),
+									moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
 							)
-							.map((bet, i) => {
+							?.map((bet, i) => {
 								const {
 									amount = 0,
 									status,

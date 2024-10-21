@@ -484,13 +484,13 @@ function Withdraw() {
 						<tbody className="font-bold text-base">
 							{/* row 1 */}
 							{services
-								.filter((s) => s.uid === user._id)
-								.filter((s) => ['0', '1'].includes(s.type ?? ''))
-								.sort(
+								?.filter((s) => s.uid === user._id)
+								?.filter((s) => s.type === '0' || s.type === '1')
+								?.sort(
 									(a, b) =>
 										moment(b.updatedAt).unix() - moment(a.updatedAt).unix(),
 								)
-								.map((s, i) => {
+								?.map((s, i) => {
 									const {
 										server,
 										type,

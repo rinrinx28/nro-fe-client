@@ -470,13 +470,13 @@ function Deposit() {
 						<tbody className="font-bold text-base">
 							{/* row 1 */}
 							{services
-								.filter((s) => s.uid === user._id)
-								.filter((s) => ['2', '3'].includes(s.type ?? ''))
-								.sort(
+								?.filter((s) => s.uid === user._id)
+								?.filter((s) => s.type === '2' || s.type === '3')
+								?.sort(
 									(a, b) =>
 										moment(b.updatedAt).unix() - moment(a.updatedAt).unix(),
 								)
-								.map((s, i) => {
+								?.map((s, i) => {
 									const {
 										server,
 										type,

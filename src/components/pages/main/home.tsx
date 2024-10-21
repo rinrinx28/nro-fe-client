@@ -255,8 +255,8 @@ function Home() {
 	// Update realtime chat;
 	useEffect(() => {
 		if (server && messages && messages.length > 0) {
-			const targets = messages.filter(
-				(m) => m.server === server || m.server === 'all',
+			const targets = messages?.filter(
+				(m) => m?.server === server || m?.server === 'all',
 			);
 			let new_main_server = targets;
 			let new_channel: Message[] = [];
@@ -268,8 +268,8 @@ function Home() {
 			}
 			if (new_channel.length > 0) {
 				setChannel(
-					new_channel.sort(
-						(a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+					new_channel?.sort(
+						(a, b) => moment(a?.createdAt).unix() - moment(b?.createdAt).unix(),
 					),
 				);
 			} else {

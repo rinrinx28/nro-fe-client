@@ -110,7 +110,7 @@ function Clans() {
 			const { clanId = null } = user.meta;
 			if (clanId) {
 				setView('members');
-				const findClan = clans.find((c) => c._id === clanId);
+				const findClan = [...clans].find((c) => c._id === clanId);
 				if (findClan) {
 					setMyClan(findClan);
 				}
@@ -220,6 +220,7 @@ function Clans() {
 			);
 			showNoticeClan(data.message);
 			setMyClan({});
+			setView('clans_list');
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
 		}
@@ -382,7 +383,15 @@ function Clans() {
 						<p className="">Bạn có muốn xóa Bang Hội này không?</p>
 						<div className="flex flex-row w-full justify-around">
 							<button
-								onClick={deletClan}
+								onClick={() => {
+									deletClan();
+									let dialog = document.getElementById(
+										'clan_delete_q',
+									) as HTMLDialogElement;
+									if (dialog) {
+										dialog.close();
+									}
+								}}
 								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
@@ -596,19 +605,25 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 	// Auto Update List Clan
 	useEffect(() => {
 		if (clans && clans.length > 0) {
-			const targets = clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0));
+			// Tạo một bản sao của mảng clans trước khi sắp xếp
+			const targets = [...clans].sort(
+				(a, b) => (b?.score ?? 0) - (a?.score ?? 0),
+			);
+
 			let new_main_server = targets;
 			let new_channel: Clan[] = [];
+
 			for (const msg of new_main_server) {
 				if (new_channel.length >= 10) {
 					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
 				}
 				new_channel.push(msg);
-				console.log(msg);
 			}
+
 			if (new_channel.length > 0) {
+				// Sắp xếp và cập nhật channel với bản sao
 				setChannel(
-					new_channel.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)),
+					[...new_channel].sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)),
 				);
 			} else {
 				setChannel([]);
@@ -618,7 +633,7 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 
 	// Auto Status Config;
 	useEffect(() => {
-		const target = eConfig.find((c) => c.name === 'e_clan');
+		const target = [...eConfig].find((c) => c.name === 'e_clan');
 		if (target) {
 			setConfig(target);
 		}
@@ -843,13 +858,20 @@ const ClanColleter = (props: { showNoticeClan: any }) => {
 		</div>
 	);
 };
+
 const ClanCreateQ = ({ setView }: { setView: any }) => {
 	const user = useAppSelector((state) => state.user);
-	const [field, setField] = useState<FieldCreateClan>({});
+	const [field, setField] = useState<FieldCreateClan>({
+		type: '1',
+	});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const eConfig = useAppSelector((state) => state.econfig);
 	const [config, setConfig] = useState<EConfig>({});
+	const [prices, setPrices] = useState<number[]>([
+		10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
+		5000000000, 5000000000, 5000000000,
+	]);
 
 	// Auto Status Config;
 	useEffect(() => {
@@ -858,6 +880,22 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 			setConfig(target);
 		}
 	}, [eConfig]);
+
+	useEffect(() => {
+		if (config) {
+			let { option } = config;
+			if (option) {
+				let {
+					price = [
+						10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
+						5000000000, 5000000000, 5000000000,
+					],
+				} = option;
+				setPrices(price);
+			}
+		}
+	}, [config]);
+
 	const createClan = async () => {
 		setLoad(true);
 		try {
@@ -957,8 +995,7 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						className="grow font-number-font"
 						disabled
 						value={new Intl.NumberFormat('vi').format(
-							config?.option?.price[parseInt(field.type ?? '1', 10) - 1] ??
-								10000000,
+							prices[parseInt(field.type ?? '1', 10) - 1] ?? 10000000,
 						)}
 					/>
 				</label>

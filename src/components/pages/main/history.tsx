@@ -29,16 +29,18 @@ function History() {
 	useEffect(() => {
 		if (userBets) {
 			const targets = userBets
-				.filter((bet) =>
-					filter.show === 'all' ? bet.server === server : bet.uid === user._id,
+				?.filter((bet) =>
+					filter?.show === 'all'
+						? bet?.server === server
+						: bet?.uid === user?._id,
 				)
-				.sort(
-					(a, b) => moment(b.createdAt).unix() - moment(a.createdAt).unix(),
+				?.sort(
+					(a, b) => moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
 				);
 			let new_main_server = targets;
 			let new_channel: UserBet[] = [];
 			for (const bet of new_main_server) {
-				if (new_channel.length >= Number(filter.row)) {
+				if (new_channel.length >= Number(filter?.row)) {
 					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
 				}
 				new_channel.push(bet);
@@ -146,11 +148,11 @@ function History() {
 						<tbody className="text-center text-lg">
 							{/* row 1 */}
 							{data
-								.sort(
+								?.sort(
 									(a, b) =>
-										moment(b.createdAt).unix() - moment(a.createdAt).unix(),
+										moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
 								)
-								.map((bet, i) => {
+								?.map((bet, i) => {
 									const {
 										amount = 0,
 										status,
