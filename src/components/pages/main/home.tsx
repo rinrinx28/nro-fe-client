@@ -225,30 +225,30 @@ function Home() {
 
 	useEffect(() => {
 		if (gameBox) {
-			if (gameBox?.server === '24') {
-				const loop = setInterval(() => {
-					let now = moment().unix();
-					let timeEnd = moment(gameBox?.timeEnd).unix();
-					let time = Math.floor(timeEnd - now);
-					if (time < 0) {
-						setCounter(null);
-					} else {
-						setCounter(time);
-					}
-				}, 1e3);
-				return () => {
-					clearInterval(loop);
-				};
-			} else {
+			// if (gameBox?.server === '24') {
+			const loop = setInterval(() => {
 				let now = moment().unix();
 				let timeEnd = moment(gameBox?.timeEnd).unix();
 				let time = Math.floor(timeEnd - now);
 				if (time < 0) {
-					setCountDown(null);
+					setCounter(null);
 				} else {
-					setCountDown(time);
+					setCounter(time);
 				}
-			}
+			}, 1e3);
+			return () => {
+				clearInterval(loop);
+			};
+			// } else {
+			// 	let now = moment().unix();
+			// 	let timeEnd = moment(gameBox?.timeEnd).unix();
+			// 	let time = Math.floor(timeEnd - now);
+			// 	if (time < 0) {
+			// 		setCountDown(null);
+			// 	} else {
+			// 		setCountDown(time);
+			// 	}
+			// }
 		}
 	}, [gameBox]);
 
