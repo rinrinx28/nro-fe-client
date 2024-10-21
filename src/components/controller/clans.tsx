@@ -848,6 +848,16 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 	const [field, setField] = useState<FieldCreateClan>({});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
+	const eConfig = useAppSelector((state) => state.econfig);
+	const [config, setConfig] = useState<EConfig>({});
+
+	// Auto Status Config;
+	useEffect(() => {
+		const target = eConfig.find((c) => c.name === 'e_clan');
+		if (target) {
+			setConfig(target);
+		}
+	}, [eConfig]);
 	const createClan = async () => {
 		setLoad(true);
 		try {
@@ -920,7 +930,9 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 				<label className="flex items-center gap-2">
 					<select
 						defaultValue={'1'}
-						onChange={(e) => setField((f) => ({ ...f, type: e.target.value }))}
+						onChange={(e) => {
+							setField((f) => ({ ...f, type: e.target.value }));
+						}}
 						className="select w-full max-w-xs">
 						{Array.from({ length: 9 }).map((_, i) => {
 							return (
@@ -944,7 +956,10 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						type="text"
 						className="grow font-number-font"
 						disabled
-						value={Intl.NumberFormat('vi').format(1e9)}
+						value={new Intl.NumberFormat('vi').format(
+							config?.option?.price[parseInt(field.type ?? '1', 10) - 1] ??
+								10000000,
+						)}
 					/>
 				</label>
 

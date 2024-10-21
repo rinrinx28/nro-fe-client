@@ -9,10 +9,16 @@ import { MdOutlineHistory } from 'react-icons/md';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { GrMoney } from 'react-icons/gr';
 import { setUser } from '@/lib/redux/storage/user/user';
+import { IoLogOut } from 'react-icons/io5';
 
 function Navbar() {
 	const user = useAppSelector((state) => state.user);
 	const dispatch = useAppDispatch();
+
+	const logout = () => {
+		localStorage.removeItem('token');
+		dispatch(setUser({ isLogin: false }));
+	};
 	return (
 		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[1000] text-orange-500 h-[80px]">
 			{/* Logo */}
@@ -76,21 +82,28 @@ function Navbar() {
 					</>
 				)}
 				{user.isLogin && (
-					<Link
-						href={'/user/profile'}
-						className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
-						<div className="flex flex-row items-center gap-2">
-							<FaUser size={24} />
-							{user.name}
-						</div>
-						-
-						<div className="flex flex-row items-center gap-2 font-bold">
-							<p className="font-number-font">
-								{new Intl.NumberFormat('vi').format(user.money ?? 0)}
-							</p>
-							<GrMoney size={24} />
-						</div>
-					</Link>
+					<>
+						<Link
+							href={'/user/profile'}
+							className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
+							<div className="flex flex-row items-center gap-2">
+								<FaUser size={24} />
+								{user.name}
+							</div>
+							-
+							<div className="flex flex-row items-center gap-2 font-bold">
+								<p className="font-number-font">
+									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
+								</p>
+								<GrMoney size={24} />
+							</div>
+						</Link>
+						<button
+							className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300"
+							onClick={logout}>
+							<IoLogOut size={24} />
+						</button>
+					</>
 				)}
 				<div className="drawer drawer-end w-full lg:hidden inline-flex">
 					<input
@@ -216,12 +229,7 @@ function Navbar() {
 								<ul className="menu">
 									<li>
 										<button
-											onClick={() => {
-												// remove token
-												localStorage.removeItem('token');
-												// update user;
-												dispatch(setUser({ isLogin: false }));
-											}}
+											onClick={logout}
 											className="btn btn-ghost flex justify-start items-center gap-2">
 											<RiLogoutBoxFill />
 											<p>Đăng Xuất</p>
