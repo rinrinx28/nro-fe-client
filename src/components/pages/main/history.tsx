@@ -28,11 +28,13 @@ function History() {
 
 	useEffect(() => {
 		if (userBets) {
-			const targets = userBets.filter((bet) =>
-				filter.show === 'all'
-					? bet.server === server
-					: bet.uid === (user._id ?? ''),
-			);
+			const targets = userBets
+				.filter((bet) =>
+					filter.show === 'all' ? bet.server === server : bet.uid === user._id,
+				)
+				.sort(
+					(a, b) => moment(b.createdAt).unix() - moment(a.createdAt).unix(),
+				);
 			let new_main_server = targets;
 			let new_channel: UserBet[] = [];
 			for (const bet of new_main_server) {
