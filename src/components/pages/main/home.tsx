@@ -487,12 +487,8 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Còn:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{!counter ? (
+									{counter ?? (
 										<span className="loading loading-dots loading-sm"></span>
-									) : (
-										countDown ?? (
-											<span className="loading loading-dots loading-sm"></span>
-										)
 									)}
 								</p>
 							</div>
