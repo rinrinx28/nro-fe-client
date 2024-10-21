@@ -231,45 +231,34 @@ function Home() {
 	useEffect(() => {
 		if (gameBox) {
 			// if (gameBox?.server === '24') {
-			if (gameBox.isEnd && gameBox.server !== '24') {
-				const loop = setInterval(() => {
-					let now = moment().unix();
-					let timeEnd = moment(gameBox?.timeEnd).unix();
-					let time = Math.floor(now - timeEnd);
-					if (time < 0) {
-						setCounter(null);
-					} else {
-						setCounter(time);
-					}
-				}, 1e3);
-				return () => {
-					clearInterval(loop);
-				};
-			} else {
-				const loop = setInterval(() => {
-					let now = moment().unix();
-					let timeEnd = moment(gameBox?.timeEnd).unix();
-					let time = Math.floor(timeEnd - now);
-					if (time < 0) {
-						setCounter(null);
-					} else {
-						setCounter(time);
-					}
-				}, 1e3);
-				return () => {
-					clearInterval(loop);
-				};
-			}
-
+			// if (gameBox.isEnd && gameBox.server !== '24') {
+			// 	const loop = setInterval(() => {
+			// 		let now = moment().unix();
+			// 		let timeEnd = moment(gameBox?.timeEnd).unix();
+			// 		let time = Math.floor(now - timeEnd);
+			// 		if (time < 0) {
+			// 			setCounter(null);
+			// 		} else {
+			// 			setCounter(time);
+			// 		}
+			// 	}, 1e3);
+			// 	return () => {
+			// 		clearInterval(loop);
+			// 	};
 			// } else {
-			// 	let now = moment().unix();
-			// 	let timeEnd = moment(gameBox?.timeEnd).unix();
-			// 	let time = Math.floor(timeEnd - now);
-			// 	if (time < 0) {
-			// 		setCountDown(null);
-			// 	} else {
-			// 		setCountDown(time);
-			// 	}
+			const loop = setInterval(() => {
+				let now = moment().unix();
+				let timeEnd = moment(gameBox?.timeEnd).unix();
+				let time = Math.floor(timeEnd - now);
+				if (time < 0) {
+					setCounter(null);
+				} else {
+					setCounter(time);
+				}
+			}, 1e3);
+			return () => {
+				clearInterval(loop);
+			};
 			// }
 		}
 	}, [gameBox]);
@@ -484,14 +473,16 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Mã phiên:</p>
 								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
-									{gameBox?.isEnd ? (
+									{/* {gameBox?.isEnd ? (
 										<>
 											{gameBox._id}{' '}
 											<span className="text-orange-500">(đã kết thúc)</span>
 										</>
 									) : (
 										gameBox?._id
-									)}
+									)} */}
+
+									{gameBox?._id}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
