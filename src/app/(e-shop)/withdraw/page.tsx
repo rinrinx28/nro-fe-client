@@ -438,11 +438,7 @@ function Withdraw() {
 							<tbody>
 								{/* row 1 */}
 								{botD
-									.filter((b) =>
-										user.server === '8'
-											? user.server?.includes(b.server ?? '24')
-											: user.server === (b.server ?? '24'),
-									)
+									.filter((b) => user.server === b.server)
 									.filter(
 										(b) =>
 											b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
