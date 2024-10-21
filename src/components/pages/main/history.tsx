@@ -142,7 +142,7 @@ function History() {
 								<th></th>
 							</tr>
 						</thead>
-						<tbody className="text-center text-lg">
+						<tbody className="text-center text-lg select-text">
 							{/* row 1 */}
 							{data
 								?.sort(

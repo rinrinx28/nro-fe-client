@@ -231,19 +231,36 @@ function Home() {
 	useEffect(() => {
 		if (gameBox) {
 			// if (gameBox?.server === '24') {
-			const loop = setInterval(() => {
-				let now = moment().unix();
-				let timeEnd = moment(gameBox?.timeEnd).unix();
-				let time = Math.floor(timeEnd - now);
-				if (time < 0) {
-					setCounter(null);
-				} else {
-					setCounter(time);
-				}
-			}, 1e3);
-			return () => {
-				clearInterval(loop);
-			};
+			if (gameBox.isEnd && gameBox.server !== '24') {
+				const loop = setInterval(() => {
+					let now = moment().unix();
+					let timeEnd = moment(gameBox?.timeEnd).unix();
+					let time = Math.floor(now - timeEnd);
+					if (time < 0) {
+						setCounter(null);
+					} else {
+						setCounter(time);
+					}
+				}, 1e3);
+				return () => {
+					clearInterval(loop);
+				};
+			} else {
+				const loop = setInterval(() => {
+					let now = moment().unix();
+					let timeEnd = moment(gameBox?.timeEnd).unix();
+					let time = Math.floor(timeEnd - now);
+					if (time < 0) {
+						setCounter(null);
+					} else {
+						setCounter(time);
+					}
+				}, 1e3);
+				return () => {
+					clearInterval(loop);
+				};
+			}
+
 			// } else {
 			// 	let now = moment().unix();
 			// 	let timeEnd = moment(gameBox?.timeEnd).unix();
@@ -467,9 +484,9 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Mã phiên:</p>
 								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
-									{gameBox?._id ?? (
-										<span className="loading loading-ball loading-sm"></span>
-									)}
+									{gameBox?.isEnd
+										? gameBox?._id + '(đã kết thúc)'
+										: gameBox?._id}
 								</p>
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
@@ -795,12 +812,13 @@ function Home() {
 								</div>
 							)}
 
-							<div className="flex flex-wrap gap-2 items-center w-full">
+							<div className="lg:grid lg:grid-cols-7 flex flex-wrap gap-2 items-center justify-around w-full">
 								{[50e6, 1e8, 3e8, 5e8, 1e9, 2e9, 4e9].map((n, i) => {
+									let text = ['50m', '100m', '300m', '500m', '1B', '2B', '4B'];
 									return (
 										<button
 											key={i + 'chip'}
-											className="btn items-center rounded-lg p-1 place-content-center bg-black border border-orange-500 text-orange-500"
+											className="btn items-center btn-sm h-auto lg:w-auto w-[100px] rounded-lg p-1 place-content-center bg-black border border-orange-500 text-orange-500"
 											onClick={() => {
 												let new_amout =
 													parseInt(
@@ -813,20 +831,24 @@ function Home() {
 												}));
 											}}>
 											<TbPokerChip />
-											{new Intl.NumberFormat('vi').format(n)}
+											{text[i]}
 										</button>
 									);
 								})}
 							</div>
 
 							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-number-font uppercase border border-orange-500 px-2 rounded-btn z-10">
-								<button
-									onClick={() =>
-										setBetField((f) => ({ ...f, amount: '0', place: '' }))
-									}
-									className="text-red-500">
-									<GrMoney size={24} />
-								</button>
+								<div
+									data-tip="Xóa"
+									className="tooltip tooltip-left">
+									<button
+										onClick={() =>
+											setBetField((f) => ({ ...f, amount: '0', place: '' }))
+										}
+										className="text-red-500">
+										<GrMoney size={24} />
+									</button>
+								</div>
 								<input
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
