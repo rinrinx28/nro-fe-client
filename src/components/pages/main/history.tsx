@@ -28,24 +28,21 @@ function History() {
 
 	useEffect(() => {
 		if (userBets) {
-			const targets = userBets
-				?.filter((bet) =>
-					filter?.show === 'all'
-						? bet?.server === server
-						: bet?.uid === user?._id,
-				)
-				?.sort(
-					(a, b) => moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
-				);
-			let new_main_server = targets;
-			let new_channel: UserBet[] = [];
-			for (const bet of new_main_server) {
-				if (new_channel.length >= Number(filter?.row)) {
-					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
-				}
-				new_channel.push(bet);
+			if (userBets) {
+				const targets = [...userBets]
+					.filter((bet) =>
+						filter?.show === 'all'
+							? bet?.server === server
+							: bet?.uid === user?._id,
+					)
+					.sort(
+						(a, b) => moment(b?.updatedAt).unix() - moment(a?.updatedAt).unix(),
+					);
+
+				// Lấy 25 phiên giao dịch gần nhất
+				const recentBets = targets.slice(0, parseInt(filter.row ?? '10', 10));
+				setData(recentBets);
 			}
-			setData(new_channel);
 		}
 	}, [userBets]);
 
@@ -150,7 +147,7 @@ function History() {
 							{data
 								?.sort(
 									(a, b) =>
-										moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
+										moment(b?.updatedAt).unix() - moment(a?.updatedAt).unix(),
 								)
 								?.map((bet, i) => {
 									const {
@@ -208,16 +205,24 @@ function History() {
 													className={`badge ${
 														status === 1
 															? 'bg-yellow-500 text-black'
-															: revice > 0
-															? 'bg-green-500 text-black'
-															: 'bg-red-500 text-white'
+															: status === 2
+															? revice > 0
+																? 'bg-green-500 text-black'
+																: 'bg-red-500 text-white'
+															: 'bg-cyan-500 text-black'
 													} capitalize font-number-font font-bold`}>
 													{status === 1 ? (
 														<>Đã Hoàn</>
 													) : (
 														<>
-															{revice > 0 ? '+' : '-'}
-															{new Intl.NumberFormat('vi').format(revice)}
+															{status === 0 ? (
+																<span className="loading loading-dots loading-sm"></span>
+															) : (
+																<>
+																	{revice > 0 ? '+' : '-'}
+																	{new Intl.NumberFormat('vi').format(revice)}
+																</>
+															)}
 														</>
 													)}
 												</div>
