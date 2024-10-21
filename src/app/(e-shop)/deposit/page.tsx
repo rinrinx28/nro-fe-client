@@ -226,8 +226,8 @@ function Deposit() {
 								))}
 								<option
 									key={'8-9-10' + 'resigter_server'}
-									selected={user.server === `8-9-10`}
-									value={'8-9-10'}>
+									selected={user.server === `8`}
+									value={'8'}>
 									Máy Chủ 8-9-10
 								</option>
 								<option disabled>Chọn Máy Chủ</option>
@@ -425,7 +425,7 @@ function Deposit() {
 								{/* row 1 */}
 								{botD
 									.filter((b) =>
-										user.server === '8-9-10'
+										user.server === '8'
 											? user.server.includes(b.server ?? '')
 											: user.server === (b.server ?? ''),
 									)

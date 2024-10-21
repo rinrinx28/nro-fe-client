@@ -53,6 +53,27 @@ function TablesTop() {
 		}, 15e3);
 		return () => clearInterval(loop);
 	}, []);
+
+	useEffect(() => {
+		const rankClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/clan');
+				setTopClan(data);
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const rankUser = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/user');
+				setTopUser(data);
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		rankClan();
+		rankUser();
+	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/3.jpg')" }}
@@ -84,14 +105,14 @@ function TablesTop() {
 									key={i + 'top_user_winner'}
 									className="snap-center cursor-pointer flash flex justify-between w-full max-w-lg rounded-full items-center text-white font-protest-strike-regular uppercase">
 									<div className="avatar">
-										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl">
+										<div className="mb-l:size-24 size-14 bg-transparent">
 											<img
-												src={`/image/avatar/${meta?.avatar ?? '3'}.webp`}
+												src={`/image/rank/${i + 1}_user.webp`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
 									</div>
-									<div className="flex flex-col items-center justify-center">
+									<div className="flex flex-col items-start justify-start border-r-2 pr-1 border-white">
 										<p>
 											#{i + 1} | {name}
 										</p>

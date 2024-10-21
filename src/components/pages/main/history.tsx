@@ -63,6 +63,25 @@ function History() {
 		}
 	}, [server, filter]);
 
+	useEffect(() => {
+		const listUserBet = async (server: string, limited: string) => {
+			try {
+				const { data } = await apiClient.get(
+					`/no-call/list/userbet?server=${server}&limited=${limited}`,
+				);
+				for (const bet of data) {
+					dispatch(setUserBet(bet));
+				}
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		let sv = localStorage.getItem('server');
+		if (sv) {
+			listUserBet(sv, '25');
+		}
+	}, []);
+
 	const cancelPlace = async (userBetId: string) => {
 		try {
 			if (!user.isLogin || !user.token)

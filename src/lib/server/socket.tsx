@@ -224,18 +224,18 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 				console.log(err.response.data.message.message);
 			}
 		};
-		const listBot = async () => {
-			try {
-				const { data } = await apiClient.get('/bot/list');
-				dispatch(setBots(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
 
 		listClan();
 		listConfig();
-		listBot();
+		// listBot();
 	}, []);
 
 	return (

@@ -896,7 +896,7 @@ function HistoryBet() {
 			}
 			setData(new_channel);
 		}
-	}, [userBets]);
+	}, [userBets, server, limited]);
 
 	const nextPage = async (pageNumber: number) => {
 		try {
@@ -985,6 +985,28 @@ function HistoryBet() {
 					Lịch Sử Cược
 				</h1>
 			</div>
+
+			<select
+				defaultValue={`${server}`}
+				onChange={(e) => setServer(e.target.value)}
+				className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
+				{Array.from({ length: 7 }).map((_, k) => (
+					<option
+						key={`${k}-button`}
+						value={`${k + 1}`}>
+						<p>Máy Chủ {k + 1}</p>
+					</option>
+				))}
+				<option value={'8'}>Máy Chủ Gộp</option>
+				{Array.from({ length: 3 }).map((_, k) => (
+					<option
+						key={`${k}-button`}
+						value={`${k + 11}`}>
+						<p>Máy Chủ {k + 11}</p>
+					</option>
+				))}
+				<option value={'24'}>Máy Chủ 24/24</option>
+			</select>
 			<div className="overflow-auto w-full h-[600px]">
 				<table className="table border border-black text-nowrap">
 					{/* head */}
@@ -1130,27 +1152,6 @@ function HistoryBet() {
 								</option>
 							);
 						})}
-					</select>
-					<select
-						defaultValue={`${server}`}
-						onChange={(e) => setServer(e.target.value)}
-						className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-						{Array.from({ length: 7 }).map((_, k) => (
-							<option
-								key={`${k}-button`}
-								value={`${k + 1}`}>
-								<p>Máy Chủ {k + 1}</p>
-							</option>
-						))}
-						<option value={'8-9-10'}>Máy Chủ Gộp</option>
-						{Array.from({ length: 3 }).map((_, k) => (
-							<option
-								key={`${k}-button`}
-								value={`${k + 11}`}>
-								<p>Máy Chủ {k + 11}</p>
-							</option>
-						))}
-						<option value={'24'}>Máy Chủ 24/24</option>
 					</select>
 				</div>
 
