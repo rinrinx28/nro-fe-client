@@ -72,6 +72,7 @@ function Home() {
 	const [gameBox, setGameBox] = useState<MiniGame | undefined>();
 	const [channel, setChannel] = useState<Message[]>([]);
 	const [counter, setCounter] = useState<number | null>(null);
+	const [countDown, setCountDown] = useState<number | null>(null);
 	const [typeBet, setTypeBet] = useState<typeBet>('cl');
 	const [betField, setBetField] = useState<BetField>(betFile_defautl);
 	const [msg, setMsg] = useState<MessageField>();
@@ -224,19 +225,30 @@ function Home() {
 
 	useEffect(() => {
 		if (gameBox) {
-			const loop = setInterval(() => {
+			if (gameBox?.server === '24') {
+				const loop = setInterval(() => {
+					let now = moment().unix();
+					let timeEnd = moment(gameBox?.timeEnd).unix();
+					let time = Math.floor(timeEnd - now);
+					if (time < 0) {
+						setCounter(null);
+					} else {
+						setCounter(time);
+					}
+				}, 1e3);
+				return () => {
+					clearInterval(loop);
+				};
+			} else {
 				let now = moment().unix();
 				let timeEnd = moment(gameBox?.timeEnd).unix();
 				let time = Math.floor(timeEnd - now);
 				if (time < 0) {
-					setCounter(null);
+					setCountDown(null);
 				} else {
-					setCounter(time);
+					setCountDown(time);
 				}
-			}, 1e3);
-			return () => {
-				clearInterval(loop);
-			};
+			}
 		}
 	}, [gameBox]);
 
@@ -475,8 +487,12 @@ function Home() {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Còn:</p>
 								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{counter ?? (
+									{!counter ? (
 										<span className="loading loading-dots loading-sm"></span>
+									) : (
+										countDown ?? (
+											<span className="loading loading-dots loading-sm"></span>
+										)
 									)}
 								</p>
 							</div>
