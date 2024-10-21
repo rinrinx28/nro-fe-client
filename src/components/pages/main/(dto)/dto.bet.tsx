@@ -14,7 +14,7 @@ export type typePlace =
 export interface BetField {
 	server?: string;
 	typeBet?: typeBet;
-	amount?: string;
+	amount: string;
 	uid?: string;
 	betId?: string;
 	place?: typePlace;

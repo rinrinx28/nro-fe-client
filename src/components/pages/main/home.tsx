@@ -28,6 +28,7 @@ import { Message } from '@/lib/redux/storage/user/message';
 import apiClient from '@/lib/server/apiClient';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import { useSocket } from '@/lib/server/socket';
+import { TbPokerChip } from 'react-icons/tb';
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -59,7 +60,7 @@ function Home() {
 	const dispatch = useAppDispatch();
 	// defautl data;
 	const betFile_defautl: BetField = {
-		amount: '',
+		amount: '0',
 		betId: '',
 		place: '',
 		server: server.toString(),
@@ -74,7 +75,10 @@ function Home() {
 	const [counter, setCounter] = useState<number | null>(null);
 	const [countDown, setCountDown] = useState<number | null>(null);
 	const [typeBet, setTypeBet] = useState<typeBet>('cl');
-	const [betField, setBetField] = useState<BetField>(betFile_defautl);
+	const [betField, setBetField] = useState<BetField>({
+		...betFile_defautl,
+		amount: '0',
+	});
 	const [msg, setMsg] = useState<MessageField>();
 	const [notice, setNotice] = useState<string>();
 	const [isLoad, setLoad] = useState<boolean>(false);
@@ -107,11 +111,11 @@ function Home() {
 			let dialog_notice = document.getElementById(
 				'chat-box',
 			) as HTMLDialogElement;
-			if (dialog_notice) {
+			if (dialog_notice && type === 'chat-box') {
 				dialog_notice.close();
 			}
 
-			if (div_notice) {
+			if (div_notice && type === 'controll') {
 				div_notice.classList.toggle('hidden');
 			}
 		}, 3e3);
@@ -167,7 +171,8 @@ function Home() {
 		if (!user.isLogin) return showNotice('chat-box', 'Bạn chưa đăng nhập');
 		if (!msg) return showNotice('chat-box', 'Xin vui lòng nhập tin nhắn');
 		const { content } = msg;
-		if (content && content?.length <= 0)
+		if (!content) return showNotice('chat-box', 'Xin vui lòng nhập tin nhắn');
+		if (content.length < 1)
 			return showNotice('chat-box', 'Xin vui lòng nhập tin nhắn');
 		socket.emit('user.chat', {
 			content,
@@ -790,8 +795,38 @@ function Home() {
 								</div>
 							)}
 
+							<div className="flex flex-wrap gap-2 items-center w-full">
+								{[50e6, 1e8, 3e8, 5e8, 1e9, 2e9, 4e9].map((n, i) => {
+									return (
+										<button
+											key={i + 'chip'}
+											className="btn items-center rounded-lg p-1 place-content-center bg-black border border-orange-500 text-orange-500"
+											onClick={() => {
+												let new_amout =
+													parseInt(
+														betField.amount.length > 0 ? betField.amount : '0',
+														10,
+													) + n;
+												setBetField((f) => ({
+													...f,
+													amount: `${new_amout}`,
+												}));
+											}}>
+											<TbPokerChip />
+											{new Intl.NumberFormat('vi').format(n)}
+										</button>
+									);
+								})}
+							</div>
+
 							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-number-font uppercase border border-orange-500 px-2 rounded-btn z-10">
-								<GrMoney size={24} />
+								<button
+									onClick={() =>
+										setBetField((f) => ({ ...f, amount: '0', place: '' }))
+									}
+									className="text-red-500">
+									<GrMoney size={24} />
+								</button>
 								<input
 									onChange={(e) => {
 										// Extract numeric part (removes any non-digit characters)
@@ -805,7 +840,10 @@ function Home() {
 									type="text"
 									className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-bold text-white"
 									value={new Intl.NumberFormat('vi').format(
-										Number(betField.amount ?? 0),
+										parseInt(
+											betField.amount.length > 0 ? betField.amount : '0',
+											10,
+										),
 									)}
 								/>
 							</div>
@@ -918,7 +956,12 @@ function Home() {
 						</div>
 
 						{/* Input Chat */}
-						<div className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								sendMsg();
+							}}
+							className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
 							<input
 								type="text"
 								placeholder="Type here"
@@ -933,11 +976,11 @@ function Home() {
 								}}
 							/>
 							<button
-								onClick={sendMsg}
+								type="submit"
 								className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
 								<IoIosSend size={32} />
 							</button>
-						</div>
+						</form>
 					</div>
 				</div>
 			</div>

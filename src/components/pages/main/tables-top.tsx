@@ -103,8 +103,8 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center cursor-pointer flash flex justify-between w-full max-w-lg rounded-full items-center text-white font-protest-strike-regular uppercase">
-									<div className="avatar">
+									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
+									<div className="avatar animate-bounce z-[100] duration-1000">
 										<div className="mb-l:size-24 size-14 bg-transparent">
 											<img
 												src={`/image/rank/${i + 1}_user.webp`}
@@ -112,7 +112,7 @@ function TablesTop() {
 											/>
 										</div>
 									</div>
-									<div className="flex flex-col items-start justify-start border-r-2 pr-1 border-white">
+									<div className="flex flex-col items-center justify-center lg:text-base text-sm">
 										<p>
 											#{i + 1} | {name}
 										</p>
@@ -121,7 +121,7 @@ function TablesTop() {
 											{new Intl.NumberFormat('vi').format(prizes[i])} vàng
 										</p>
 									</div>
-									<div className="flex flex-col items-center justify-center pr-10">
+									<div className="flex lg:flex-col flex-row gap-2 items-center justify-center">
 										<p>
 											{new Intl.NumberFormat('vi').format(
 												meta?.totalTrade ?? 0,
@@ -159,16 +159,16 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase">
-									<div className="avatar">
-										<div className="mask mask-circle mb-l:size-24 size-14 border border-current backdrop-blur-xl z-50">
+									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
+									<div className="avatar animate-bounce z-[100]">
+										<div className="mb-l:size-24 size-14 bg-transparent z-50">
 											<img
 												src={`/image/banghoi/b${type ?? '1'}.gif`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
 									</div>
-									<div className="flex flex-col items-center justify-center">
+									<div className="flex flex-col items-center justify-center lg:text-base text-sm">
 										<p>
 											Clan {name} | TOP {i + 1}
 										</p>
@@ -177,7 +177,7 @@ function TablesTop() {
 											{new Intl.NumberFormat('vi').format(prizes[i])}
 										</p>
 									</div>
-									<div className="flex flex-col items-center justify-center pr-10">
+									<div className="flex lg:flex-col flex-row gap-2 items-center justify-center">
 										<p>{new Intl.NumberFormat('vi').format(score ?? 0)}</p>
 										<p>Điểm</p>
 									</div>
