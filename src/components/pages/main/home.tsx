@@ -228,7 +228,7 @@ function Home() {
 				let now = moment().unix();
 				let timeEnd = moment(gameBox?.timeEnd).unix();
 				let time = Math.floor(timeEnd - now);
-				if (time < 0 && gameBox.server === '24') {
+				if (time < 0) {
 					setCounter(null);
 				} else {
 					setCounter(time);

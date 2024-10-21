@@ -25,6 +25,7 @@ function History() {
 		show: 'all',
 	});
 	const [msg, setMsg] = useState<string>('');
+
 	useEffect(() => {
 		if (userBets) {
 			const targets = userBets.filter((bet) =>
