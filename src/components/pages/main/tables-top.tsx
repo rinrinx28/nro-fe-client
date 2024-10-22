@@ -4,6 +4,7 @@ import { Clan } from '@/lib/redux/storage/clan/clans';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import apiClient from '@/lib/server/apiClient';
 import { useEffect, useState } from 'react';
+import { FaUser } from 'react-icons/fa';
 import { MdLeaderboard } from 'react-icons/md';
 
 interface TopUser {
@@ -105,7 +106,7 @@ function TablesTop() {
 									key={i + 'top_user_winner'}
 									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
 									<div className="avatar animate-bounce z-[100] duration-1000">
-										<div className="mb-l:size-24 size-14 bg-transparent">
+										<div className="mb-l:size-24 size-16 bg-transparent">
 											<img
 												src={`/image/rank/${i + 1}_user.webp`}
 												alt="Avatar Tailwind CSS Component"
@@ -116,8 +117,8 @@ function TablesTop() {
 										<p>
 											#{i + 1} | {name}
 										</p>
-										<p>
-											Phần Thưởng |{' '}
+										{/* <p>Phần Thưởng</p> */}
+										<p className="">
 											{new Intl.NumberFormat('vi').format(prizes[i])} vàng
 										</p>
 									</div>
@@ -161,21 +162,24 @@ function TablesTop() {
 									key={i + 'top_user_winner'}
 									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
 									<div className="avatar animate-bounce z-[100]">
-										<div className="mb-l:size-24 size-14 bg-transparent z-50">
+										<div className="mb-l:size-24 size-16 bg-transparent z-50">
 											<img
 												src={`/image/banghoi/b${type ?? '1'}.gif`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
 									</div>
-									<div className="flex flex-col items-center justify-center lg:text-base text-sm">
+									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
 										<p>
 											Clan {name} | TOP {i + 1}
 										</p>
-										<p>
-											Phần Thưởng |{' '}
-											{new Intl.NumberFormat('vi').format(prizes[i])}
-										</p>
+										{/* <p>Phần Thưởng</p> */}
+										<div className="flex flex-row gap-1 items-center justify-center">
+											<p className="text-nowrap">
+												{new Intl.NumberFormat('vi').format(prizes[i])} Vàng /
+											</p>
+											<FaUser size={12} />
+										</div>
 									</div>
 									<div className="flex lg:flex-col flex-row gap-2 items-center justify-center">
 										<p>{new Intl.NumberFormat('vi').format(score ?? 0)}</p>
