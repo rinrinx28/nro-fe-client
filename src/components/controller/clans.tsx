@@ -80,6 +80,7 @@ interface MemberClan {
 	name: string;
 	money: number;
 	meta: Record<string, any>;
+	_id?: string;
 }
 interface FieldCreateClan {
 	type?: string;
@@ -100,6 +101,7 @@ function Clans() {
 	const [msg, setMsg] = useState<string>('');
 	const [fieldMsgClan, setFieldMsgClan] = useState<FieldMsgClan>({});
 	const [isLoad, setLoad] = useState<boolean>(false);
+	const [target, setTarget] = useState<string | null>(null);
 
 	const socket = useSocket();
 	const dispatch = useAppDispatch();
@@ -221,6 +223,62 @@ function Clans() {
 			showNoticeClan(data.message);
 			setMyClan({});
 			setView('clans_list');
+		} catch (err: any) {
+			showNoticeClan(err.response.data.message.message);
+		}
+	};
+
+	const leaveClan = async () => {
+		try {
+			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
+			if (!user.meta || !user.meta.clanId)
+				return showNoticeClan('Bạn không tham gia vào Bang Hội');
+			if (!myClan || !myClan._id)
+				return showNoticeClan('Không tìm thấy bang hội');
+			const { data } = await apiClient.post(
+				'/clan/leave',
+				{
+					clanId: myClan._id,
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNoticeClan(data.message);
+			setMyClan({});
+			setView('clans_list');
+		} catch (err: any) {
+			showNoticeClan(err.response.data.message.message);
+		}
+	};
+
+	const kickClan = async () => {
+		try {
+			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
+			if (!user.meta || !user.meta.clanId)
+				return showNoticeClan('Bạn không tham gia vào Bang Hội');
+			if (!myClan || !myClan._id)
+				return showNoticeClan('Không tìm thấy bang hội');
+			if (!target)
+				return showNoticeClan(
+					'Bạn không thể đuổi thành viên này, xin vui lòng thử lại',
+				);
+			const { data } = await apiClient.post(
+				'/clan/kick',
+				{
+					clanId: myClan._id,
+					memberId: target,
+				},
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNoticeClan(data.message);
+			setView('members');
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
 		}
@@ -358,7 +416,13 @@ function Clans() {
 									setView={setView}
 								/>
 							)}
-							{view === 'members' && <MemberList member={member} />}
+							{view === 'members' && (
+								<MemberList
+									member={member}
+									setTarget={setTarget}
+									myClan={myClan}
+								/>
+							)}
 							{view === 'clan_penning' && (
 								<ClanColleter showNoticeClan={showNoticeClan} />
 							)}
@@ -419,7 +483,17 @@ function Clans() {
 					<div className="flex flex-col gap-2">
 						<p className="">Bạn có muốn rời Bang Hội này không?</p>
 						<div className="flex flex-row w-full justify-around">
-							<button className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
+							<button
+								onClick={() => {
+									leaveClan();
+									let dialog = document.getElementById(
+										'clan_leavel_q',
+									) as HTMLDialogElement;
+									if (dialog) {
+										dialog.close();
+									}
+								}}
+								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
 							<form method="dialog">
@@ -445,10 +519,20 @@ function Clans() {
 					</div>
 					<div className="flex flex-col gap-2">
 						<p className="">
-							Bạn có muốn đuổi thành viên {'Rin'} ra khỏi Bang Hội này không?
+							Bạn có muốn đuổi thành viên này ra khỏi Bang Hội này không?
 						</p>
 						<div className="flex flex-row w-full justify-around">
-							<button className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
+							<button
+								onClick={() => {
+									kickClan();
+									let dialog = document.getElementById(
+										'clan_kick_q',
+									) as HTMLDialogElement;
+									if (dialog) {
+										dialog.close();
+									}
+								}}
+								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
 							<form method="dialog">
@@ -594,7 +678,7 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 					},
 				},
 			);
-			showNoticeClan(data);
+			showNoticeClan(data.message);
 		} catch (err: any) {
 			return showNoticeClan(err.response.data.message.message);
 		} finally {
@@ -710,8 +794,13 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 	);
 };
 
-const MemberList = (props: { member: MemberClan[] }) => {
-	const { member } = props;
+const MemberList = (props: {
+	member: MemberClan[];
+	setTarget: any;
+	myClan?: Clan;
+}) => {
+	const user = useAppSelector((state) => state.user);
+	const { member, setTarget, myClan } = props;
 	return (
 		<div className="flex flex-col gap-2 overflow-auto h-[400px] w-full p-2 bg-black/30 rounded-lg scroll-smooth snap-y">
 			{member.map((m, i) => {
@@ -735,13 +824,26 @@ const MemberList = (props: { member: MemberClan[] }) => {
 								</div>
 							</div>
 							<div className="flex flex-col font-bold lg:text-base text-sm">
-								<h1>{name ?? 'nro'}</h1>
+								<h1 className="text-lg">{name ?? 'nro'}</h1>
 								<p className="flex lg:flex-row flex-col items-center lg:gap-2 gap-1">
 									Ngày gia nhập:
 									<span className="">
 										{moment(timeJoin).format('DD/MM/YYYY HH:mm')}
 									</span>
 								</p>
+								{user.isLogin &&
+									myClan &&
+									myClan.ownerId === user._id &&
+									m._id !== user._id && (
+										<button
+											onClick={() => {
+												setTarget(m._id);
+												openKickClanQ();
+											}}
+											className="btn btn-sm text-white bg-orange-500">
+											Đuổi
+										</button>
+									)}
 							</div>
 						</div>
 						{/* Score & Balance */}

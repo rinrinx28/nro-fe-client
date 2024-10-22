@@ -1319,7 +1319,7 @@ function HistoryActivity() {
 								KeyConfig.find((k) => k.key === name)?.name ?? name;
 							return (
 								<tr key={i + 'history_activity'}>
-									<td>1</td>
+									<td>{user.server}</td>
 									<td>{user.name}</td>
 									<td>{name_res}</td>
 									<td>
