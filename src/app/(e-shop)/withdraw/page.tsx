@@ -437,7 +437,7 @@ function Withdraw() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{botD
+								{[...(bots ?? [])]
 									.filter((b) => user.server === b.server)
 									.filter(
 										(b) =>

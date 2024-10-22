@@ -358,7 +358,7 @@ const show_res = (res: string) => {
 	if (res === 'LX') {
 		return 'Lẻ Xỉu';
 	}
-	return;
+	return res;
 };
 
 export default History;
