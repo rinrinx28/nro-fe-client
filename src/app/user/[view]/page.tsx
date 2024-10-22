@@ -254,153 +254,158 @@ function Profile() {
 					Cài Đặt Tài Khoản
 				</h1>
 			</div>
-			<div className="flex flex-col gap-5">
-				{/* Avatar + Name + Badeg */}
-				<div className="flex lg:flex-row flex-col gap-2 items-center">
-					<div className="avatar">
-						<div className="w-24 rounded-full">
-							<img src="/image/avatar/3.webp" />
+			{user.isLogin && (
+				<div className="flex flex-col gap-5">
+					{/* Avatar + Name + Badeg */}
+					<div className="flex lg:flex-row flex-col gap-2 items-center">
+						<div className="avatar">
+							<div className="w-24 rounded-full">
+								<img src="/image/avatar/3.webp" />
+							</div>
+						</div>
+						<div className="flex flex-col items-start justify-between p-2 font-protest-strike-regular uppercase gap-2">
+							<div className="text-xl flex lg:flex-row flex-col gap-2 lg:items-center items-start">
+								<p>{user?.name ?? 'NAME'}</p>
+								<div
+									className="tooltip"
+									data-tip="Copy"
+									id="data_tip"
+									onClick={() => {
+										try {
+											navigator.clipboard
+												.writeText('27165d1b-06c3-4fa9-86af-2af53906ce38')
+												.then(() => {
+													let text = document.getElementById('user_id');
+													let data_tip = document.getElementById('data_tip');
+													if (text && data_tip) {
+														// Thêm class màu cam khi sao chép thành công
+														text.classList.add('text-orange-500');
+
+														// Thay đổi giá trị của data-tip
+														data_tip.setAttribute('data-tip', 'Copied!');
+
+														// Loại bỏ màu và khôi phục lại giá trị data-tip sau 1 giây
+														setTimeout(() => {
+															text.classList.remove('text-orange-500');
+															data_tip.setAttribute('data-tip', 'Copy'); // Đặt lại giá trị gốc
+														}, 1000);
+													}
+												});
+										} catch (error: any) {}
+									}}>
+									<p
+										id="user_id"
+										className="badge badge-outline lg:text-base text-xs cursor-pointer">
+										{user?._id ?? '...'}
+									</p>
+								</div>
+							</div>
+							<div className="flex flex-row gap-2 border-t border-current py-2">
+								{user?.meta?.vip && (
+									<div className="badge badge-outline gap-2">
+										<RiVipCrownLine />
+										VIP {user?.meta?.vip}
+									</div>
+								)}
+								{/* ... TOP & Clan */}
+							</div>
 						</div>
 					</div>
-					<div className="flex flex-col items-start justify-between p-2 font-protest-strike-regular uppercase gap-2">
-						<div className="text-xl flex lg:flex-row flex-col gap-2 lg:items-center items-start">
-							<p>{user?.name ?? 'NAME'}</p>
-							<div
-								className="tooltip"
-								data-tip="Copy"
-								id="data_tip"
-								onClick={() => {
-									try {
-										navigator.clipboard
-											.writeText('27165d1b-06c3-4fa9-86af-2af53906ce38')
-											.then(() => {
-												let text = document.getElementById('user_id');
-												let data_tip = document.getElementById('data_tip');
-												if (text && data_tip) {
-													// Thêm class màu cam khi sao chép thành công
-													text.classList.add('text-orange-500');
-
-													// Thay đổi giá trị của data-tip
-													data_tip.setAttribute('data-tip', 'Copied!');
-
-													// Loại bỏ màu và khôi phục lại giá trị data-tip sau 1 giây
-													setTimeout(() => {
-														text.classList.remove('text-orange-500');
-														data_tip.setAttribute('data-tip', 'Copy'); // Đặt lại giá trị gốc
-													}, 1000);
-												}
-											});
-									} catch (error: any) {}
-								}}>
-								<p
-									id="user_id"
-									className="badge badge-outline lg:text-base text-xs cursor-pointer">
-									{user?._id ?? '...'}
+					{/* Info */}
+					<div className="flex flex-col gap-2">
+						{/* Username */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Tên đăng nhập
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
+								<FaRegUser size={24} />
+								<p>{user.username ?? 'rinrinx28'}</p>
+							</div>
+						</div>
+						{/* Email */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Email
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
+								<MdOutlineEmail size={24} />
+								<p>{user.email ?? 'rinrinx28@gmail.com'}</p>
+							</div>
+						</div>
+						{/* Name */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Tên Hiển Thị
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
+								<FaRegUser size={24} />
+								<p>{user.name ?? 'RIN'}</p>
+							</div>
+						</div>
+						{/* Vàng */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Số Dư
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-orange-700">
+								<GrMoney size={24} />
+								<p className="font-sf-trans-robotics ">
+									{new Intl.NumberFormat('vi').format(
+										user.money ?? Math.floor(Math.random() * 10000),
+									)}
 								</p>
 							</div>
 						</div>
-						<div className="flex flex-row gap-2 border-t border-current py-2">
-							{user?.meta?.vip && (
-								<div className="badge badge-outline gap-2">
-									<RiVipCrownLine />
-									VIP {user?.meta?.vip}
-								</div>
-							)}
-							{/* ... TOP & Clan */}
+						{/* VIP */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Thông Tin VIP
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-500">
+								<RiVipFill size={24} />
+								<p className="font-sf-trans-robotics">
+									{new Intl.NumberFormat('vi').format(user?.meta?.vip ?? 0)}
+								</p>
+							</div>
+						</div>
+						{/* Info VIP */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Điểm
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
+								<GrTrigger size={24} />
+								<p className="font-sf-trans-robotics">
+									{new Intl.NumberFormat('vi').format(
+										user?.meta?.totalScore ?? 0,
+									)}
+								</p>
+							</div>
+							<div className="label">
+								<span className="label-text-alt text-black">
+									Tích điểm nhận VIP
+								</span>
+							</div>
 						</div>
 					</div>
 				</div>
-				{/* Info */}
-				<div className="flex flex-col gap-2">
-					{/* Username */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Tên đăng nhập
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
-							<FaRegUser size={24} />
-							<p>{user.username ?? 'rinrinx28'}</p>
-						</div>
-					</div>
-					{/* Email */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Email
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
-							<MdOutlineEmail size={24} />
-							<p>{user.email ?? 'rinrinx28@gmail.com'}</p>
-						</div>
-					</div>
-					{/* Name */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Tên Hiển Thị
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
-							<FaRegUser size={24} />
-							<p>{user.name ?? 'RIN'}</p>
-						</div>
-					</div>
-					{/* Vàng */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Số Dư
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-orange-700">
-							<GrMoney size={24} />
-							<p className="font-sf-trans-robotics ">
-								{new Intl.NumberFormat('vi').format(
-									user.money ?? Math.floor(Math.random() * 10000),
-								)}
-							</p>
-						</div>
-					</div>
-					{/* VIP */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Thông Tin VIP
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-500">
-							<RiVipFill size={24} />
-							<p className="font-sf-trans-robotics">
-								{new Intl.NumberFormat('vi').format(user?.meta?.vip ?? 0)}
-							</p>
-						</div>
-					</div>
-					{/* Info VIP */}
-					<div className="form-control w-full">
-						<div className="label">
-							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Điểm
-							</span>
-						</div>
-						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
-							<GrTrigger size={24} />
-							<p className="font-sf-trans-robotics">
-								{new Intl.NumberFormat('vi').format(
-									user?.meta?.totalScore ?? 0,
-								)}
-							</p>
-						</div>
-						<div className="label">
-							<span className="label-text-alt text-black">
-								Tích điểm nhận VIP
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
+			)}
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
 		</div>
 	);
 }
@@ -416,16 +421,24 @@ function TradeGold() {
 					Chuyển Vàng
 				</h1>
 			</div>
-			<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-				{/* <p>
-					Bạn chỉ có thể chuyển tới những người chơi ở Máy Chủ{' '}
-					{user.server ?? '1'}
-				</p> */}
-				<p className="text-2xl font-protest-strike-regular capitalize">
-					Đang Cập Nhật{' '}
-					<span className="loading loading-dots loading-xs"></span>
-				</p>
-			</div>
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
+			{user.isLogin && (
+				<>
+					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+						{/* <p>
+						Bạn chỉ có thể chuyển tới những người chơi ở Máy Chủ{' '}
+						{user.server ?? '1'}
+					</p> */}
+						<p className="text-2xl font-protest-strike-regular capitalize">
+							Đang Cập Nhật{' '}
+							<span className="loading loading-dots loading-xs"></span>
+						</p>
+					</div>
+				</>
+			)}
 			{/* <div className="flex flex-col gap-2">
 				<div className="form-control w-full">
 					<div className="label">
@@ -662,178 +675,187 @@ function HistoryService() {
 					Lịch Sử Giao Dịch
 				</h1>
 			</div>
-			{/* Tables */}
-			<div className="overflow-auto w-full h-[600px]">
-				<table className="table border border-black text-nowrap">
-					{/* head */}
-					<thead className="bg-orange-500 text-white capitalize">
-						<tr>
-							<th>Máy Chủ</th>
-							<th>Nhân Vật</th>
-							<th>Loại</th>
-							<th>Số Thỏi/vàng</th>
-							<th>Số vàng nhận</th>
-							<th>Tình trạng</th>
-							<th>thời gian</th>
-							<th>Tương tác</th>
-						</tr>
-					</thead>
-					<tbody className="font-bold text-base">
-						{/* row 1 */}
-						{data
-							?.filter((s) => s.type === typeS)
-							?.sort(
-								(a, b) =>
-									moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
-							)
-							?.map((service, i) => {
-								const {
-									server,
-									playerName,
-									type,
-									amount,
-									status,
-									isEnd,
-									revice,
-								} = service;
-								return (
-									<tr key={i + 'history_service'}>
-										<td>{server}</td>
-										<td>{playerName}</td>
-										<td>
-											{type === '0'
-												? 'Rút thỏi vàng'
-												: type === '1'
-												? 'Rút vàng'
-												: type === '2'
-												? 'Nạp thỏi vàng'
-												: 'Nạp vàng'}
-										</td>
-										<td className="font-number-font">
-											{new Intl.NumberFormat('vi').format(amount ?? 0)}
-										</td>
-										<td className="font-number-font">
-											{new Intl.NumberFormat('vi').format(revice ?? 0)}
-										</td>
-										<td>
-											<div
-												className={`badge ${
-													status === '0'
-														? 'bg-cyan-500 text-black'
-														: status === '1'
-														? 'bg-red-500 text-white'
-														: 'bg-green-500 text-black'
-												} font-chakra-petch capitalize `}>
-												{status === '0'
-													? 'Chờ giao dịch'
-													: status === '1'
-													? 'Đã hủy'
-													: 'Thành công'}
-											</div>
-										</td>
-										<td>
-											{moment(service.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-										</td>
-										<td>
-											{isEnd ? (
-												''
-											) : (
-												<button
-													onClick={() => cancelService(service._id ?? '')}
-													className="p-2 rounded-lg bg-red-500 text-white">
-													Hủy
-												</button>
-											)}
-										</td>
-									</tr>
-								);
-							})}
-					</tbody>
-				</table>
-			</div>
-			<div className="flex flex-row justify-between">
-				<div className="flex flex-row gap-2">
-					{/* Show Row */}
-					<select
-						defaultValue={`${limited}`}
-						onChange={(e) => setLimited(Number(e.target.value))}
-						className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-						{['10', '25', '50', '100'].map((s, i) => {
-							return (
-								<option
-									value={s}
-									key={i + 'show_row_history'}>
-									{s}
-								</option>
-							);
-						})}
-					</select>
-					<select
-						defaultValue={`${typeS}`}
-						onChange={(e) => setTypeS(e.target.value)}
-						className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-						{['0', '1', '2', '3'].map((s, k) => (
-							<option
-								key={`${k}-button`}
-								value={s}>
-								{s === '0'
-									? 'Rút thỏi vàng'
-									: s === '1'
-									? 'Rút vàng'
-									: s === '2'
-									? 'Nạp thỏi vàng'
-									: 'Nạp vàng'}
-							</option>
-						))}
-					</select>
-				</div>
+			{user.isLogin && (
+				<>
+					{/* Tables */}
+					<div className="overflow-auto w-full h-[600px]">
+						<table className="table border border-black text-nowrap">
+							{/* head */}
+							<thead className="bg-orange-500 text-white capitalize">
+								<tr>
+									<th>Máy Chủ</th>
+									<th>Nhân Vật</th>
+									<th>Loại</th>
+									<th>Số Thỏi/vàng</th>
+									<th>Số vàng nhận</th>
+									<th>Tình trạng</th>
+									<th>thời gian</th>
+									<th>Tương tác</th>
+								</tr>
+							</thead>
+							<tbody className="font-bold text-base">
+								{/* row 1 */}
+								{data
+									?.filter((s) => s.type === typeS)
+									?.sort(
+										(a, b) =>
+											moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
+									)
+									?.map((service, i) => {
+										const {
+											server,
+											playerName,
+											type,
+											amount,
+											status,
+											isEnd,
+											revice,
+										} = service;
+										return (
+											<tr key={i + 'history_service'}>
+												<td>{server}</td>
+												<td>{playerName}</td>
+												<td>
+													{type === '0'
+														? 'Rút thỏi vàng'
+														: type === '1'
+														? 'Rút vàng'
+														: type === '2'
+														? 'Nạp thỏi vàng'
+														: 'Nạp vàng'}
+												</td>
+												<td className="font-number-font">
+													{new Intl.NumberFormat('vi').format(amount ?? 0)}
+												</td>
+												<td className="font-number-font">
+													{new Intl.NumberFormat('vi').format(revice ?? 0)}
+												</td>
+												<td>
+													<div
+														className={`badge ${
+															status === '0'
+																? 'bg-cyan-500 text-black'
+																: status === '1'
+																? 'bg-red-500 text-white'
+																: 'bg-green-500 text-black'
+														} font-chakra-petch capitalize `}>
+														{status === '0'
+															? 'Chờ giao dịch'
+															: status === '1'
+															? 'Đã hủy'
+															: 'Thành công'}
+													</div>
+												</td>
+												<td>
+													{moment(service.updatedAt).format(
+														'DD/MM/YYYY HH:mm:ss',
+													)}
+												</td>
+												<td>
+													{isEnd ? (
+														''
+													) : (
+														<button
+															onClick={() => cancelService(service._id ?? '')}
+															className="p-2 rounded-lg bg-red-500 text-white">
+															Hủy
+														</button>
+													)}
+												</td>
+											</tr>
+										);
+									})}
+							</tbody>
+						</table>
+					</div>
+					<div className="flex flex-row justify-between">
+						<div className="flex flex-row gap-2">
+							{/* Show Row */}
+							<select
+								defaultValue={`${limited}`}
+								onChange={(e) => setLimited(Number(e.target.value))}
+								className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
+								{['10', '25', '50', '100'].map((s, i) => {
+									return (
+										<option
+											value={s}
+											key={i + 'show_row_history'}>
+											{s}
+										</option>
+									);
+								})}
+							</select>
+							<select
+								defaultValue={`${typeS}`}
+								onChange={(e) => setTypeS(e.target.value)}
+								className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
+								{['0', '1', '2', '3'].map((s, k) => (
+									<option
+										key={`${k}-button`}
+										value={s}>
+										{s === '0'
+											? 'Rút thỏi vàng'
+											: s === '1'
+											? 'Rút vàng'
+											: s === '2'
+											? 'Nạp thỏi vàng'
+											: 'Nạp vàng'}
+									</option>
+								))}
+							</select>
+						</div>
 
-				{/* Show Page */}
-				<div className="join">
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 1 - 1 >= 0) {
-								setField((f) => ({ ...f, page: page - 1 }));
-								prevPage(page - 1);
-							}
-						}}
-						className="join-item btn">
-						«
-					</button>
-					<button className="join-item btn">
-						Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
-					</button>
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 2 <= (field.totalPages ?? 1)) {
-								setField((f) => ({ ...f, page: page + 1 }));
-								nextPage(page + 1);
-							}
-						}}
-						className="join-item btn">
-						»
-					</button>
-				</div>
-			</div>
-			<dialog
-				id="profile_service"
-				className="modal z-[1100]">
-				<div className="modal-box font-chakra-petch text-orange-500 p-2">
-					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
-						<h1 className="text-lg">Thông Báo</h1>
-						<form method="dialog">
-							<button>
-								<FaMinus size={24} />
+						{/* Show Page */}
+						<div className="join">
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 1 - 1 >= 0) {
+										setField((f) => ({ ...f, page: page - 1 }));
+										prevPage(page - 1);
+									}
+								}}
+								className="join-item btn">
+								«
 							</button>
-						</form>
+							<button className="join-item btn">
+								Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
+							</button>
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 2 <= (field.totalPages ?? 1)) {
+										setField((f) => ({ ...f, page: page + 1 }));
+										nextPage(page + 1);
+									}
+								}}
+								className="join-item btn">
+								»
+							</button>
+						</div>
 					</div>
-					<div className="flex flex-col gap-2 text-center">
-						<p className="">{msg}</p>
-					</div>
-				</div>
-			</dialog>
+					<dialog
+						id="profile_service"
+						className="modal z-[1100]">
+						<div className="modal-box font-chakra-petch text-orange-500 p-2">
+							<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
+								<h1 className="text-lg">Thông Báo</h1>
+								<form method="dialog">
+									<button>
+										<FaMinus size={24} />
+									</button>
+								</form>
+							</div>
+							<div className="flex flex-col gap-2 text-center">
+								<p className="">{msg}</p>
+							</div>
+						</div>
+					</dialog>
+				</>
+			)}
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
 		</div>
 	);
 }
@@ -985,222 +1007,229 @@ function HistoryBet() {
 					Lịch Sử Cược
 				</h1>
 			</div>
-
-			<select
-				defaultValue={`${server}`}
-				onChange={(e) => setServer(e.target.value)}
-				className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-				{Array.from({ length: 7 }).map((_, k) => (
-					<option
-						key={`${k}-button`}
-						value={`${k + 1}`}>
-						<p>Máy Chủ {k + 1}</p>
-					</option>
-				))}
-				<option value={'8'}>Máy Chủ Gộp</option>
-				{Array.from({ length: 3 }).map((_, k) => (
-					<option
-						key={`${k}-button`}
-						value={`${k + 11}`}>
-						<p>Máy Chủ {k + 11}</p>
-					</option>
-				))}
-				<option value={'24'}>Máy Chủ 24/24</option>
-			</select>
-			<div className="overflow-auto w-full h-[600px]">
-				<table className="table border border-black text-nowrap">
-					{/* head */}
-					<thead className="bg-orange-500 text-white capitalize">
-						<tr>
-							<th>Máy Chủ</th>
-							<th>Nhân Vật</th>
-							<th>Loại</th>
-							<th>Dự Đoán</th>
-							<th>Kết Quả</th>
-							<th>Số vàng Cược</th>
-							<th>Số vàng Nhận</th>
-							<th>Tình trạng</th>
-							<th>thời gian</th>
-							<th>Tương tác</th>
-						</tr>
-					</thead>
-					<tbody className="font-bold">
-						{/* row 1 */}
-						{data
-							?.sort(
-								(a, b) =>
-									moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
-							)
-							?.map((bet, i) => {
-								const {
-									amount = 0,
-									status,
-									result,
-									place,
-									revice = 0,
-									server,
-									typeBet,
-									uid,
-									meta = {},
-									isEnd,
-								} = bet;
-								const { name = 'rno', avatar = null } = meta;
-								return (
-									<tr key={i + 'row_history_bet_server'}>
-										<td>{server}</td>
-										<td>
-											<div className="flex items-center gap-3">
-												<div className="avatar">
-													<div className="mask mask-squircle h-12 w-12">
-														<img
-															src={`/image/avatar/${avatar ?? '3'}.webp`}
-															alt={`Avatar nrogame ${avatar ?? '3'}`}
-														/>
-													</div>
-												</div>
-												<div>
-													<div className="font-bold">{name}</div>
-												</div>
-											</div>
-										</td>
-										<td className="font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(amount)}
-										</td>
-										<td>
-											{typeBet === 'cl'
-												? 'CL'
-												: typeBet === 'g'
-												? 'Dự Đoán Số'
-												: 'Xiên'}
-										</td>
-										<td>{place}</td>
-										<td>
-											{!isEnd ? (
-												<span className="loading loading-dots loading-sm"></span>
-											) : (
-												result
-											)}
-										</td>
-										<td>
-											<div
-												className={`badge ${
-													revice > 0
-														? 'bg-green-500 text-black'
-														: 'bg-red-500 text-white'
-												} capitalize font-number-font font-bold`}>
-												{revice > 0 ? '+' : '-'}
-												{new Intl.NumberFormat('vi').format(revice)}
-											</div>
-										</td>
-										<td>
-											<div
-												className={`badge ${
-													status === 1
-														? 'bg-yellow-500 text-black'
-														: status === 2
-														? revice > 0
-															? 'bg-green-500 text-black'
-															: 'bg-red-500 text-white'
-														: 'bg-cyan-500 text-black'
-												} font-chakra-petch capitalize font-bold`}>
-												{status === 1
-													? 'Đã Hủy'
-													: status === 2
-													? revice > 0
-														? 'Thắng'
-														: 'Thua'
-													: 'Đợi Kết Quả'}
-											</div>
-										</td>
-										<th>
-											{moment(bet.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-										</th>
-										<th>
-											{uid === user._id ? (
-												!isEnd && status === 0 ? (
-													<button
-														onClick={() => cancelPlace(bet._id ?? '')}
-														className="p-2 rounded-lg bg-red-500 text-white">
-														Hủy
-													</button>
-												) : (
-													''
-												)
-											) : (
-												''
-											)}
-										</th>
-									</tr>
-								);
-							})}
-					</tbody>
-				</table>
-			</div>
-			<div className="flex flex-row justify-between">
-				<div className="flex flex-row gap-2">
-					{/* Show Row */}
+			{user.isLogin && (
+				<>
 					<select
-						defaultValue={`${limited}`}
-						onChange={(e) => setLimited(Number(e.target.value))}
+						defaultValue={`${server}`}
+						onChange={(e) => setServer(e.target.value)}
 						className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-						{['10', '25', '50', '100'].map((s, i) => {
-							return (
-								<option
-									value={s}
-									key={i + 'show_row_history'}>
-									{s}
-								</option>
-							);
-						})}
+						{Array.from({ length: 7 }).map((_, k) => (
+							<option
+								key={`${k}-button`}
+								value={`${k + 1}`}>
+								<p>Máy Chủ {k + 1}</p>
+							</option>
+						))}
+						<option value={'8'}>Máy Chủ Gộp</option>
+						{Array.from({ length: 3 }).map((_, k) => (
+							<option
+								key={`${k}-button`}
+								value={`${k + 11}`}>
+								<p>Máy Chủ {k + 11}</p>
+							</option>
+						))}
+						<option value={'24'}>Máy Chủ 24/24</option>
 					</select>
-				</div>
+					<div className="overflow-auto w-full h-[600px]">
+						<table className="table border border-black text-nowrap">
+							{/* head */}
+							<thead className="bg-orange-500 text-white capitalize">
+								<tr>
+									<th>Máy Chủ</th>
+									<th>Nhân Vật</th>
+									<th>Loại</th>
+									<th>Dự Đoán</th>
+									<th>Kết Quả</th>
+									<th>Số vàng Cược</th>
+									<th>Số vàng Nhận</th>
+									<th>Tình trạng</th>
+									<th>thời gian</th>
+									<th>Tương tác</th>
+								</tr>
+							</thead>
+							<tbody className="font-bold">
+								{/* row 1 */}
+								{data
+									?.sort(
+										(a, b) =>
+											moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
+									)
+									?.map((bet, i) => {
+										const {
+											amount = 0,
+											status,
+											result,
+											place,
+											revice = 0,
+											server,
+											typeBet,
+											uid,
+											meta = {},
+											isEnd,
+										} = bet;
+										const { name = 'rno', avatar = null } = meta;
+										return (
+											<tr key={i + 'row_history_bet_server'}>
+												<td>{server}</td>
+												<td>
+													<div className="flex items-center gap-3">
+														<div className="avatar">
+															<div className="mask mask-squircle h-12 w-12">
+																<img
+																	src={`/image/avatar/${avatar ?? '3'}.webp`}
+																	alt={`Avatar nrogame ${avatar ?? '3'}`}
+																/>
+															</div>
+														</div>
+														<div>
+															<div className="font-bold">{name}</div>
+														</div>
+													</div>
+												</td>
+												<td className="font-number-font font-bold">
+													{new Intl.NumberFormat('vi').format(amount)}
+												</td>
+												<td>
+													{typeBet === 'cl'
+														? 'CL'
+														: typeBet === 'g'
+														? 'Dự Đoán Số'
+														: 'Xiên'}
+												</td>
+												<td>{place}</td>
+												<td>
+													{!isEnd ? (
+														<span className="loading loading-dots loading-sm"></span>
+													) : (
+														result
+													)}
+												</td>
+												<td>
+													<div
+														className={`badge ${
+															revice > 0
+																? 'bg-green-500 text-black'
+																: 'bg-red-500 text-white'
+														} capitalize font-number-font font-bold`}>
+														{revice > 0 ? '+' : '-'}
+														{new Intl.NumberFormat('vi').format(revice)}
+													</div>
+												</td>
+												<td>
+													<div
+														className={`badge ${
+															status === 1
+																? 'bg-yellow-500 text-black'
+																: status === 2
+																? revice > 0
+																	? 'bg-green-500 text-black'
+																	: 'bg-red-500 text-white'
+																: 'bg-cyan-500 text-black'
+														} font-chakra-petch capitalize font-bold`}>
+														{status === 1
+															? 'Đã Hủy'
+															: status === 2
+															? revice > 0
+																? 'Thắng'
+																: 'Thua'
+															: 'Đợi Kết Quả'}
+													</div>
+												</td>
+												<th>
+													{moment(bet.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+												</th>
+												<th>
+													{uid === user._id ? (
+														!isEnd && status === 0 ? (
+															<button
+																onClick={() => cancelPlace(bet._id ?? '')}
+																className="p-2 rounded-lg bg-red-500 text-white">
+																Hủy
+															</button>
+														) : (
+															''
+														)
+													) : (
+														''
+													)}
+												</th>
+											</tr>
+										);
+									})}
+							</tbody>
+						</table>
+					</div>
+					<div className="flex flex-row justify-between">
+						<div className="flex flex-row gap-2">
+							{/* Show Row */}
+							<select
+								defaultValue={`${limited}`}
+								onChange={(e) => setLimited(Number(e.target.value))}
+								className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
+								{['10', '25', '50', '100'].map((s, i) => {
+									return (
+										<option
+											value={s}
+											key={i + 'show_row_history'}>
+											{s}
+										</option>
+									);
+								})}
+							</select>
+						</div>
 
-				{/* Show Page */}
-				<div className="join">
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 1 - 1 >= 0) {
-								setField((f) => ({ ...f, page: page - 1 }));
-								prevPage(page - 1);
-							}
-						}}
-						className="join-item btn">
-						«
-					</button>
-					<button className="join-item btn">
-						Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
-					</button>
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 2 <= (field.totalPages ?? 1)) {
-								setField((f) => ({ ...f, page: page + 1 }));
-								nextPage(page + 1);
-							}
-						}}
-						className="join-item btn">
-						»
-					</button>
-				</div>
-			</div>
-			<dialog
-				id="usert_bet_place_notice"
-				className="modal z-[1100]">
-				<div className="modal-box font-chakra-petch text-orange-500 p-2">
-					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
-						<h1 className="text-lg">Thông Báo</h1>
-						<form method="dialog">
-							<button>
-								<FaMinus size={24} />
+						{/* Show Page */}
+						<div className="join">
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 1 - 1 >= 0) {
+										setField((f) => ({ ...f, page: page - 1 }));
+										prevPage(page - 1);
+									}
+								}}
+								className="join-item btn">
+								«
 							</button>
-						</form>
+							<button className="join-item btn">
+								Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
+							</button>
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 2 <= (field.totalPages ?? 1)) {
+										setField((f) => ({ ...f, page: page + 1 }));
+										nextPage(page + 1);
+									}
+								}}
+								className="join-item btn">
+								»
+							</button>
+						</div>
 					</div>
-					<div className="flex flex-col gap-2 text-center">
-						<p className="">{msg}</p>
-					</div>
-				</div>
-			</dialog>
+					<dialog
+						id="usert_bet_place_notice"
+						className="modal z-[1100]">
+						<div className="modal-box font-chakra-petch text-orange-500 p-2">
+							<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
+								<h1 className="text-lg">Thông Báo</h1>
+								<form method="dialog">
+									<button>
+										<FaMinus size={24} />
+									</button>
+								</form>
+							</div>
+							<div className="flex flex-col gap-2 text-center">
+								<p className="">{msg}</p>
+							</div>
+						</div>
+					</dialog>
+				</>
+			)}
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
 		</div>
 	);
 }
@@ -1294,103 +1323,114 @@ function HistoryActivity() {
 					Lịch Sử Hoạt động
 				</h1>
 			</div>
-			<div className="overflow-auto w-full h-[600px]">
-				<table className="table border border-black text-nowrap">
-					{/* head */}
-					<thead className="bg-orange-500 text-white capitalize">
-						<tr>
-							<th>Máy Chủ</th>
-							<th>Nhân Vật</th>
-							<th>Hoạt Động</th>
-							<th>Số vàng Trước</th>
-							<th>Số vàng Sau</th>
-							<th>thời gian</th>
-						</tr>
-					</thead>
-					<tbody className="font-bold">
-						{/* row 1 */}
-						{actives.map((ac, i) => {
-							const {
-								name = 'nro',
-								m_current = 0,
-								m_new = 0,
-							} = ac.active ?? {};
-							const name_res =
-								KeyConfig.find((k) => k.key === name)?.name ?? name;
-							return (
-								<tr key={i + 'history_activity'}>
-									<td>{user.server}</td>
-									<td>{user.name}</td>
-									<td>{name_res}</td>
-									<td>
-										<div className="font-number-font badge badge-outline bg-red-500">
-											{new Intl.NumberFormat('vi').format(m_current)}
-										</div>
-									</td>
-									<td>
-										<div className="font-number-font badge badge-outline bg-green-500">
-											{new Intl.NumberFormat('vi').format(m_new)}
-										</div>
-									</td>
-									<td>{moment(ac.createdAt).format('DD/MM/YYYY HH:mm:ss')}</td>
+			{user.isLogin && (
+				<>
+					<div className="overflow-auto w-full h-[600px]">
+						<table className="table border border-black text-nowrap">
+							{/* head */}
+							<thead className="bg-orange-500 text-white capitalize">
+								<tr>
+									<th>Máy Chủ</th>
+									<th>Nhân Vật</th>
+									<th>Hoạt Động</th>
+									<th>Số vàng Trước</th>
+									<th>Số vàng Sau</th>
+									<th>thời gian</th>
 								</tr>
-							);
-						})}
-					</tbody>
-				</table>
-			</div>
-			<div className="flex flex-row justify-between">
-				{/* Show Row */}
-				<select
-					defaultValue={`${limited}`}
-					onChange={(e) => setLimited(Number(e.target.value))}
-					className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
-					{['10', '25', '50', '100'].map((s, i) => {
-						return (
-							<option
-								value={s}
-								key={i + 'show_row_history'}>
-								{s}
-							</option>
-						);
-					})}
-				</select>
+							</thead>
+							<tbody className="font-bold">
+								{/* row 1 */}
+								{actives.map((ac, i) => {
+									const {
+										name = 'nro',
+										m_current = 0,
+										m_new = 0,
+									} = ac.active ?? {};
+									const name_res =
+										KeyConfig.find((k) => k.key === name)?.name ?? name;
+									return (
+										<tr key={i + 'history_activity'}>
+											<td>{user.server}</td>
+											<td>{user.name}</td>
+											<td>{name_res}</td>
+											<td>
+												<div className="font-number-font badge badge-outline bg-red-500">
+													{new Intl.NumberFormat('vi').format(m_current)}
+												</div>
+											</td>
+											<td>
+												<div className="font-number-font badge badge-outline bg-green-500">
+													{new Intl.NumberFormat('vi').format(m_new)}
+												</div>
+											</td>
+											<td>
+												{moment(ac.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+					<div className="flex flex-row justify-between">
+						{/* Show Row */}
+						<select
+							defaultValue={`${limited}`}
+							onChange={(e) => setLimited(Number(e.target.value))}
+							className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
+							{['10', '25', '50', '100'].map((s, i) => {
+								return (
+									<option
+										value={s}
+										key={i + 'show_row_history'}>
+										{s}
+									</option>
+								);
+							})}
+						</select>
 
-				{/* Show Page */}
-				<div className="join">
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 1 - 1 >= 0) {
-								setField((f) => ({ ...f, page: page - 1 }));
-								prevPage(page - 1);
-							}
-						}}
-						className="join-item btn">
-						«
-					</button>
-					<button className="join-item btn">
-						Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
-					</button>
-					<button
-						onClick={() => {
-							const page = field.page ?? 0;
-							if (page + 2 <= (field.totalPages ?? 1)) {
-								setField((f) => ({ ...f, page: page + 1 }));
-								nextPage(page + 1);
-							}
-						}}
-						className="join-item btn">
-						»
-					</button>
-				</div>
-			</div>
+						{/* Show Page */}
+						<div className="join">
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 1 - 1 >= 0) {
+										setField((f) => ({ ...f, page: page - 1 }));
+										prevPage(page - 1);
+									}
+								}}
+								className="join-item btn">
+								«
+							</button>
+							<button className="join-item btn">
+								Page {(field.page ?? 0) + 1}/{field.totalPages ?? 0}
+							</button>
+							<button
+								onClick={() => {
+									const page = field.page ?? 0;
+									if (page + 2 <= (field.totalPages ?? 1)) {
+										setField((f) => ({ ...f, page: page + 1 }));
+										nextPage(page + 1);
+									}
+								}}
+								className="join-item btn">
+								»
+							</button>
+						</div>
+					</div>
+				</>
+			)}
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
 		</div>
 	);
 }
 
 // Table Nhiệm Vụ
 function TableMission() {
+	const user = useAppSelector((state) => state.user);
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -1399,9 +1439,18 @@ function TableMission() {
 					Table Nhiệm Vụ
 				</h1>
 			</div>
-			<p className="text-2xl font-protest-strike-regular capitalize">
-				Đang Cập Nhật <span className="loading loading-dots loading-xs"></span>
-			</p>
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
+			{user.isLogin && (
+				<>
+					<p className="text-2xl font-protest-strike-regular capitalize">
+						Đang Cập Nhật{' '}
+						<span className="loading loading-dots loading-xs"></span>
+					</p>
+				</>
+			)}
 		</div>
 	);
 }
