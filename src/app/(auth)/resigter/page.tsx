@@ -15,6 +15,7 @@ interface ResigterField {
 }
 function Resigter() {
 	const user = useAppSelector((state) => state.user);
+	const finger = useAppSelector((state) => state.finger);
 	const [field, setField] = useState<ResigterField>({});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
@@ -37,7 +38,7 @@ function Resigter() {
 			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
 			if (!field || !field.password || field.password?.length < 6)
 				return showNotice('Độ dài mật khẩu tối thiểu là 6 ký tự');
-			await apiClient.post('/auth/resigter', field);
+			await apiClient.post('/auth/resigter', { ...field, hash: finger });
 			router.push('/login');
 		} catch (err: any) {
 			const {

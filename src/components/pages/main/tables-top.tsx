@@ -38,6 +38,7 @@ function TablesTop() {
 					const { data } = await apiClient.get('/no-call/rank/clan');
 					setTopClan(data);
 				} catch (err: any) {
+					console.log(err);
 					console.log(err.response.data.message.message);
 				}
 			};

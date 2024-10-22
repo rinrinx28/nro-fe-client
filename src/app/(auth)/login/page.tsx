@@ -15,6 +15,7 @@ interface LoginField {
 
 function Login() {
 	const user = useAppSelector((state) => state.user);
+	const finger = useAppSelector((state) => state.finger);
 	const [field, setField] = useState<LoginField>({});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
@@ -35,7 +36,10 @@ function Login() {
 		try {
 			setLoad(true);
 			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
-			const { data } = await apiClient.post('/auth/login', field);
+			const { data } = await apiClient.post('/auth/login', {
+				...field,
+				hash: finger,
+			});
 			const { access_token } = data;
 			localStorage.setItem('token', access_token);
 			dispatch(

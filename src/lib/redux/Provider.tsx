@@ -17,6 +17,8 @@ import { setMessages } from './storage/user/message';
 import { setUserActives } from './storage/user/userActive';
 import { setUserBets } from './storage/user/userBet';
 import { setUserStores } from './storage/user/users';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { setFinger } from './storage/user/finger';
 
 export default function StoreProvider({
 	children,
@@ -52,16 +54,23 @@ export default function StoreProvider({
 		window.scrollTo(0, 0); // Scroll to top when the page reloads
 	}, []); // Empty dependency array means it runs once when the component mounts
 
+	// Auto Save fingerprintJS and reload;
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-		// relogin
-		if (token && storeRef) {
+		const setFp = async (token: string) => {
+			const fp = await FingerprintJS.load();
+
+			const { visitorId } = await fp.get();
+			storeRef.current?.dispatch(setFinger(visitorId));
 			apiClient
-				.get('/auth/relogin', {
-					headers: {
-						Authorization: 'Bearer ' + token,
+				.post(
+					'/auth/relogin',
+					{ hash: visitorId },
+					{
+						headers: {
+							Authorization: 'Bearer ' + token,
+						},
 					},
-				})
+				)
 				.then((res) => {
 					storeRef.current?.dispatch(
 						updateUser({ isLogin: true, token: token, ...res.data }),
@@ -70,6 +79,19 @@ export default function StoreProvider({
 				.catch((err) => {
 					localStorage.removeItem('token');
 				});
+		};
+		const saveFp = async () => {
+			const fp = await FingerprintJS.load();
+
+			const { visitorId } = await fp.get();
+			storeRef.current?.dispatch(setFinger(visitorId));
+		};
+		const token = localStorage.getItem('token');
+		// relogin
+		if (token && storeRef) {
+			setFp(token);
+		} else {
+			saveFp();
 		}
 		return () => {};
 	}, [storeRef]);

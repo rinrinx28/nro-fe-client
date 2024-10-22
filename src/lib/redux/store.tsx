@@ -12,6 +12,7 @@ import user from './storage/user/user';
 import userActives from './storage/user/userActive';
 import userBets from './storage/user/userBet';
 import users from './storage/user/users';
+import finger from './storage/user/finger';
 
 export const makeStore = () => {
 	return configureStore({
@@ -29,6 +30,7 @@ export const makeStore = () => {
 			users: users,
 			userActives: userActives,
 			userBets: userBets,
+			finger: finger,
 		},
 	});
 };
