@@ -13,6 +13,7 @@ import userActives from './storage/user/userActive';
 import userBets from './storage/user/userBet';
 import users from './storage/user/users';
 import finger from './storage/user/finger';
+import jackpot from './storage/minigame/jackpot';
 
 export const makeStore = () => {
 	return configureStore({
@@ -31,6 +32,7 @@ export const makeStore = () => {
 			userActives: userActives,
 			userBets: userBets,
 			finger: finger,
+			jackpot: jackpot,
 		},
 	});
 };

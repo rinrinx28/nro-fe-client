@@ -24,6 +24,7 @@ import { MsgClan, setMsgClan } from '../redux/storage/clan/msgClan';
 import apiClient from './apiClient';
 import { setConfigs } from '../redux/storage/eshop/config';
 import { Service, setService } from '../redux/storage/eshop/service';
+import { updateJackpot } from '../redux/storage/minigame/jackpot';
 moment().format();
 
 const urlConfig = {
@@ -142,6 +143,13 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			dispatch(removeInviteClan(payload));
 		});
 
+		socket.on('jackpot.update', (payload: any) => {
+			dispatch(updateJackpot(payload));
+		});
+
+		// get jackpot;
+		socket.emit('jackpot.get', 'jackpot');
+
 		return () => {
 			socket.disconnect();
 			socket.off('bot.status');
@@ -156,6 +164,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			socket.off('user.update.bulk');
 			socket.off('invite.update');
 			socket.off('invite.remove');
+			socket.off('jackpot.update');
 		};
 	}, [dispatch]);
 

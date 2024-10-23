@@ -54,6 +54,7 @@ const slogans = [
 function Home() {
 	// Redux
 	const user = useAppSelector((state) => state.user);
+	const jackpot = useAppSelector((state) => state.jackpot);
 	const server = useAppSelector((state) => state.server);
 	const minigame = useAppSelector((state) => state.minigame);
 	const messages = useAppSelector((state) => state.messages);
@@ -265,9 +266,11 @@ function Home() {
 	// Update realtime chat;
 	useEffect(() => {
 		if (server && messages && messages.length > 0) {
-			const targets = messages?.filter(
-				(m) => m?.server === server || m?.server === 'all',
-			).sort((a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix())
+			const targets = messages
+				?.filter((m) => m?.server === server || m?.server === 'all')
+				.sort(
+					(a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+				);
 			let new_main_server = targets;
 			let new_channel: Message[] = [];
 			for (const msg of new_main_server) {
@@ -287,6 +290,15 @@ function Home() {
 			}
 		}
 	}, [server, messages]);
+
+	const openTutorialJackpot = () => {
+		let dialog = document.getElementById(
+			'tutorial_jackpot',
+		) as HTMLDialogElement;
+		if (dialog) {
+			dialog.show();
+		}
+	};
 
 	return (
 		<div
@@ -543,6 +555,19 @@ function Home() {
 									{server === '24' ? '24/24' : '6h - 23h50'}
 								</p>
 							</div>
+							{server === '24' && (
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Jackpot:</p>
+									<p className="text-white font-number-font font-bold">
+										{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
+									</p>
+									<button
+										className="btn btn-sm bg-orange-500 text-white"
+										onClick={openTutorialJackpot}>
+										Chi tiết
+									</button>
+								</div>
+							)}
 							<div className="flex flex-col gap-2 justify-start w-full">
 								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
 									<p className="text-orange-500">CL:</p>
@@ -1148,6 +1173,31 @@ function Home() {
 				<div className="flex flex-col gap-5">
 					<h1 className="text-xl">Chat Box - Thông Báo</h1>
 					{notice}
+				</div>
+			</Modal>
+
+			{/* Tutorial Jackpot */}
+			<Modal
+				id="tutorial_jackpot"
+				customClass="w-full max-w-xl">
+				<div className="flex flex-col gap-5">
+					<h1 className="text-xl">Hướng Dẫn Jackpot</h1>
+					<p>
+						- Khi các bạn đặt cược thì Jackpot sẽ nhận được{' '}
+						<span className="text-orange-500">10%</span> vàng cược của các bạn
+						và cứ thế tăng dần
+					</p>
+					<p>
+						- Khi kết quả của phiên ra số 99, Jackpot sẽ nổ{' '}
+						<span className="text-orange-500">5%</span> giải thưởng và chia cho
+						tất cả người chơi thắng kèo ở phiên đó
+					</p>
+					<p>
+						- Nếu bạn cược{' '}
+						<span className="text-orange-500">càng nhiều vàng</span> trong ván
+						Jackpot nổ thì bạn sẽ trúng{' '}
+						<span className="text-orange-500">càng nhiều vàng</span> từ Jackpot
+					</p>
 				</div>
 			</Modal>
 		</div>
