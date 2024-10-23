@@ -73,7 +73,6 @@ function Home() {
 	const [gameBox, setGameBox] = useState<MiniGame | undefined>();
 	const [channel, setChannel] = useState<Message[]>([]);
 	const [counter, setCounter] = useState<number | null>(null);
-	const [countDown, setCountDown] = useState<number | null>(null);
 	const [typeBet, setTypeBet] = useState<typeBet>('cl');
 	const [betField, setBetField] = useState<BetField>({
 		...betFile_defautl,
@@ -268,7 +267,7 @@ function Home() {
 		if (server && messages && messages.length > 0) {
 			const targets = messages?.filter(
 				(m) => m?.server === server || m?.server === 'all',
-			);
+			).sort((a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix())
 			let new_main_server = targets;
 			let new_channel: Message[] = [];
 			for (const msg of new_main_server) {
