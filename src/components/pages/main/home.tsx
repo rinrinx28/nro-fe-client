@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
 import { GiPerspectiveDiceSixFacesTwo } from 'react-icons/gi';
 import { GrMoney } from 'react-icons/gr';
-import { IoIosSend, IoLogoGameControllerB } from 'react-icons/io';
-import { SiGamejolt } from 'react-icons/si';
+import {
+	IoIosSend,
+	IoIosStarHalf,
+	IoLogoGameControllerB,
+} from 'react-icons/io';
+import { SiGamejolt, SiZalo } from 'react-icons/si';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { setServer } from '@/lib/redux/storage/minigame/server';
 import {
@@ -58,6 +62,7 @@ function Home() {
 	const server = useAppSelector((state) => state.server);
 	const minigame = useAppSelector((state) => state.minigame);
 	const messages = useAppSelector((state) => state.messages);
+	const econfig = useAppSelector((state) => state.econfig);
 	const dispatch = useAppDispatch();
 	// defautl data;
 	const betFile_defautl: BetField = {
@@ -72,6 +77,7 @@ function Home() {
 	const socket = useSocket();
 	// React State
 	const [gameBox, setGameBox] = useState<MiniGame | undefined>();
+	const [banner, setBanner] = useState<string[]>([]);
 	const [channel, setChannel] = useState<Message[]>([]);
 	const [counter, setCounter] = useState<number | null>(null);
 	const [typeBet, setTypeBet] = useState<typeBet>('cl');
@@ -291,6 +297,16 @@ function Home() {
 		}
 	}, [server, messages]);
 
+	// Update banner
+	useEffect(() => {
+		if (econfig) {
+			const target = econfig.find((e) => e.name === 'e_banner');
+			if (target) {
+				setBanner(target?.option?.banner ?? []);
+			}
+		}
+	}, [econfig]);
+
 	const openTutorialJackpot = () => {
 		let dialog = document.getElementById(
 			'tutorial_jackpot',
@@ -451,9 +467,35 @@ function Home() {
 					target="_blank"
 					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 					<FaFacebook />
-					Fanpage
+					Group Facebook
+				</Link>
+				<Link
+					href={'https://zalo.me/g/evqnqk421'}
+					target="_blank"
+					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					<SiZalo size={24} />
+					Box Chat
 				</Link>
 			</div>
+			{banner.length > 0 && (
+				<div className="w-full flex items-center justify-center">
+					<div className="w-full max-w-7xl p-2 overflow-hidden text-orange-500 font-bold text-nowrap">
+						<div className="running flex items-center gap-5 ">
+							{banner?.map((t: string) => {
+								return (
+									<div
+										className="flex flex-row text-nowrap items-center gap-4"
+										key={t}>
+										<IoIosStarHalf className="spin" />
+										<p>{t}</p>
+										<IoIosStarHalf className="spin" />
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				</div>
+			)}
 			{/* Game Info */}
 			<div className="grid lg:grid-cols-2 max-w-7xl w-full gap-4 select-none h-fit p-2">
 				{/* Left Size Game Board */}
