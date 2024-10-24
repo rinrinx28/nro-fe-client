@@ -18,6 +18,7 @@ import './user.css';
 import { DiVim } from 'react-icons/di';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
+import { setConfigs } from '@/lib/redux/storage/eshop/config';
 
 type PageView =
 	| 'profile'
@@ -43,6 +44,7 @@ function UserContext() {
 	const params = useParams<{ view: PageView }>();
 	const [msg, setMsg] = useState<string>('');
 	const [fieldChangePwd, setFieldChangePwd] = useState<FieldChangPwd>({});
+	const dispatch = useAppDispatch();
 
 	const router = useRouter();
 
@@ -87,6 +89,27 @@ function UserContext() {
 			showNotice(err.response.data.message.message);
 		}
 	};
+	// Auto Call Request;
+	useEffect(() => {
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
+		listConfig();
+		// listBot();
+	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_user.jpg')" }}
@@ -1452,7 +1475,7 @@ function TableMission(props: { showNotice: any }) {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		if (econfig) {
+		if (econfig && user.isLogin) {
 			const target = econfig.find((e) => e.name === 'e_reward');
 			if (target) {
 				setDaily(target?.option?.daily ?? []);
@@ -1759,7 +1782,7 @@ function TableVIP(props: { showNotice: any }) {
 							<tbody>
 								{/* row 1 */}
 								{vipClaim.map((d, i) => {
-									const { dailyPointsTarget = 0, money = 0 } = d;
+									const { dailyPointsTarget = 0, money = 0, level = 1 } = d;
 									const { rewardCollected = false } = user.meta ?? {};
 									const isReward = rewardCollected;
 									const totalTrade = user?.meta?.totalTrade ?? 0;
@@ -1769,7 +1792,7 @@ function TableVIP(props: { showNotice: any }) {
 											className={`text-center ${
 												i % 2 !== 0 ? 'bg-base-200 text-white' : ''
 											}`}>
-											<th>{i + 1}</th>
+											<th>{level}</th>
 											<td>
 												{new Intl.NumberFormat('vi').format(dailyPointsTarget)}
 											</td>

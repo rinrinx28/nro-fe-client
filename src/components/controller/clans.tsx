@@ -311,11 +311,18 @@ function Clans() {
 					className="text-orange-500 p-2 rounded-full border border-orange-500 bg-black flex items-center justify-center cursor-pointer">
 					{myClan ? (
 						<div className="flex flex-row gap-2 items-center">
-							<div className="avatar">
-								<div className="w-12 rounded-xl">
-									<img src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`} />
+							{myClan?.meta?.type ? (
+								<div className="avatar">
+									<div className="w-12 rounded-xl">
+										<img
+											src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`}
+										/>
+									</div>
 								</div>
-							</div>
+							) : (
+								<GiVikingLonghouse size={32} />
+							)}
+
 							<p>{myClan?.meta?.name ?? ''}</p>
 						</div>
 					) : (
