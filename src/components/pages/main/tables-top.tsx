@@ -2,22 +2,14 @@
 import { useAppSelector } from '@/lib/redux/hook';
 import { Clan } from '@/lib/redux/storage/clan/clans';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
-import apiClient from '@/lib/server/apiClient';
+import { User } from '@/lib/redux/storage/user/user';
 import { useEffect, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { MdLeaderboard } from 'react-icons/md';
 
-interface TopUser {
-	name?: string;
-	meta?: {
-		totalTrade: number;
-		avatar: string;
-	};
-}
-
 function TablesTop() {
-	const [topClan, setTopClan] = useState<Clan[]>([]);
-	const [topUser, setTopUser] = useState<TopUser[]>([]);
+	const clans = useAppSelector((state) => state.clanTop);
+	const users = useAppSelector((state) => state.userTop);
 	const econfig = useAppSelector((state) => state.econfig);
 	const [eshop, setEshop] = useState<EConfig[]>([]);
 
@@ -31,51 +23,6 @@ function TablesTop() {
 		}
 	}, [econfig]);
 
-	useEffect(() => {
-		let loop = setInterval(() => {
-			const rankClan = async () => {
-				try {
-					const { data } = await apiClient.get('/no-call/rank/clan');
-					setTopClan(data);
-				} catch (err: any) {
-					console.log(err);
-					console.log(err.response.data.message.message);
-				}
-			};
-			const rankUser = async () => {
-				try {
-					const { data } = await apiClient.get('/no-call/rank/user');
-					setTopUser(data);
-				} catch (err: any) {
-					console.log(err.response.data.message.message);
-				}
-			};
-			rankClan();
-			rankUser();
-		}, 15e3);
-		return () => clearInterval(loop);
-	}, []);
-
-	useEffect(() => {
-		const rankClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/rank/clan');
-				setTopClan(data);
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const rankUser = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/rank/user');
-				setTopUser(data);
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		rankClan();
-		rankUser();
-	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/3.jpg')" }}
@@ -93,7 +40,7 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{topUser.map((u, i) => {
+						{users?.map((u, i) => {
 							const { meta, name } = u;
 							const e_rank_day = eshop.find((e) => e.name === 'e_user_rank');
 							const {
@@ -149,8 +96,8 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{topClan.map((c, i) => {
-							const { score, meta = {} } = c;
+						{clans?.map((c, i) => {
+							const { score, meta = {} } = c ?? {};
 							const { type, name } = meta;
 							const e_clan = eshop.find((e) => e.name === 'e_clan');
 							const {

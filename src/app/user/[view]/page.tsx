@@ -19,6 +19,7 @@ import { DiVim } from 'react-icons/di';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
 import { setConfigs } from '@/lib/redux/storage/eshop/config';
+import { Clan } from '@/lib/redux/storage/clan/clans';
 
 type PageView =
 	| 'profile'
@@ -283,6 +284,31 @@ function UserContext() {
 // Cài Đặt Tài Khoản
 function Profile() {
 	const user = useAppSelector((state) => state.user);
+	const clans = useAppSelector((state) => state.clans);
+	const users = useAppSelector((state) => state.userTop);
+	const [top, setTop] = useState<number | null>(null);
+	const [myClan, setMyClan] = useState<Clan>();
+
+	useEffect(() => {
+		if (user.isLogin && clans) {
+			const { clanId = null } = user.meta ?? {};
+			const target = clans.find((c) => c._id === clanId);
+			if (target) {
+				setMyClan(target);
+			}
+		}
+	}, [user, clans]);
+
+	useEffect(() => {
+		if (user.isLogin && users) {
+			const target = users.findIndex((u) => u._id === user._id);
+			if (target > -1) {
+				setTop(target + 1);
+			} else {
+				setTop(null);
+			}
+		}
+	}, [user, users]);
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -337,14 +363,44 @@ function Profile() {
 									</p>
 								</div>
 							</div>
-							<div className="flex flex-row gap-2 border-t border-current py-2">
+							<div className="flex flex-row gap-2 border-t border-current py-2 items-center select-none divide-x divide-black">
 								{user?.meta?.vip && (
-									<div className="badge badge-outline gap-2">
-										<RiVipCrownLine />
-										VIP {user?.meta?.vip}
+									<div className="container-gold">
+										<h1
+											className="gold-text"
+											data-text={`VIP ${user?.meta?.vip}`}>
+											<span
+												className="gold-text__highlight"
+												data-text={`VIP ${user?.meta?.vip}`}>
+												VIP {user?.meta?.vip}
+											</span>
+										</h1>
 									</div>
 								)}
-								{/* ... TOP & Clan */}
+								{myClan && (
+									<div className="flex flex-row items-center justify-center px-1">
+										<div className="avatar">
+											<div className="w-8 rounded-xl">
+												<img
+													src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`}
+												/>
+											</div>
+										</div>
+										<p>{myClan?.meta?.name ?? ''}</p>
+									</div>
+								)}
+								{top && (
+									<div className="flex flex-row items-center justify-center px-1">
+										{top && top > 0 && (
+											<div className="avatar">
+												<div className="w-8 rounded-xl">
+													<img src={`/image/rank/${top}_user.webp`} />
+												</div>
+											</div>
+										)}
+										<p>TOP {top}</p>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
@@ -1541,7 +1597,7 @@ function TableMission(props: { showNotice: any }) {
 											</div>
 											<div className="flex flex-col gap-2 p-2">
 												<h2 className="flex flex-row gap-2 items-center">
-													#{i + 1}
+													Nhiệm Vụ {i + 1}
 													<div className="badge">
 														{totalTrade >= dailyPointsTarget
 															? isReward
@@ -1636,7 +1692,6 @@ function TableVIP(props: { showNotice: any }) {
 	const user = useAppSelector((state) => state.user);
 	const econfig = useAppSelector((state) => state.econfig);
 
-	const [vipInfo, setVipInfo] = useState<Record<string, any>>({});
 	const [vipClaim, setVipClain] = useState<any[]>([]);
 	const [tutorial, setTutorial] = useState<any[]>([]);
 	const dispatch = useAppDispatch();
@@ -1646,13 +1701,7 @@ function TableVIP(props: { showNotice: any }) {
 			const target = econfig.find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
-				const vip =
-					vipLevels.find((v: any) => v.level === (user?.meta?.vip ?? 0)) ?? {};
-				setVipInfo(vip);
-				setVipClain(
-					vipLevels.filter((v: any) => v.level === (user?.meta?.vip ?? 0)) ??
-						[],
-				);
+				setVipClain(vipLevels);
 			}
 		}
 	}, [econfig, user]);
@@ -1669,7 +1718,11 @@ function TableVIP(props: { showNotice: any }) {
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setTutorial(vipLevels);
-				showTutorialVIP();
+				let timeout = setTimeout(() => {
+					showTutorialVIP();
+				}, 2e3);
+
+				return () => clearTimeout(timeout);
 			}
 		}
 	}, [econfig]);
@@ -1711,61 +1764,86 @@ function TableVIP(props: { showNotice: any }) {
 					</div>
 					<div className="overflow-auto w-full select-none">
 						<div className="grid grid-flow-col gap-5">
-							<div className="rounded-xl text-black w-52">
-								<div className="flex flex-col gap-2 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold items-center justify-center ">
-									<div className="w-24 rounded-xl">
-										<img
-											src={`/image/icon/${
-												user?.meta?.rewardCollected
-													? 'vipOpen.png'
-													: 'vipclose.png'
-											}`}
-											alt={`icon chest ${
-												user?.meta?.rewardCollected ? 'vip open' : 'vip close'
-											}`}
-										/>
-									</div>
-									<div className="flex flex-col gap-2 p-2">
-										<h2 className="flex flex-row gap-2 items-center">
-											#{vipInfo?.level ?? 0}
-											<div className="badge">
-												{(user?.meta?.totalTrade ?? 0) >=
-												(vipInfo?.dailyPointsTarget ?? 0)
-													? user?.meta?.rewardCollected
-														? 'đã nhận'
-														: 'chưa nhận'
-													: 'chưa đạt'}
+							{vipClaim.map((v, i) => {
+								const { level = i + 1, dailyPointsTarget = 0 } = v;
+								const { vip = 0, totalTrade = 0 } = user.meta ?? {};
+								const isVip = level === vip;
+								const isGot = totalTrade >= dailyPointsTarget;
+								return (
+									<div
+										key={i + 'vip_daily'}
+										className="rounded-xl text-black text-nowrap w-56">
+										<div className="flex flex-col gap-2 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold items-center justify-center ">
+											<div className="w-24 rounded-xl">
+												<img
+													src={`/image/icon/${
+														isVip && user?.meta?.rewardCollected
+															? 'vipOpen.png'
+															: 'vipclose.png'
+													}`}
+													alt={`icon chest ${
+														isVip && user?.meta?.rewardCollected
+															? `vip open ${level}`
+															: `vip close ${level}`
+													}`}
+												/>
 											</div>
-										</h2>
-										<p className="text-wrap">
-											Mục tiêu: Đạt{' '}
-											{new Intl.NumberFormat('vi').format(
-												vipInfo?.dailyPointsTarget ?? 0,
-											)}{' '}
-											điểm
-										</p>
-										<div className="flex w-full justify-end">
-											<button
-												onClick={() => {
-													claimVip();
-												}}
-												disabled={
-													(user?.meta?.totalTrade ?? 0) >=
-														(vipInfo?.dailyPointsTarget ?? 0) &&
-													user?.meta?.rewardCollected
-												}
-												className={`btn btn-sm`}>
-												{(user?.meta?.totalTrade ?? 0) >=
-												(vipInfo?.dailyPointsTarget ?? 0)
-													? user?.meta?.rewardCollected
-														? 'Đã nhận'
-														: 'Nhận thưởng'
-													: 'Chưa đạt'}
-											</button>
+											<div className="flex flex-col gap-2 p-2">
+												<div className="flex flex-row gap-2 items-center">
+													<div className="container-gold ">
+														<h1
+															className="gold-text"
+															data-text={`VIP ${level}`}>
+															<span
+																className="gold-text__highlight"
+																data-text={`VIP ${level}`}>
+																VIP {level}
+															</span>
+														</h1>
+													</div>
+
+													<div className="badge">
+														{isVip
+															? isGot
+																? user?.meta?.rewardCollected
+																	? 'đã nhận'
+																	: 'chưa nhận'
+																: 'chưa đạt'
+															: 'Không thể nhận'}
+													</div>
+												</div>
+												<div className="flex flex-col">
+													<p className="">Mục tiêu: Đạt</p>
+													<p className="">
+														{new Intl.NumberFormat('vi').format(
+															dailyPointsTarget,
+														)}{' '}
+														điểm
+													</p>
+												</div>
+												<div className="flex w-full justify-end">
+													<button
+														onClick={() => {
+															claimVip();
+														}}
+														disabled={
+															isVip ? user?.meta?.rewardCollected : true
+														}
+														className={`btn btn-sm`}>
+														{isVip
+															? isGot
+																? user?.meta?.rewardCollected
+																	? 'đã nhận'
+																	: 'chưa nhận'
+																: 'chưa đạt'
+															: 'Không thể nhận'}
+													</button>
+												</div>
+											</div>
 										</div>
 									</div>
-								</div>
-							</div>
+								);
+							})}
 						</div>
 					</div>
 					<div className="overflow-x-auto">
@@ -1781,11 +1859,12 @@ function TableVIP(props: { showNotice: any }) {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{vipClaim.map((d, i) => {
-									const { dailyPointsTarget = 0, money = 0, level = 1 } = d;
-									const { rewardCollected = false } = user.meta ?? {};
-									const isReward = rewardCollected;
-									const totalTrade = user?.meta?.totalTrade ?? 0;
+								{vipClaim.map((v, i) => {
+									const { level = i + 1, dailyPointsTarget = 0 } = v;
+									const { vip = 0, totalTrade = 0 } = user.meta ?? {};
+									const money = user.money ?? 0;
+									const isVip = level === vip;
+									const isGot = totalTrade >= dailyPointsTarget;
 									return (
 										<tr
 											key={i + 'tutorial_daily'}
@@ -1798,11 +1877,13 @@ function TableVIP(props: { showNotice: any }) {
 											</td>
 											<td>{new Intl.NumberFormat('vi').format(money)}</td>
 											<td>
-												{totalTrade >= dailyPointsTarget
-													? isReward
-														? 'Đã nhận'
-														: 'Chờ Nhận thưởng'
-													: 'Chưa đạt'}
+												{isVip
+													? isGot
+														? user?.meta?.rewardCollected
+															? 'đã nhận'
+															: 'chưa nhận'
+														: 'chưa đạt'
+													: 'Không thể nhận'}
 											</td>
 										</tr>
 									);

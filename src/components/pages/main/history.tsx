@@ -28,21 +28,19 @@ function History() {
 
 	useEffect(() => {
 		if (userBets) {
-			if (userBets) {
-				const targets = [...userBets]
-					.filter((bet) =>
-						filter?.show === 'all'
-							? bet?.server === server
-							: bet?.uid === user?._id,
-					)
-					.sort(
-						(a, b) => moment(b?.updatedAt).unix() - moment(a?.updatedAt).unix(),
-					);
+			const targets = [...userBets]
+				.filter((bet) =>
+					filter?.show === 'all'
+						? bet?.server === server
+						: bet?.uid === user?._id,
+				)
+				.sort(
+					(a, b) => moment(b?.updatedAt).unix() - moment(a?.updatedAt).unix(),
+				);
 
-				// Lấy 25 phiên giao dịch gần nhất
-				const recentBets = targets.slice(0, parseInt(filter.row ?? '10', 10));
-				setData(recentBets);
-			}
+			// Lấy 25 phiên giao dịch gần nhất
+			const recentBets = targets.slice(0, parseInt(filter.row ?? '10', 10));
+			setData(recentBets);
 		}
 	}, [userBets]);
 

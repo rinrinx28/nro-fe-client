@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { MiniGame, setMinigame } from '../redux/storage/minigame/minigame';
 import { updateUser, User } from '../redux/storage/user/user';
 import { setUserStore } from '../redux/storage/user/users';
-import { Bot, setBot, setBots } from '../redux/storage/eshop/bots';
+import { Bot, setBot } from '../redux/storage/eshop/bots';
 import { Message, setMessage } from '../redux/storage/user/message';
 import { setUserBet, UserBet } from '../redux/storage/user/userBet';
 import {
@@ -25,6 +25,8 @@ import apiClient from './apiClient';
 import { setConfigs } from '../redux/storage/eshop/config';
 import { Service, setService } from '../redux/storage/eshop/service';
 import { updateJackpot } from '../redux/storage/minigame/jackpot';
+import { setclanTops } from '../redux/storage/top/clanTop';
+import { setuserToptores } from '../redux/storage/top/userTop';
 moment().format();
 
 const urlConfig = {
@@ -245,6 +247,51 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 		listClan();
 		listConfig();
 		// listBot();
+	}, []);
+
+	useEffect(() => {
+		let loop = setInterval(() => {
+			const rankClan = async () => {
+				try {
+					const { data } = await apiClient.get('/no-call/rank/clan');
+					dispatch(setclanTops(data));
+				} catch (err: any) {
+					console.log(err.response.data.message.message);
+				}
+			};
+			const rankUser = async () => {
+				try {
+					const { data } = await apiClient.get('/no-call/rank/user');
+					dispatch(setuserToptores(data));
+				} catch (err: any) {
+					console.log(err.response.data.message.message);
+				}
+			};
+			rankClan();
+			rankUser();
+		}, 15e3);
+		return () => clearInterval(loop);
+	}, []);
+
+	useEffect(() => {
+		const rankClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/clan');
+				dispatch(setclanTops(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const rankUser = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/user');
+				dispatch(setuserToptores(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		rankClan();
+		rankUser();
 	}, []);
 
 	return (

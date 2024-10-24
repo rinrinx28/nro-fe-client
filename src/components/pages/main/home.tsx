@@ -33,6 +33,7 @@ import apiClient from '@/lib/server/apiClient';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import { useSocket } from '@/lib/server/socket';
 import { TbPokerChip } from 'react-icons/tb';
+import { Clan } from '@/lib/redux/storage/clan/clans';
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -63,6 +64,9 @@ function Home() {
 	const minigame = useAppSelector((state) => state.minigame);
 	const messages = useAppSelector((state) => state.messages);
 	const econfig = useAppSelector((state) => state.econfig);
+	const clans = useAppSelector((state) => state.clans);
+	const users = useAppSelector((state) => state.userTop);
+	const [top, setTop] = useState<number | null>(null);
 	const dispatch = useAppDispatch();
 	// defautl data;
 	const betFile_defautl: BetField = {
@@ -1017,6 +1021,11 @@ function Home() {
 								className="border border-orange-500 backdrop-blur-lg w-full h-[650px] overflow-auto scroll-smooth rounded-box p-2">
 								{channel.map((m, i) => {
 									const { content, meta, uid } = m;
+									const { clanId = null, vip = null } = meta ?? {};
+									const targetClan = clans.find((c) => c._id === clanId);
+									const topIndex = users.findIndex((u) => u._id === uid);
+									const top = topIndex > -1 ? topIndex + 1 : null;
+									console.log(targetClan, top, vip);
 									return (
 										<div
 											key={i + 'chat_box'}
@@ -1036,11 +1045,68 @@ function Home() {
 												</div>
 											</div>
 											<div className="chat-header">
-												{uid === 'local'
-													? 'Hệ thống'
-													: uid === (user._id ?? '')
-													? 'Bạn'
-													: meta?.name}
+												<div className="flex flex-row flex-wrap gap-2 items-center">
+													{top && (
+														<div
+															data-tip={`Khứa này TOP ${top}`}
+															className={`z-[1000] tooltip  ${
+																uid !== (user._id ?? '')
+																	? 'tooltip-right'
+																	: 'tooltip-left'
+															}`}>
+															<div className="flex flex-row items-center justify-center px-1">
+																{top && top > 0 && (
+																	<div className="avatar">
+																		<div className="w-8 rounded-xl">
+																			<img
+																				src={`/image/rank/${top}_user.webp`}
+																			/>
+																		</div>
+																	</div>
+																)}
+															</div>
+														</div>
+													)}
+													{targetClan && (
+														<div
+															data-tip={`Clan ${targetClan?.meta?.name}`}
+															className={`z-[1000] tooltip  ${
+																uid !== (user._id ?? '')
+																	? 'tooltip-right'
+																	: 'tooltip-left'
+															}`}>
+															<div className="flex flex-row items-center justify-center px-1">
+																<div className="avatar">
+																	<div className="w-8 rounded-xl">
+																		<img
+																			src={`/image/banghoi/b${
+																				targetClan?.meta?.type ?? 1
+																			}.gif`}
+																		/>
+																	</div>
+																</div>
+															</div>
+														</div>
+													)}
+													{vip && vip > 0 && (
+														<div className="container-gold">
+															<h1
+																className="gold-text"
+																data-text={`VIP ${vip}`}>
+																<span
+																	className="gold-text__highlight"
+																	data-text={`VIP ${vip}`}>
+																	VIP {vip}
+																</span>
+															</h1>
+														</div>
+													)}
+													{uid === 'local'
+														? 'Hệ thống'
+														: uid === (user._id ?? '')
+														? 'Bạn'
+														: meta?.name}
+												</div>
 												{/* <time className="text-xs opacity-50">12:45</time> */}
 											</div>
 											<div className="chat-bubble">
