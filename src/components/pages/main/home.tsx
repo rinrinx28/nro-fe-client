@@ -1045,7 +1045,12 @@ function Home() {
 												</div>
 											</div>
 											<div className="chat-header">
-												<div className="flex flex-row flex-wrap gap-2 items-center">
+												<div
+													className={`flex ${
+														uid !== (user._id ?? '')
+															? 'flex-row'
+															: 'flex-row-reverse'
+													} flex-wrap gap-2 items-center`}>
 													{top && (
 														<div
 															data-tip={`Khứa này TOP ${top}`}
