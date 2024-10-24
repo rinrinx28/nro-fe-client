@@ -43,7 +43,7 @@ function CircularMenu() {
 					onClick={triggerMenu}
 					className="btn-app size-10 bg-black rounded-full border border-orange-500 flex justify-center items-center">
 					<Link
-						href={'https://www.facebook.com/profile.php?id=61566956587074'}
+						href={'https://www.facebook.com/groups/congdongnrogame'}
 						target="_blank">
 						<FaFacebook className="fa" />
 					</Link>

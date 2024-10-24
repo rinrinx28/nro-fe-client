@@ -57,6 +57,14 @@ function Navbar() {
 							Rút Vàng
 						</Link>
 					</li>
+					<li>
+						<Link
+							href={'/user/table_vip'}
+							className="bg-black rounded-lg text-lg btn btn-ghost">
+							<FaTable size={24} />
+							Điểm Danh VIP
+						</Link>
+					</li>
 				</ul>
 			</div>
 			{/* Navigate */}
@@ -222,6 +230,14 @@ function Navbar() {
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<FaTable size={24} />
 										Bảng Nhiệm Vụ
+									</Link>
+								</li>
+								<li>
+									<Link
+										href={'/user/table_vip'}
+										className="link decoration-transparent flex justify-start items-center gap-2">
+										<FaTable size={24} />
+										Điểm Danh VIP
 									</Link>
 								</li>
 							</ul>

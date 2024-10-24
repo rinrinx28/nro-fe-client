@@ -447,6 +447,14 @@ function Home() {
 								Bảng Nhiệm Vụ
 							</Link>
 						</li>
+						<li>
+							<Link
+								href={'/user/table_vip'}
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<FaTable size={24} />
+								Điểm Danh VIP
+							</Link>
+						</li>
 					</ul>
 				</div>
 				<button
@@ -463,7 +471,7 @@ function Home() {
 					Hướng Dẫn
 				</button>
 				<Link
-					href={'https://www.facebook.com/profile.php?id=61566956587074'}
+					href={'https://www.facebook.com/groups/congdongnrogame'}
 					target="_blank"
 					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
 					<FaFacebook />
@@ -567,13 +575,17 @@ function Home() {
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Chẵn:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{gameBox?.resultUser?.c ?? 0}
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.c ?? 0,
+										)}
 									</p>
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Lẻ:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{gameBox?.resultUser?.l ?? 0}
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.l ?? 0,
+										)}
 									</p>
 								</div>
 							</div>
@@ -581,13 +593,17 @@ function Home() {
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Tài:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{gameBox?.resultUser?.t ?? 0}
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.t ?? 0,
+										)}
 									</p>
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Xỉu:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{gameBox?.resultUser?.x ?? 0}
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.x ?? 0,
+										)}
 									</p>
 								</div>
 							</div>

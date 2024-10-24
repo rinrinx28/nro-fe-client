@@ -304,13 +304,24 @@ function Clans() {
 		<>
 			{/* Clans Button */}
 			<div className="fixed bottom-4 left-4 z-[100]">
-				<button
+				<div
 					onClick={() => {
 						openClansBox();
 					}}
-					className="text-orange-500 p-2 size-16 rounded-full border border-orange-500 bg-black flex items-center justify-center">
-					<GiVikingLonghouse size={32} />
-				</button>
+					className="text-orange-500 p-2 rounded-full border border-orange-500 bg-black flex items-center justify-center cursor-pointer">
+					{myClan ? (
+						<div className="flex flex-row gap-2 items-center">
+							<div className="avatar">
+								<div className="w-12 rounded-xl">
+									<img src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`} />
+								</div>
+							</div>
+							<p>{myClan?.meta?.name ?? ''}</p>
+						</div>
+					) : (
+						<GiVikingLonghouse size={32} />
+					)}
+				</div>
 			</div>
 			<dialog
 				id="clan_box_screen"

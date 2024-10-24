@@ -8,12 +8,16 @@ import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { FaExchangeAlt, FaMinus, FaRegUser, FaTable } from 'react-icons/fa';
 import { GiDragonShield, GiSeaDragon } from 'react-icons/gi';
 import { GrMoney, GrTrigger } from 'react-icons/gr';
 import { MdOutlineEmail, MdOutlineHistory } from 'react-icons/md';
 import { RiLockPasswordLine, RiVipCrownLine, RiVipFill } from 'react-icons/ri';
+import './user.css';
+import { DiVim } from 'react-icons/di';
+import { updateUser } from '@/lib/redux/storage/user/user';
+import Modal from '@/components/controller/Modal';
 
 type PageView =
 	| 'profile'
@@ -21,6 +25,7 @@ type PageView =
 	| 'history_bet'
 	| 'history_service'
 	| 'history_activity'
+	| 'table_vip'
 	| 'table_misson';
 
 interface FieldPage {
@@ -132,6 +137,12 @@ function UserContext() {
 							<FaTable size={24} />
 							Bảng Nhiệm Vụ
 						</Link>
+						<Link
+							href={'/user/table_vip'}
+							className="flex flex-row gap-2 items-center py-2 px-4 bg-orange-500 rounded-box text-black cursor-pointer font-protest-strike-regular capitalize text-xl hover:bg-black hover:text-orange-500 hover:duration-300 active:hover:scale-90">
+							<FaTable size={24} />
+							Điểm Danh VIP
+						</Link>
 						<button
 							onClick={showChangePwd}
 							className="flex flex-row gap-2 items-center py-2 px-4 bg-orange-500 rounded-box text-black cursor-pointer font-protest-strike-regular capitalize text-xl hover:bg-black hover:text-orange-500 hover:duration-300 active:hover:scale-90">
@@ -146,7 +157,10 @@ function UserContext() {
 				{params.view === 'history_activity' && <HistoryActivity />}
 				{params.view === 'history_service' && <HistoryService />}
 				{params.view === 'trade_gold' && <TradeGold />}
-				{params.view === 'table_misson' && <TableMission />}
+				{params.view === 'table_misson' && (
+					<TableMission showNotice={showNotice} />
+				)}
+				{params.view === 'table_vip' && <TableVIP showNotice={showNotice} />}
 			</div>
 			<dialog
 				id="change_pwd_q"
@@ -1429,14 +1443,44 @@ function HistoryActivity() {
 }
 
 // Table Nhiệm Vụ
-function TableMission() {
+function TableMission(props: { showNotice: any }) {
+	const { showNotice } = props;
 	const user = useAppSelector((state) => state.user);
+	const econfig = useAppSelector((state) => state.econfig);
+
+	const [daily, setDaily] = useState<any[]>([]);
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		if (econfig) {
+			const target = econfig.find((e) => e.name === 'e_reward');
+			if (target) {
+				setDaily(target?.option?.daily ?? []);
+			}
+		}
+	}, [econfig, user]);
+
+	const claimDaily = async (index: number) => {
+		try {
+			const { data } = await apiClient.get(`/user/claim/daily/${index}`, {
+				headers: {
+					Authorization: 'Bearer ' + user.token,
+				},
+			});
+			const { message } = data;
+			showNotice(message);
+			dispatch(updateUser(data.data));
+		} catch (err: any) {
+			showNotice(err.response.data.message.message);
+		}
+	};
+
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right font-chakra-petch">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
-					Table Nhiệm Vụ
+					Bảng Nhiệm Vụ
 				</h1>
 			</div>
 
@@ -1444,13 +1488,354 @@ function TableMission() {
 				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
 			)}
 			{user.isLogin && (
-				<>
-					<p className="text-2xl font-protest-strike-regular capitalize">
-						Đang Cập Nhật{' '}
-						<span className="loading loading-dots loading-xs"></span>
-					</p>
-				</>
+				<div className="flex flex-col gap-5">
+					<div className="flex flex-col gap-1 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+						<p>
+							Tổng điểm của bạn:{' '}
+							{new Intl.NumberFormat('vi').format(user?.meta?.totalTrade ?? 0)}
+						</p>
+					</div>
+					<div className="overflow-auto w-full select-none">
+						<div className="grid grid-flow-col gap-5">
+							{daily.map((d, i) => {
+								const { dailyPointsTarget = 0 } = d;
+								const { rewardDayCollected = [] } = user.meta ?? {};
+								const targetReward = rewardDayCollected.find(
+									(r: { index: number; isReward: boolean }) => r.index === i,
+								) ?? { index: i, isReward: false };
+								const isReward = targetReward && targetReward.isReward;
+								const totalTrade = user?.meta?.totalTrade ?? 0;
+								return (
+									<div
+										key={i + 'daily'}
+										className="rounded-xl text-black w-52">
+										<div className="flex flex-col gap-2 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold items-center justify-center ">
+											<div className="w-24 rounded-xl">
+												<img
+													src={`/image/icon/${i + 1}.png`}
+													alt={`icon ball ${i + 1}`}
+												/>
+											</div>
+											<div className="flex flex-col gap-2 p-2">
+												<h2 className="flex flex-row gap-2 items-center">
+													#{i + 1}
+													<div className="badge">
+														{totalTrade >= dailyPointsTarget
+															? isReward
+																? 'đã nhận'
+																: 'chưa nhận'
+															: 'chưa đạt'}
+													</div>
+												</h2>
+												<p className="text-wrap">
+													Mục tiêu: Đạt{' '}
+													{new Intl.NumberFormat('vi').format(
+														dailyPointsTarget,
+													)}{' '}
+													điểm
+												</p>
+												<div className="flex w-full justify-end">
+													<button
+														onClick={() => {
+															claimDaily(i);
+														}}
+														disabled={
+															totalTrade >= dailyPointsTarget && isReward
+														}
+														className={`btn btn-sm`}>
+														{totalTrade >= dailyPointsTarget
+															? isReward
+																? 'Đã nhận'
+																: 'Nhận thưởng'
+															: 'Chưa đạt'}
+													</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+					<div className="overflow-x-auto">
+						<table className="table font-bold">
+							{/* head */}
+							<thead>
+								<tr className="text-xl text-center text-white bg-orange-500">
+									<th></th>
+									<th>Tổng điểm</th>
+									<th>Phần thưởng</th>
+									<th>Trạng thái</th>
+								</tr>
+							</thead>
+							<tbody>
+								{/* row 1 */}
+								{daily.map((d, i) => {
+									const { dailyPointsTarget = 0, money = 0 } = d;
+									const { rewardDayCollected = [] } = user.meta ?? {};
+									const targetReward = rewardDayCollected.find(
+										(r: { index: number; isReward: boolean }) => r.index === i,
+									) ?? { index: i, isReward: false };
+									const isReward = targetReward && targetReward.isReward;
+									const totalTrade = user?.meta?.totalTrade ?? 0;
+									return (
+										<tr
+											key={i + 'tutorial_daily'}
+											className={`text-center ${
+												i % 2 !== 0 ? 'bg-base-200 text-white' : ''
+											}`}>
+											<th>{i + 1}</th>
+											<td>
+												{new Intl.NumberFormat('vi').format(dailyPointsTarget)}
+											</td>
+											<td>{new Intl.NumberFormat('vi').format(money)}</td>
+											<td>
+												{totalTrade >= dailyPointsTarget
+													? isReward
+														? 'Đã nhận'
+														: 'Chờ Nhận thưởng'
+													: 'Chưa đạt'}
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+				</div>
 			)}
+		</div>
+	);
+}
+// Table VIP
+function TableVIP(props: { showNotice: any }) {
+	const { showNotice } = props;
+	const user = useAppSelector((state) => state.user);
+	const econfig = useAppSelector((state) => state.econfig);
+
+	const [vipInfo, setVipInfo] = useState<Record<string, any>>({});
+	const [vipClaim, setVipClain] = useState<any[]>([]);
+	const [tutorial, setTutorial] = useState<any[]>([]);
+	const dispatch = useAppDispatch();
+
+	useEffect(() => {
+		if (econfig && user.isLogin) {
+			const target = econfig.find((e) => e.name === 'e_reward');
+			if (target) {
+				const vipLevels = target?.option?.vipLevels ?? [];
+				const vip =
+					vipLevels.find((v: any) => v.level === (user?.meta?.vip ?? 0)) ?? {};
+				setVipInfo(vip);
+				setVipClain(
+					vipLevels.filter((v: any) => v.level === (user?.meta?.vip ?? 0)) ??
+						[],
+				);
+			}
+		}
+	}, [econfig, user]);
+
+	useEffect(() => {
+		const showTutorialVIP = () => {
+			let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+			}
+		};
+		if (econfig) {
+			const target = econfig.find((e) => e.name === 'e_reward');
+			if (target) {
+				const vipLevels = target?.option?.vipLevels ?? [];
+				setTutorial(vipLevels);
+				showTutorialVIP();
+			}
+		}
+	}, [econfig]);
+
+	const claimVip = async () => {
+		try {
+			const { data } = await apiClient.get(`/user/claim/vip`, {
+				headers: {
+					Authorization: 'Bearer ' + user.token,
+				},
+			});
+			const { message } = data;
+			showNotice(message);
+			dispatch(updateUser(data.data));
+		} catch (err: any) {
+			showNotice(err.response.data.message.message);
+		}
+	};
+
+	return (
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right font-chakra-petch">
+			<div className="flex flex-row gap-2 items-center">
+				<GiDragonShield size={34} />
+				<h1 className="font-protest-strike-regular uppercase text-2xl">
+					Điểm Danh VIP
+				</h1>
+			</div>
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
+			{user.isLogin && (
+				<div className="flex flex-col gap-5">
+					<div className="flex flex-col gap-1 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+						<p>
+							Tổng điểm của bạn:{' '}
+							{new Intl.NumberFormat('vi').format(user?.meta?.totalTrade ?? 0)}
+						</p>
+					</div>
+					<div className="overflow-auto w-full select-none">
+						<div className="grid grid-flow-col gap-5">
+							<div className="rounded-xl text-black w-52">
+								<div className="flex flex-col gap-2 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold items-center justify-center ">
+									<div className="w-24 rounded-xl">
+										<img
+											src={`/image/icon/${
+												user?.meta?.rewardCollected
+													? 'vipOpen.png'
+													: 'vipclose.png'
+											}`}
+											alt={`icon chest ${
+												user?.meta?.rewardCollected ? 'vip open' : 'vip close'
+											}`}
+										/>
+									</div>
+									<div className="flex flex-col gap-2 p-2">
+										<h2 className="flex flex-row gap-2 items-center">
+											#{vipInfo?.level ?? 0}
+											<div className="badge">
+												{(user?.meta?.totalTrade ?? 0) >=
+												(vipInfo?.dailyPointsTarget ?? 0)
+													? user?.meta?.rewardCollected
+														? 'đã nhận'
+														: 'chưa nhận'
+													: 'chưa đạt'}
+											</div>
+										</h2>
+										<p className="text-wrap">
+											Mục tiêu: Đạt{' '}
+											{new Intl.NumberFormat('vi').format(
+												vipInfo?.dailyPointsTarget ?? 0,
+											)}{' '}
+											điểm
+										</p>
+										<div className="flex w-full justify-end">
+											<button
+												onClick={() => {
+													claimVip();
+												}}
+												disabled={
+													(user?.meta?.totalTrade ?? 0) >=
+														(vipInfo?.dailyPointsTarget ?? 0) &&
+													user?.meta?.rewardCollected
+												}
+												className={`btn btn-sm`}>
+												{(user?.meta?.totalTrade ?? 0) >=
+												(vipInfo?.dailyPointsTarget ?? 0)
+													? user?.meta?.rewardCollected
+														? 'Đã nhận'
+														: 'Nhận thưởng'
+													: 'Chưa đạt'}
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="overflow-x-auto">
+						<table className="table font-bold">
+							{/* head */}
+							<thead>
+								<tr className="text-xl text-center text-white bg-orange-500">
+									<th>VIP</th>
+									<th>Tổng điểm</th>
+									<th>Phần thưởng/Ngày</th>
+									<th>Trạng thái</th>
+								</tr>
+							</thead>
+							<tbody>
+								{/* row 1 */}
+								{vipClaim.map((d, i) => {
+									const { dailyPointsTarget = 0, money = 0 } = d;
+									const { rewardCollected = false } = user.meta ?? {};
+									const isReward = rewardCollected;
+									const totalTrade = user?.meta?.totalTrade ?? 0;
+									return (
+										<tr
+											key={i + 'tutorial_daily'}
+											className={`text-center ${
+												i % 2 !== 0 ? 'bg-base-200 text-white' : ''
+											}`}>
+											<th>{i + 1}</th>
+											<td>
+												{new Intl.NumberFormat('vi').format(dailyPointsTarget)}
+											</td>
+											<td>{new Intl.NumberFormat('vi').format(money)}</td>
+											<td>
+												{totalTrade >= dailyPointsTarget
+													? isReward
+														? 'Đã nhận'
+														: 'Chờ Nhận thưởng'
+													: 'Chưa đạt'}
+											</td>
+										</tr>
+									);
+								})}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			)}
+			<Modal
+				id="tutorial_vip"
+				customClass="max-w-4xl w-full">
+				<h3 className="font-bold text-lg">Thông báo người chơi</h3>
+				<p className="max-w-xl w-full flex flex-col">
+					<span>
+						<span className="text-primary">Lưu ý:</span> Số thỏi vàng nhận chỉ
+						duy trì <span className="text-primary">30 ngày</span> kể từ ngày đầu
+						tiên kích hoạt <span className="text-primary">VIP</span>
+					</span>
+					<span>
+						- Sau <span className="text-primary">7 ngày</span> liên tục không
+						tham gia hoạt động <span className="text-primary">VIP</span> sẽ bị{' '}
+						<span className="text-primary">mất quyền lợi VIP</span>
+					</span>
+				</p>
+				<p>- Để nhận quà VIP mỗi ngày thì phải đánh:</p>
+				<div className="overflow-x-auto">
+					<table className="table font-bold">
+						{/* head */}
+						<thead>
+							<tr className="text-xl text-center text-white bg-orange-500">
+								<th>VIP</th>
+								<th>Tổng điểm</th>
+							</tr>
+						</thead>
+						<tbody>
+							{/* row 1 */}
+							{tutorial.map((d, i) => {
+								const { dailyPointsTarget = 0, money = 0 } = d;
+								return (
+									<tr
+										key={i + 'tutorial_daily'}
+										className={`text-center ${
+											i % 2 !== 0 ? 'bg-base-200 text-white' : ''
+										}`}>
+										<th>{i + 1}</th>
+										<td>
+											{new Intl.NumberFormat('vi').format(dailyPointsTarget)}
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			</Modal>
 		</div>
 	);
 }
