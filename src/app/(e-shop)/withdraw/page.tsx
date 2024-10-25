@@ -216,13 +216,21 @@ function Withdraw() {
 					<form
 						onSubmit={handleSubmit}
 						className="flex flex-col w-full lg:max-w-md rounded-box border border-current bg-white">
-						<div className="w-full bg-orange-500 text-white text-center rounded-t-box py-4">
-							<h1 className="font-protest-strike-regular">
-								Số Dư:{' '}
-								<span className="font-sf-trans-robotics">
+						<div className="w-full bg-orange-500 text-white text-center rounded-t-box py-4 flex flex-row items-center justify-center gap-4 font-protest-strike-regular">
+							<h1>Số Dư:</h1>
+							<div className="flex flex-row gap-1 items-center">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics">
 									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
-								</span>
-							</h1>
+								</p>
+							</div>
 						</div>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
@@ -310,7 +318,14 @@ function Withdraw() {
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<GrMoney />
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 								<input
 									value={getNumbetFromString(field.amount ?? '')}
 									onChange={(e) => {
@@ -359,7 +374,14 @@ function Withdraw() {
 								<span className="label-text-alt">Số vàng nhận</span>
 							</div>
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<GrMoney />
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 								<input
 									type="text"
 									className="grow"
@@ -498,8 +520,9 @@ function Withdraw() {
 										status,
 										amount,
 										updatedAt,
-										revice,
+										revice = 0,
 									} = s;
+									const revice_m = type === '0' ? revice * 37e6 : revice;
 									return (
 										<tr key={i + 'deposit_bot'}>
 											<td>{server}</td>
@@ -509,7 +532,7 @@ function Withdraw() {
 												{new Intl.NumberFormat('vi').format(amount ?? 0)}
 											</td>
 											<td className="font-number-font">
-												{new Intl.NumberFormat('vi').format(revice ?? 0)}
+												{new Intl.NumberFormat('vi').format(revice_m)}
 											</td>
 											<td>
 												<div

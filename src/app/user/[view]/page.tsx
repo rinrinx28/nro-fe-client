@@ -18,8 +18,9 @@ import './user.css';
 import { DiVim } from 'react-icons/di';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
-import { setConfigs } from '@/lib/redux/storage/eshop/config';
+import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
 import { Clan } from '@/lib/redux/storage/clan/clans';
+import { getNumbetFromString } from '@/components/pages/main/home';
 
 type PageView =
 	| 'profile'
@@ -28,6 +29,7 @@ type PageView =
 	| 'history_service'
 	| 'history_activity'
 	| 'table_vip'
+	| 'exchange_diamon'
 	| 'table_misson';
 
 interface FieldPage {
@@ -138,6 +140,12 @@ function UserContext() {
 							Chuyển Vàng
 						</Link>
 						<Link
+							href={'/user/exchange_diamon'}
+							className="flex flex-row gap-2 items-center py-2 px-4 bg-orange-500 rounded-box text-black cursor-pointer font-protest-strike-regular capitalize text-xl hover:bg-black hover:text-orange-500 hover:duration-300 active:hover:scale-90">
+							<FaExchangeAlt size={24} />
+							Đổi Vàng
+						</Link>
+						<Link
 							href={'/user/history_service'}
 							className="flex flex-row gap-2 items-center py-2 px-4 bg-orange-500 rounded-box text-black cursor-pointer font-protest-strike-regular capitalize text-xl hover:bg-black hover:text-orange-500 hover:duration-300 active:hover:scale-90">
 							<MdOutlineHistory size={24} />
@@ -180,7 +188,10 @@ function UserContext() {
 				{params.view === 'history_bet' && <HistoryBet />}
 				{params.view === 'history_activity' && <HistoryActivity />}
 				{params.view === 'history_service' && <HistoryService />}
-				{params.view === 'trade_gold' && <TradeGold />}
+				{params.view === 'trade_gold' && <TradeGold showNotice={showNotice} />}
+				{params.view === 'exchange_diamon' && (
+					<ExchangeGold showNotice={showNotice} />
+				)}
 				{params.view === 'table_misson' && (
 					<TableMission showNotice={showNotice} />
 				)}
@@ -291,8 +302,8 @@ function Profile() {
 
 	useEffect(() => {
 		if (user.isLogin && clans) {
-			const { clanId = null } = user.meta ?? {};
-			const target = clans.find((c) => c._id === clanId);
+			const { clanId } = user.meta ?? {};
+			const target = [...clans].find((c) => c._id === clanId);
 			if (target) {
 				setMyClan(target);
 			}
@@ -300,8 +311,18 @@ function Profile() {
 	}, [user, clans]);
 
 	useEffect(() => {
+		if (user.isLogin && clans) {
+			const { clanId } = user.meta ?? {};
+			const target = [...clans].find((c) => c._id === clanId);
+			if (target) {
+				setMyClan(target);
+			}
+		}
+	}, [user]);
+
+	useEffect(() => {
 		if (user.isLogin && users) {
-			const target = users.findIndex((u) => u._id === user._id);
+			const target = [...users].findIndex((u) => u._id === user._id);
 			if (target > -1) {
 				setTop(target + 1);
 			} else {
@@ -363,42 +384,55 @@ function Profile() {
 									</p>
 								</div>
 							</div>
-							<div className="flex flex-row gap-2 border-t border-current py-2 items-center select-none divide-x divide-black">
+							<div className="flex flex-row gap-2 border-t border-current py-2 items-center select-none">
 								{user?.meta?.vip && (
-									<div className="container-gold">
-										<h1
-											className="gold-text"
-											data-text={`VIP ${user?.meta?.vip}`}>
-											<span
-												className="gold-text__highlight"
-												data-text={`VIP ${user?.meta?.vip}`}>
-												VIP {user?.meta?.vip}
-											</span>
-										</h1>
-									</div>
-								)}
-								{myClan && (
-									<div className="flex flex-row items-center justify-center px-1">
+									<div
+										data-tip={`VIP ${user?.meta?.vip ?? '0'}`}
+										className="tooltip">
 										<div className="avatar">
-											<div className="w-8 rounded-xl">
+											<div className="w-12 rounded-xl">
 												<img
-													src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`}
+													src={`/image/vip/v${user?.meta?.vip ?? '0'}.png`}
+													alt={`VIP ${user?.meta?.vip ?? '0'}`}
 												/>
 											</div>
 										</div>
-										<p>{myClan?.meta?.name ?? ''}</p>
+									</div>
+								)}
+								{myClan && (
+									<div
+										data-tip={myClan?.meta?.name ?? ''}
+										className="tooltip">
+										<div className="flex flex-row items-center justify-center px-1">
+											<div className="avatar">
+												<div className="w-12 rounded-xl">
+													<img
+														src={`/image/banghoi/b${
+															myClan?.meta?.type ?? 1
+														}.gif`}
+														alt={`Clan ${myClan?.meta?.type ?? 1} icon`}
+													/>
+												</div>
+											</div>
+										</div>
 									</div>
 								)}
 								{top && (
 									<div className="flex flex-row items-center justify-center px-1">
 										{top && top > 0 && (
-											<div className="avatar">
-												<div className="w-8 rounded-xl">
-													<img src={`/image/rank/${top}_user.webp`} />
+											<div
+												data-tip={`TOP ${top}`}
+												className="tooltip">
+												<div className="avatar">
+													<div className="w-12 rounded-xl">
+														<img
+															src={`/image/rank/${top}_user.webp`}
+															alt={`Rank ${top} icon`}
+														/>
+													</div>
 												</div>
 											</div>
 										)}
-										<p>TOP {top}</p>
 									</div>
 								)}
 							</div>
@@ -450,8 +484,15 @@ function Profile() {
 								</span>
 							</div>
 							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-orange-700">
-								<GrMoney size={24} />
-								<p className="font-sf-trans-robotics ">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics text-amber-600">
 									{new Intl.NumberFormat('vi').format(
 										user.money ?? Math.floor(Math.random() * 10000),
 									)}
@@ -466,8 +507,15 @@ function Profile() {
 								</span>
 							</div>
 							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-500">
-								<RiVipFill size={24} />
-								<p className="font-sf-trans-robotics">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/vip/v${user?.meta?.vip ?? '0'}.png`}
+											alt={`VIP ${user?.meta?.vip ?? '0'}`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics text-violet-600">
 									{new Intl.NumberFormat('vi').format(user?.meta?.vip ?? 0)}
 								</p>
 							</div>
@@ -479,9 +527,16 @@ function Profile() {
 									Điểm
 								</span>
 							</div>
-							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
-								<GrTrigger size={24} />
-								<p className="font-sf-trans-robotics">
+							<div className="input input-bordered bg-black/50 border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/d1.png`}
+											alt={`Point Icon`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics text-lime-600">
 									{new Intl.NumberFormat('vi').format(
 										user?.meta?.totalScore ?? 0,
 									)}
@@ -491,6 +546,27 @@ function Profile() {
 								<span className="label-text-alt text-black">
 									Tích điểm nhận VIP
 								</span>
+							</div>
+						</div>
+						{/* Info Diamon */}
+						<div className="form-control w-full ">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Gem
+								</span>
+							</div>
+							<div className="input input-bordered bg-black/50 border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/gem.png`}
+											alt={`Gem Icon`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics text-lime-600">
+									{new Intl.NumberFormat('vi').format(user?.diamon ?? 0)}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -503,9 +579,282 @@ function Profile() {
 	);
 }
 
-// Chuyển Vàng
-function TradeGold() {
+// Đổi Gem to Vang
+function ExchangeGold(props: { showNotice: any }) {
+	const { showNotice } = props;
 	const user = useAppSelector((state) => state.user);
+	const econfig = useAppSelector((state) => state.econfig);
+	const [isLoad, setLoad] = useState<boolean>(false);
+	const [config, setConfig] = useState<EConfig>({});
+	const [field, setField] = useState<{
+		diamon?: number;
+	}>({});
+
+	const exchange = async () => {
+		try {
+			setLoad(true);
+			const { data } = await apiClient.post(
+				'/service/exchange',
+				{ ...field },
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNotice(data.message);
+		} catch (err: any) {
+			showNotice(err.response.data.message.message);
+		} finally {
+			setLoad(false);
+		}
+	};
+
+	useEffect(() => {
+		if (econfig) {
+			const target = [...econfig].find((e) => e.name === 'e_reward');
+			if (target) {
+				setConfig(target);
+			}
+		}
+	}, [econfig]);
+	return (
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+			<div className="flex flex-row gap-2 items-center">
+				<GiDragonShield size={34} />
+				<h1 className="font-protest-strike-regular uppercase text-2xl">
+					Đổi Vàng
+				</h1>
+			</div>
+
+			{!user.isLogin && (
+				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
+			)}
+			{user.isLogin && (
+				<div className="flex flex-col gap-2">
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Tài khoản
+							</span>
+						</div>
+						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2  font-bold">
+							<div className="avatar">
+								<div className="w-8 rounded-full">
+									<img src="/image/avatar/3.webp" />
+								</div>
+							</div>
+							<p>{user.username ?? 'rinx28'}</p>
+							<p>Máy Chủ {user.server ?? '1'}</p>
+						</div>
+					</div>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Gem
+							</span>
+						</div>
+						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 text-xl text-orange-700">
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>
+							<p className="font-sf-trans-robotics ">
+								{new Intl.NumberFormat('vi').format(user.diamon ?? 0)}
+							</p>
+						</div>
+					</div>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Gen Đổi
+							</span>
+						</div>
+						<div className="flex flex-row w-full justify-start items-center gap-2  font-number-font uppercase border-2 border-black px-2 rounded-btn z-10">
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>
+							<input
+								className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-sf-trans-robotics text-orange-700 text-xl"
+								type="text"
+								onChange={(e) => {
+									// Extract numeric part (removes any non-digit characters)
+									let value = getNumbetFromString(e.target.value);
+									e.target.value = value;
+									let new_value = value.split(/[,.]/g).join('');
+									setField((f) => ({ ...f, diamon: parseInt(new_value, 10) }));
+								}}
+							/>
+						</div>
+					</div>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Vàng nhận
+							</span>
+						</div>
+						<div className="flex flex-row w-full justify-start items-center gap-2  font-number-font uppercase border-2 border-black px-2 rounded-btn z-10">
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/s1.png`}
+										alt={`Icon gold`}
+									/>
+								</div>
+							</div>
+							<input
+								disabled
+								value={getNumbetFromString(
+									`${
+										(field?.diamon ?? 0) * (config?.option?.exchange ?? 1000)
+									}`,
+								)}
+								type="text"
+								className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-sf-trans-robotics text-orange-700 text-xl"
+							/>
+						</div>
+					</div>
+
+					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+						<p>Quy ước quy đổi:</p>
+						<div className="flex flex-row gap-1 items-center">
+							<p>1</p>
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>
+							<p> = </p>
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/s1.png`}
+										alt={`Icon gold`}
+									/>
+								</div>
+							</div>
+							<p>
+								{new Intl.NumberFormat('vi').format(
+									config?.option?.exchange ?? 1000,
+								)}
+							</p>
+						</div>
+						<div className="flex flex-row gap-1 items-center">
+							Cách thức tích lũy Gem
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>
+							:
+						</div>
+						<div className="flex flex-row gap-1 items-center">
+							Mỗi khi bạn nạp thỏi/vàng vào website, bạn sẽ nhận tương ứng một
+							lượng Gem
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>{' '}
+							nhất định
+						</div>
+						<div className="flex flex-row gap-1 items-center">
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/s1.png`}
+										alt={`Icon gold`}
+									/>
+								</div>
+							</div>
+							<p>{new Intl.NumberFormat('vi').format(1e6)}</p>
+							<p>/</p>
+
+							<p>{new Intl.NumberFormat('vi').format(1e5)}</p>
+							<p> = </p>
+							<p>1</p>
+							<div className="avatar">
+								<div className="w-4 rounded-xl">
+									<img
+										src={`/image/icon/gem.png`}
+										alt={`Icon Gem`}
+									/>
+								</div>
+							</div>
+						</div>
+						{/* <p>
+							Bạn chuyển trên <span className="text-red-500">500tr</span> sẽ
+							chịu <span className="text-red-500">10% fee</span> dịch vụ!
+						</p> */}
+					</div>
+					<button
+						onClick={exchange}
+						disabled={isLoad}
+						className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
+						{!isLoad ? (
+							<>
+								<FaExchangeAlt size={24} />
+								Đổi Ngay
+							</>
+						) : (
+							<span className="loading loading-bars loading-sm"></span>
+						)}
+					</button>
+				</div>
+			)}
+		</div>
+	);
+}
+
+function TradeGold(props: { showNotice: any }) {
+	const { showNotice } = props;
+	const user = useAppSelector((state) => state.user);
+	const [isLoad, setLoad] = useState<boolean>(false);
+	const [field, setField] = useState<{
+		targetId?: string;
+		amount?: number;
+		server?: string;
+	}>({
+		server: user.server,
+	});
+
+	const tranfer = async () => {
+		try {
+			setLoad(true);
+			const { data } = await apiClient.post(
+				'/service/tranfer',
+				{ ...field },
+				{
+					headers: {
+						Authorization: 'Bearer ' + user.token,
+					},
+				},
+			);
+			showNotice(data.message);
+		} catch (err: any) {
+			showNotice(err.response.data.message.message);
+		} finally {
+			setLoad(false);
+		}
+	};
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -519,108 +868,111 @@ function TradeGold() {
 				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
 			)}
 			{user.isLogin && (
-				<>
-					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-						{/* <p>
-						Bạn chỉ có thể chuyển tới những người chơi ở Máy Chủ{' '}
-						{user.server ?? '1'}
-					</p> */}
-						<p className="text-2xl font-protest-strike-regular capitalize">
-							Đang Cập Nhật{' '}
-							<span className="loading loading-dots loading-xs"></span>
-						</p>
+				<div className="flex flex-col gap-2">
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Tài khoản
+							</span>
+						</div>
+						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2  font-bold">
+							<div className="avatar">
+								<div className="w-8 rounded-full">
+									<img src="/image/avatar/3.webp" />
+								</div>
+							</div>
+							<p>{user.username ?? 'rinx28'}</p>
+							<p>Máy Chủ {user.server ?? '1'}</p>
+						</div>
 					</div>
-				</>
-			)}
-			{/* <div className="flex flex-col gap-2">
-				<div className="form-control w-full">
-					<div className="label">
-						<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-							Tài khoản
-						</span>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Số Dư
+							</span>
+						</div>
+						<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 text-xl text-orange-700">
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/s1.png`}
+										alt={`Icon gold`}
+									/>
+								</div>
+							</div>
+							<p className="font-sf-trans-robotics ">
+								{new Intl.NumberFormat('vi').format(user.money ?? 0)}
+							</p>
+						</div>
 					</div>
-					<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2  font-bold">
-						<FaRegUser size={24} />
-						<p>{user.username ?? 'rinx28'}</p>
-						<p>Máy Chủ {user.server ?? '1'}</p>
-					</div>
-				</div>
-				<div className="form-control w-full">
-					<div className="label">
-						<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-							Số Dư
-						</span>
-					</div>
-					<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 text-xl text-orange-700">
-						<GrMoney size={24} />
-						<p className="font-sf-trans-robotics ">
-							{new Intl.NumberFormat('vi').format(user.money ?? 0)}
-						</p>
-					</div>
-				</div>
-				<div className="form-control w-full">
-					<div className="label">
-						<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-							ID Người Nhận
-						</span>
-					</div>
-					<input
-						className="input text-orange-500"
-						type="text"
-						placeholder="Nhập ID Người Nhận"
-					/>
-				</div>
-				<div className="form-control w-full">
-					<div className="label">
-						<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-							Số vàng chuyển
-						</span>
-					</div>
-					<input
-						className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 text-xl font-number-font"
-						type="text"
-						placeholder="Nhập số vàng"
-						onChange={(e) => {
-							// Extract numeric part (removes any non-digit characters)
-							let value = getNumbetFromString(e.target.value);
-
-							// Update the input value with the formatted number
-							e.target.value = value;
-						}}
-					/>
-					<div className="label hidden">
-						<span className="label-text-alt text-black">
-							Số vàng bạn muốn chuyển cho người khác
-						</span>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								ID Người Nhận
+							</span>
+						</div>
 						<input
-							className="input text-orange-500 font-number-font"
+							className="input text-orange-500"
 							type="text"
-							placeholder="Nhập số vàng"
-							onChange={(e) => {
-								// Extract numeric part (removes any non-digit characters)
-								let value = getNumbetFromString(e.target.value);
-
-								// Update the input value with the formatted number
-								e.target.value = value;
-							}}
+							placeholder="Nhập ID Người Nhận"
+							onChange={(e) =>
+								setField((f) => ({ ...f, targetId: e.target.value }))
+							}
 						/>
 					</div>
-				</div>
+					<div className="form-control w-full">
+						<div className="label">
+							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+								Số vàng chuyển
+							</span>
+						</div>
+						<div className="flex flex-row w-full justify-start items-center gap-2  font-number-font uppercase border-2 border-black px-2 rounded-btn z-10">
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/s1.png`}
+										alt={`Icon gold`}
+									/>
+								</div>
+							</div>
+							<input
+								onChange={(e) => {
+									// Extract numeric part (removes any non-digit characters)
+									let value = getNumbetFromString(e.target.value);
+									e.target.value = value;
+									let new_value = value.split(/[,.]/g).join('');
+									setField((f) => ({ ...f, amount: parseInt(new_value, 10) }));
+								}}
+								type="text"
+								className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-sf-trans-robotics text-orange-700 text-xl"
+							/>
+						</div>
+					</div>
 
-				<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-					<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
-					<p>Đã sử dụng: 0</p>
-					<p>Vui lòng chơi để nâng thêm hạn mức !</p>
-					<p>
-						Bạn chuyển trên <span className="text-red-500">500tr</span> sẽ chịu{' '}
-						<span className="text-red-500">10% fee</span> dịch vụ!
-					</p>
+					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
+						<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
+						<p>Đã sử dụng: 0</p>
+						<p>Vui lòng chơi để nâng thêm hạn mức !</p>
+						{/* <p>
+							Bạn chuyển trên <span className="text-red-500">500tr</span> sẽ
+							chịu <span className="text-red-500">10% fee</span> dịch vụ!
+						</p> */}
+					</div>
+					<button
+						onClick={tranfer}
+						disabled={isLoad}
+						className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
+						{!isLoad ? (
+							<>
+								<FaExchangeAlt size={24} />
+								Chuyển Ngay
+							</>
+						) : (
+							<span className="loading loading-bars loading-sm"></span>
+						)}
+					</button>
 				</div>
-				<button className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
-					<FaExchangeAlt size={24} />
-					Chuyển Ngay
-				</button>
-			</div> */}
+			)}
 		</div>
 	);
 }
@@ -667,7 +1019,7 @@ function HistoryService() {
 
 	useEffect(() => {
 		if (services) {
-			const targets = services.filter(
+			const targets = [...services].filter(
 				(service) => service.uid === (user._id ?? ''),
 			);
 			let new_main_server = targets;
@@ -802,8 +1154,11 @@ function HistoryService() {
 											amount,
 											status,
 											isEnd,
-											revice,
+											revice = 0,
 										} = service;
+										const revice_m = ['0', '2'].includes(type ?? '')
+											? revice * 37e6
+											: revice;
 										return (
 											<tr key={i + 'history_service'}>
 												<td>{server}</td>
@@ -821,7 +1176,7 @@ function HistoryService() {
 													{new Intl.NumberFormat('vi').format(amount ?? 0)}
 												</td>
 												<td className="font-number-font">
-													{new Intl.NumberFormat('vi').format(revice ?? 0)}
+													{new Intl.NumberFormat('vi').format(revice_m)}
 												</td>
 												<td>
 													<div
@@ -998,7 +1353,7 @@ function HistoryBet() {
 
 	useEffect(() => {
 		if (userBets) {
-			const targets = userBets.filter(
+			const targets = [...userBets].filter(
 				(bet) => bet.uid === (user._id ?? '') && bet.server === server,
 			);
 			let new_main_server = targets;
@@ -1532,7 +1887,7 @@ function TableMission(props: { showNotice: any }) {
 
 	useEffect(() => {
 		if (econfig && user.isLogin) {
-			const target = econfig.find((e) => e.name === 'e_reward');
+			const target = [...econfig].find((e) => e.name === 'e_reward');
 			if (target) {
 				setDaily(target?.option?.daily ?? []);
 			}
@@ -1569,10 +1924,22 @@ function TableMission(props: { showNotice: any }) {
 			{user.isLogin && (
 				<div className="flex flex-col gap-5">
 					<div className="flex flex-col gap-1 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-						<p>
+						<div className="flex flex-row gap-2 items-center">
 							Tổng điểm của bạn:{' '}
-							{new Intl.NumberFormat('vi').format(user?.meta?.totalTrade ?? 0)}
-						</p>
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/d1.png`}
+										alt={`Point Icon`}
+									/>
+								</div>
+							</div>
+							<p className="font-sf-trans-robotics text-lime-600">
+								{new Intl.NumberFormat('vi').format(
+									user?.meta?.totalTrade ?? 0,
+								)}
+							</p>
+						</div>
 					</div>
 					<div className="overflow-auto w-full select-none">
 						<div className="grid grid-flow-col gap-5">
@@ -1595,7 +1962,7 @@ function TableMission(props: { showNotice: any }) {
 													alt={`icon ball ${i + 1}`}
 												/>
 											</div>
-											<div className="flex flex-col gap-2 p-2">
+											<div className="flex flex-col gap-2 p-2 text-nowrap">
 												<h2 className="flex flex-row gap-2 items-center">
 													Nhiệm Vụ {i + 1}
 													<div className="badge">
@@ -1698,7 +2065,7 @@ function TableVIP(props: { showNotice: any }) {
 
 	useEffect(() => {
 		if (econfig && user.isLogin) {
-			const target = econfig.find((e) => e.name === 'e_reward');
+			const target = [...econfig].find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setVipClain(vipLevels);
@@ -1714,7 +2081,7 @@ function TableVIP(props: { showNotice: any }) {
 			}
 		};
 		if (econfig) {
-			const target = econfig.find((e) => e.name === 'e_reward');
+			const target = [...econfig].find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setTutorial(vipLevels);
@@ -1757,10 +2124,22 @@ function TableVIP(props: { showNotice: any }) {
 			{user.isLogin && (
 				<div className="flex flex-col gap-5">
 					<div className="flex flex-col gap-1 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
-						<p>
+						<div className="flex flex-row gap-2 items-center">
 							Tổng điểm của bạn:{' '}
-							{new Intl.NumberFormat('vi').format(user?.meta?.totalTrade ?? 0)}
-						</p>
+							<div className="avatar">
+								<div className="w-8 rounded-xl">
+									<img
+										src={`/image/icon/d1.png`}
+										alt={`Point Icon`}
+									/>
+								</div>
+							</div>
+							<p className="font-sf-trans-robotics text-lime-600">
+								{new Intl.NumberFormat('vi').format(
+									user?.meta?.totalTrade ?? 0,
+								)}
+							</p>
+						</div>
 					</div>
 					<div className="overflow-auto w-full select-none">
 						<div className="grid grid-flow-col gap-5">
@@ -1946,20 +2325,41 @@ function TableVIP(props: { showNotice: any }) {
 export default UserContext;
 
 const KeyConfig = [
-	{ key: 'w_gold', name: 'Rút vàng' },
-	{ key: 'cancel_w_gold', name: 'Hủy rút vàng' },
-	{ key: 'd_gold', name: 'Nạp vàng' },
-	{ key: 'cancel_d_gold', name: 'Hủy nạp vàng' },
-	{ key: 'd_rgold', name: 'Nạp thỏi vàng' },
-	{ key: 'cancel_d_rgold', name: 'Hủy nạp thỏi vàng' },
+	// Rút rgold & gold
 	{ key: 'w_rgold', name: 'Rút thỏi vàng' },
+	{ key: 'w_gold', name: 'Rút vàng' },
+	{ key: 'w_s_rgold', name: 'Rút Thỏi Vàng Thành Công' },
+	{ key: 'w_s_gold', name: 'Rút Vàng Thành Công' },
+	{ key: 'w_c_rgold', name: 'Hủy rút thỏi vàng' },
+	{ key: 'w_c_gold', name: 'Hủy rút vàng' },
 	{ key: 'cancel_w_rgold', name: 'Hủy rút thỏi vàng' },
+	{ key: 'cancel_w_gold', name: 'Hủy rút vàng' },
+	// Nạp
+	{ key: 'd_rgold', name: 'Nạp thỏi vàng' },
+	{ key: 'd_gold', name: 'Nạp vàng' },
+	{ key: 'd_s_rgold', name: 'Nạp Thỏi Vàng Thành Công' },
+	{ key: 'd_s_gold', name: 'Nạp Vàng Thành Công' },
+	{ key: 'd_c_rgold', name: 'Hủy nạp thỏi vàng' },
+	{ key: 'd_c_gold', name: 'Hủy nạp vàng' },
+	{ key: 'cancel_d_rgold', name: 'Hủy nạp thỏi vàng' },
+	{ key: 'cancel_d_gold', name: 'Hủy nạp vàng' },
+	// Bet
 	{ key: 'winer_bet', name: 'Thắng cược' },
 	{ key: 'place_bet', name: 'Cược' },
 	{ key: 'cancel_bet', name: 'Hủy Cược' },
+	{ key: 'win_jackpot', name: 'Thắng Jackpot' },
+	// top
 	{ key: 'top_clan', name: 'TOP Clan' },
 	{ key: 'top_day', name: 'TOP Day' },
+	// auth
 	{ key: 'login', name: 'Đăng nhập' },
 	{ key: 'resigter', name: 'Đăng ký' },
-	{ key: 'change_pwd', name: 'Đổi mật khẩu' },
+	// reward
+	{ key: 'reward_vip', name: 'Nhận thưởng VIP' },
+	{ key: 'reward_daily', name: 'Nhận thưởng nhiệm vụ' },
+	// something
+	{ key: 'upgrade_vip', name: 'Cập Nhật VIP' },
+	{ key: 'exchange_diamon', name: 'Đổi Gem' },
+	{ key: 'tranfer_f', name: 'Chuyển vàng đi' },
+	{ key: 'tranfer_t', name: 'Nhận chuyển vàng' },
 ];

@@ -249,6 +249,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 		// listBot();
 	}, []);
 
+	// Auto TOP
 	useEffect(() => {
 		let loop = setInterval(() => {
 			const rankClan = async () => {

@@ -230,7 +230,7 @@ function Home() {
 	// Update Realtime Minigame with Server
 	useEffect(() => {
 		if (server) {
-			const target = minigame.find((m) => m.server === server);
+			const target = [...minigame].find((m) => m.server === server);
 			setGameBox(target);
 		}
 		return () => {
@@ -276,7 +276,7 @@ function Home() {
 	// Update realtime chat;
 	useEffect(() => {
 		if (server && messages && messages.length > 0) {
-			const targets = messages
+			const targets = [...messages]
 				?.filter((m) => m?.server === server || m?.server === 'all')
 				.sort(
 					(a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
@@ -304,7 +304,7 @@ function Home() {
 	// Update banner
 	useEffect(() => {
 		if (econfig) {
-			const target = econfig.find((e) => e.name === 'e_banner');
+			const target = [...econfig].find((e) => e.name === 'e_banner');
 			if (target) {
 				setBanner(target?.option?.banner ?? []);
 			}
@@ -712,10 +712,14 @@ function Home() {
 								<IoLogoGameControllerB size={24} />
 							</div>
 							<div className="flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
-								<GrMoney
-									size={24}
-									className={`text-orange-500`}
-								/>
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 								<p className={`text-white font-number-font font-bold`}>
 									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 								</p>
@@ -923,13 +927,18 @@ function Home() {
 								<div
 									data-tip="Xóa"
 									className="tooltip tooltip-left">
-									<button
+									<div
+										className="avatar cursor-pointer"
 										onClick={() =>
 											setBetField((f) => ({ ...f, amount: '0', place: '' }))
-										}
-										className="text-red-500">
-										<GrMoney size={24} />
-									</button>
+										}>
+										<div className="w-8 rounded-xl">
+											<img
+												src={`/image/icon/s1.png`}
+												alt={`Icon gold`}
+											/>
+										</div>
+									</div>
 								</div>
 								<input
 									onChange={(e) => {
@@ -1025,7 +1034,6 @@ function Home() {
 									const targetClan = clans.find((c) => c._id === clanId);
 									const topIndex = users.findIndex((u) => u._id === uid);
 									const top = topIndex > -1 ? topIndex + 1 : null;
-									console.log(targetClan, top, vip);
 									return (
 										<div
 											key={i + 'chat_box'}
@@ -1048,8 +1056,8 @@ function Home() {
 												<div
 													className={`flex ${
 														uid !== (user._id ?? '')
-															? 'flex-row'
-															: 'flex-row-reverse'
+															? 'flex-row-reverse'
+															: 'flex-row'
 													} flex-wrap gap-2 items-center`}>
 													{top && (
 														<div
@@ -1062,7 +1070,7 @@ function Home() {
 															<div className="flex flex-row items-center justify-center px-1">
 																{top && top > 0 && (
 																	<div className="avatar">
-																		<div className="w-8 rounded-xl">
+																		<div className="w-10 rounded-xl">
 																			<img
 																				src={`/image/rank/${top}_user.webp`}
 																			/>
@@ -1082,7 +1090,7 @@ function Home() {
 															}`}>
 															<div className="flex flex-row items-center justify-center px-1">
 																<div className="avatar">
-																	<div className="w-8 rounded-xl">
+																	<div className="w-10 rounded-xl">
 																		<img
 																			src={`/image/banghoi/b${
 																				targetClan?.meta?.type ?? 1
@@ -1094,16 +1102,21 @@ function Home() {
 														</div>
 													)}
 													{vip && vip > 0 && (
-														<div className="container-gold">
-															<h1
-																className="gold-text"
-																data-text={`VIP ${vip}`}>
-																<span
-																	className="gold-text__highlight"
-																	data-text={`VIP ${vip}`}>
-																	VIP {vip}
-																</span>
-															</h1>
+														<div
+															data-tip={`VIP ${vip ?? '0'}`}
+															className={`z-[1000] tooltip  ${
+																uid !== (user._id ?? '')
+																	? 'tooltip-right'
+																	: 'tooltip-left'
+															}`}>
+															<div className="avatar">
+																<div className="w-10 rounded-xl">
+																	<img
+																		src={`/image/vip/v${vip ?? '0'}.png`}
+																		alt={`VIP ${vip ?? '0'}`}
+																	/>
+																</div>
+															</div>
 														</div>
 													)}
 													{uid === 'local'

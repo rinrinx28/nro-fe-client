@@ -95,7 +95,11 @@ function Navbar() {
 							href={'/user/profile'}
 							className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
 							<div className="flex flex-row items-center gap-2">
-								<FaUser size={24} />
+								<div className="avatar">
+									<div className="w-8 rounded-full">
+										<img src="/image/avatar/3.webp" />
+									</div>
+								</div>
 								{user.name}
 							</div>
 							-
@@ -103,7 +107,14 @@ function Navbar() {
 								<p className="font-number-font">
 									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 								</p>
-								<GrMoney size={24} />
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 							</div>
 						</Link>
 						<button
@@ -144,14 +155,25 @@ function Navbar() {
 											href={'/user/profile'}
 											className="flex flex-col items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
 											<div className="flex flex-row items-center gap-2">
-												<FaUser size={24} />
+												<div className="avatar">
+													<div className="w-8 rounded-full">
+														<img src="/image/avatar/3.webp" />
+													</div>
+												</div>
 												{user.name}
 											</div>
 											<div className="flex flex-row items-center gap-2">
 												<p className="font-number-font">
 													{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 												</p>
-												<GrMoney size={24} />
+												<div className="avatar">
+													<div className="w-8 rounded-xl">
+														<img
+															src={`/image/icon/s1.png`}
+															alt={`Icon gold`}
+														/>
+													</div>
+												</div>
 											</div>
 										</Link>
 									</li>

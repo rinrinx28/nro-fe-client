@@ -167,7 +167,7 @@ function Deposit() {
 			}
 		};
 		if (econfig) {
-			const target = econfig.find((e) => e.name === 'e_reward');
+			const target = [...econfig].find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setTutorial(vipLevels);
@@ -188,7 +188,7 @@ function Deposit() {
 			}
 		};
 		if (econfig) {
-			const target = econfig.find((e) => e.name === 'e_reward');
+			const target = [...econfig].find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setTutorial(vipLevels);
@@ -242,19 +242,42 @@ function Deposit() {
 						Hệ thống tự động hủy đơn sau 10 phút nếu chưa giao dịch thành công
 					</p>
 					<p>Hãy tìm khu không có Virus/BOSS để tránh bị hủy GD giữa chừng.</p>
+					<div>
+						Nạp thỏi/vàng tích lũy điểm{' '}
+						<button
+							onClick={() => {
+								let dialog = document.getElementById(
+									'tutorial_vip',
+								) as HTMLDialogElement;
+								if (dialog) {
+									dialog.show();
+								}
+							}}
+							className="text-orange-500 btn btn-sm font-protest-strike-regular">
+							nâng VIP
+						</button>
+					</div>
 				</div>
 				<div className="flex lg:flex-row flex-col w-full gap-2">
 					{/* Giao Dịch */}
 					<form
 						onSubmit={handleSubmit}
 						className="flex flex-col w-full lg:max-w-md rounded-box border border-current bg-white">
-						<div className="w-full bg-orange-500 text-white text-center rounded-t-box py-4">
-							<h1 className="font-protest-strike-regular">
-								Số Dư:{' '}
-								<span className="font-sf-trans-robotics">
+						<div className="w-full bg-orange-500 text-white text-center rounded-t-box py-4 flex flex-row items-center justify-center gap-4 font-protest-strike-regular">
+							<h1>Số Dư:</h1>
+							<div className="flex flex-row gap-1 items-center">
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
+								<p className="font-sf-trans-robotics">
 									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
-								</span>
-							</h1>
+								</p>
+							</div>
 						</div>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
@@ -342,7 +365,14 @@ function Deposit() {
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<GrMoney />
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 								<input
 									value={getNumbetFromString(field.amount ?? '')}
 									onChange={(e) => {
@@ -391,7 +421,14 @@ function Deposit() {
 								<span className="label-text-alt">Số vàng nhận</span>
 							</div>
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<GrMoney />
+								<div className="avatar">
+									<div className="w-8 rounded-xl">
+										<img
+											src={`/image/icon/s1.png`}
+											alt={`Icon gold`}
+										/>
+									</div>
+								</div>
 								<input
 									type="text"
 									className="grow"
@@ -529,8 +566,9 @@ function Deposit() {
 										status,
 										amount,
 										updatedAt,
-										revice,
+										revice = 0,
 									} = s;
+									const revice_m = type === '2' ? revice * 37e6 : revice;
 									return (
 										<tr key={i + 'deposit_bot'}>
 											<td>{server}</td>
@@ -540,7 +578,7 @@ function Deposit() {
 												{new Intl.NumberFormat('vi').format(amount ?? 0)}
 											</td>
 											<td className="font-number-font">
-												{new Intl.NumberFormat('vi').format(revice ?? 0)}
+												{new Intl.NumberFormat('vi').format(revice_m)}
 											</td>
 											<td>
 												<div

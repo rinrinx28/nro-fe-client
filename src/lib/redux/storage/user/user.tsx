@@ -13,6 +13,7 @@ export interface User {
 	meta?: Record<string, any>;
 	isBaned?: boolean;
 	server?: string;
+	diamon?: number;
 	updatedAt?: Date;
 	createdAt?: Date;
 }
