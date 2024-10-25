@@ -19,7 +19,7 @@ import { DiVim } from 'react-icons/di';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
 import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
-import { Clan } from '@/lib/redux/storage/clan/clans';
+import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
 import { getNumbetFromString } from '@/components/pages/main/home';
 
 type PageView =
@@ -299,6 +299,40 @@ function Profile() {
 	const users = useAppSelector((state) => state.userTop);
 	const [top, setTop] = useState<number | null>(null);
 	const [myClan, setMyClan] = useState<Clan>();
+	const dispatch = useAppDispatch()
+
+	
+	// Auto Call Request;
+	useEffect(() => {
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
+
+		listClan();
+		listConfig();
+		// listBot();
+	}, []);
 
 	useEffect(() => {
 		if (user.isLogin && clans) {

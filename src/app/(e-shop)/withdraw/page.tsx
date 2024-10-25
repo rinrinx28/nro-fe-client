@@ -7,9 +7,10 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
-import { EConfig } from '@/lib/redux/storage/eshop/config';
+import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
 import { Bot } from '@/lib/redux/storage/eshop/bots';
 import { setService } from '@/lib/redux/storage/eshop/service';
+import { setClans } from '@/lib/redux/storage/clan/clans';
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
@@ -189,6 +190,38 @@ function Withdraw() {
 		if (user.isLogin) {
 			getServices();
 		}
+	}, []);
+
+	// Auto Call Request;
+	useEffect(() => {
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
+
+		// listClan();
+		listConfig();
+		// listBot();
 	}, []);
 	return (
 		<div
