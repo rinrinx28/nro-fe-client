@@ -1860,9 +1860,8 @@ function TableVIP(props: { showNotice: any }) {
 							<tbody>
 								{/* row 1 */}
 								{vipClaim.map((v, i) => {
-									const { level = i + 1, dailyPointsTarget = 0 } = v;
+									const { level = i + 1, dailyPointsTarget = 0, money = 0 } = v;
 									const { vip = 0, totalTrade = 0 } = user.meta ?? {};
-									const money = user.money ?? 0;
 									const isVip = level === vip;
 									const isGot = totalTrade >= dailyPointsTarget;
 									return (
