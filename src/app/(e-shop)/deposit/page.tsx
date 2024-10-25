@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Bot } from '@/lib/redux/storage/eshop/bots';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import { setService } from '@/lib/redux/storage/eshop/service';
+import Modal from '@/components/controller/Modal';
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
@@ -20,6 +21,7 @@ function Deposit() {
 
 	const [eshop, setEshop] = useState<EConfig>({});
 	const [botD, setBotD] = useState<Bot[]>([]);
+	const [tutorial, setTutorial] = useState<any[]>([]);
 	const [field, setField] = useState<InputField>({
 		type: '0',
 		typeGold: 'gold',
@@ -155,6 +157,49 @@ function Deposit() {
 			setEshop(e_shop);
 		}
 	}, [econfig]);
+
+	// Show Tutorial
+	useEffect(() => {
+		const showTutorialVIP = () => {
+			let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+			}
+		};
+		if (econfig) {
+			const target = econfig.find((e) => e.name === 'e_reward');
+			if (target) {
+				const vipLevels = target?.option?.vipLevels ?? [];
+				setTutorial(vipLevels);
+				let timeout = setTimeout(() => {
+					showTutorialVIP();
+				}, 2e3);
+
+				return () => clearTimeout(timeout);
+			}
+		}
+	}, [econfig]);
+
+	useEffect(() => {
+		const showTutorialVIP = () => {
+			let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+			}
+		};
+		if (econfig) {
+			const target = econfig.find((e) => e.name === 'e_reward');
+			if (target) {
+				const vipLevels = target?.option?.vipLevels ?? [];
+				setTutorial(vipLevels);
+				let timeout = setTimeout(() => {
+					showTutorialVIP();
+				}, 2e3);
+
+				return () => clearTimeout(timeout);
+			}
+		}
+	}, []);
 
 	useEffect(() => {
 		const getServices = async () => {
@@ -549,6 +594,59 @@ function Deposit() {
 					</div>
 				</div>
 			</dialog>
+
+			<Modal
+				id="tutorial_vip"
+				customClass="max-w-4xl w-full font-chakra-petch">
+				<h1 className="font-bold text-lg">Thông báo người chơi</h1>
+				<p>
+					Nạp vàng tích điểm lên{' '}
+					<span className="text-orange-500">thành viên VIP</span>
+				</p>
+				<div className="overflow-x-auto">
+					<table className="table font-bold">
+						{/* head */}
+						<thead>
+							<tr className="text-xl text-center text-white bg-orange-500">
+								<th>VIP</th>
+								<th>Số Vàng Nạp</th>
+								<th>Số Vàng nhận</th>
+							</tr>
+						</thead>
+						<tbody>
+							{/* row 1 */}
+							{tutorial.map((d, i) => {
+								const { requiredPoints = 0, money = 0 } = d;
+								return (
+									<tr
+										key={i + 'tutorial_daily'}
+										className={`text-center ${
+											i % 2 !== 0 ? 'bg-base-200 text-white' : ''
+										}`}>
+										<th>{i + 1}</th>
+										<td>
+											{new Intl.NumberFormat('vi').format(requiredPoints)}
+										</td>
+										<td>{new Intl.NumberFormat('vi').format(money)}/ngày</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+				<p className="max-w-xl w-full flex flex-col">
+					<span>
+						<span className="text-primary">Lưu ý:</span> Số thỏi vàng nhận chỉ
+						duy trì <span className="text-primary">30 ngày</span> kể từ ngày đầu
+						tiên kích hoạt <span className="text-primary">VIP</span>
+					</span>
+					<span>
+						- Sau <span className="text-primary">7 ngày</span> liên tục không
+						tham gia hoạt động <span className="text-primary">VIP</span> sẽ bị{' '}
+						<span className="text-primary">mất quyền lợi VIP</span>
+					</span>
+				</p>
+			</Modal>
 		</div>
 	);
 }
