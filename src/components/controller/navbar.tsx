@@ -156,6 +156,26 @@ function Navbar() {
 										</Link>
 									</li>
 								)}
+								{!user.isLogin && (
+									<>
+										<li>
+											<Link
+												href="/login"
+												className="link decoration-transparent flex justify-start items-center gap-2">
+												<RiLoginBoxFill size={24} />
+												<p>Đăng nhập</p>
+											</Link>
+										</li>
+										<li>
+											<Link
+												href="/resigter"
+												className="link decoration-transparent flex justify-start items-center gap-2">
+												<RiLoginBoxFill size={24} />
+												<p>Đăng Ký</p>
+											</Link>
+										</li>
+									</>
+								)}
 								<li>
 									<Link
 										href="/"
