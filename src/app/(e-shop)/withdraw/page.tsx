@@ -163,6 +163,38 @@ function Withdraw() {
 		setBotD(bots);
 	}, [bots]);
 
+	// Auto Call Request;
+	useEffect(() => {
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
+
+		listClan();
+		listConfig();
+		// listBot();
+	}, []);
+
 	// Update data ESHOP;
 	useEffect(() => {
 		const e_shop = econfig.find((e) => e.name === 'e_shop');

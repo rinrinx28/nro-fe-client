@@ -173,7 +173,7 @@ function Deposit() {
 		// 	}
 		// };
 
-		// listClan();
+		listClan();
 		listConfig();
 		// listBot();
 	}, []);

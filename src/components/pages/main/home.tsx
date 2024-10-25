@@ -33,7 +33,8 @@ import apiClient from '@/lib/server/apiClient';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import { useSocket } from '@/lib/server/socket';
 import { TbPokerChip } from 'react-icons/tb';
-import { Clan } from '@/lib/redux/storage/clan/clans';
+import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
+import { setConfigs } from '@/lib/redux/storage/eshop/config';
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -310,6 +311,38 @@ function Home() {
 			}
 		}
 	}, [econfig]);
+
+	// Auto Call Request;
+	useEffect(() => {
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		// const listBot = async () => {
+		// 	try {
+		// 		const { data } = await apiClient.get('/bot/list');
+		// 		dispatch(setBots(data));
+		// 	} catch (err: any) {
+		// 		console.log(err.response.data.message.message);
+		// 	}
+		// };
+
+		listClan();
+		listConfig();
+		// listBot();
+	}, []);
 
 	const openTutorialJackpot = () => {
 		let dialog = document.getElementById(
