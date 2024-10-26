@@ -10,7 +10,7 @@ function Modal({ id, customClass, children }: ConfigModal) {
 	return (
 		<dialog
 			id={id}
-			className="modal p-2">
+			className="modal p-2 x-[1200]">
 			<div
 				className={`modal-box ${
 					customClass ?? 'none'
