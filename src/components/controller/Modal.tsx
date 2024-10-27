@@ -14,7 +14,7 @@ function Modal({ id, customClass, children }: ConfigModal) {
 			<div
 				className={`modal-box ${
 					customClass ?? 'none'
-				} text-white font-chakra-petch bg-black/70 backdrop-blur-lg`}>
+				} text-white font-chakra-petch bg-black/70 backdrop-blur-lg z-[1200]`}>
 				<div className="absolute top-0 left-0 w-full h-full -z-10">
 					<div className="border-ani border-none w-full h-full">
 						<svg

@@ -478,6 +478,14 @@ function Home() {
 						</li>
 						<li>
 							<Link
+								href={'/user/exchange_diamon'}
+								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
+								<FaExchangeAlt size={24} />
+								Đổi Vàng
+							</Link>
+						</li>
+						<li>
+							<Link
 								href={'/user/table_misson'}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaTable size={24} />

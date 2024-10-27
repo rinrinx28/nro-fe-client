@@ -242,6 +242,14 @@ function Navbar() {
 										</li>
 										<li>
 											<Link
+												href={'/user/exchange_diamon'}
+												className="link decoration-transparent flex justify-start items-center gap-2">
+												<FaExchangeAlt size={24} />
+												Đổi Vàng
+											</Link>
+										</li>
+										<li>
+											<Link
 												href={'/user/history_service'}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
