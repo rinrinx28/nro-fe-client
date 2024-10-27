@@ -299,9 +299,8 @@ function Profile() {
 	const users = useAppSelector((state) => state.userTop);
 	const [top, setTop] = useState<number | null>(null);
 	const [myClan, setMyClan] = useState<Clan>();
-	const dispatch = useAppDispatch()
+	const dispatch = useAppDispatch();
 
-	
 	// Auto Call Request;
 	useEffect(() => {
 		const listClan = async () => {
@@ -819,9 +818,8 @@ function ExchangeGold(props: { showNotice: any }) {
 									/>
 								</div>
 							</div>
-							<p>{new Intl.NumberFormat('vi').format(1e6)}</p>
+							<p>{new Intl.NumberFormat('vi').format(1e5)}</p>
 							<p>/</p>
-
 							<p>{new Intl.NumberFormat('vi').format(1e5)}</p>
 							<p> = </p>
 							<p>1</p>
