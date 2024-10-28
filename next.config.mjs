@@ -16,7 +16,6 @@ const nextConfig = {
 	reactStrictMode: false,
 	swcMinify: true,
 	experimental: {
-		useLightningcss: true,
 		webVitalsAttribution: ['CLS', 'LCP'],
 	},
 };
