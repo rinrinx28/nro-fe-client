@@ -77,12 +77,16 @@ export default function RootLayout({
 				<Providers>
 					<SocketProvider>
 						<Navbar />
-						<Suspense fallback={<Loading />}>
+						{/* <Suspense fallback={<Loading />}>
 							{children}
 							<CircularMenu />
 							<Clans />
 							<Footer />
-						</Suspense>
+						</Suspense> */}
+						{children}
+						<CircularMenu />
+						<Clans />
+						<Footer />
 					</SocketProvider>
 				</Providers>
 			</body>
