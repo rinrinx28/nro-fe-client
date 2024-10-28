@@ -30,84 +30,84 @@ function Withdraw() {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
-		setLoad((e) => !e);
-		// Config with ESHOP;
-		const {
-			min_gold = 50e6,
-			min_rgold = 5,
-			max_gold = 600e6,
-			max_rgold = 40,
-		} = eshop.option ?? {};
-
-		const playerNameElement = e.currentTarget.elements.namedItem(
-			'playerName',
-		) as HTMLInputElement;
-		const amountElement = e.currentTarget.elements.namedItem(
-			'amount',
-		) as HTMLInputElement;
-
-		// Check if the playerName is empty
-		if (!field.playerName || field.playerName.trim().length === 0) {
-			playerNameElement.setCustomValidity('Tên nhân vật là bắt buộc.');
-		} else {
-			playerNameElement.setCustomValidity(''); // Clear error if valid
-		}
-
-		// Check if the amount is empty or not a valid number
-		if (
-			!field.amount ||
-			isNaN(Number(field.amount)) ||
-			Number(field.amount) <= 0
-		) {
-			amountElement.setCustomValidity(
-				`Nhập số lượng ${
-					field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
-				} là bắt buộc.`,
-			);
-		} else {
-			amountElement.setCustomValidity(''); // Clear error if valid
-		}
-
-		// Trigger validation
-		if (
-			!playerNameElement.reportValidity() ||
-			!amountElement.reportValidity()
-		) {
-			return; // Stop submission if input is invalid
-		}
-
-		if (field.typeGold === 'gold') {
-			if (Number(field.amount) < min_gold)
-				amountElement.setCustomValidity(
-					`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
-						min_gold,
-					)} vàng`,
-				);
-			if (Number(field.amount) > max_gold)
-				amountElement.setCustomValidity(
-					`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
-						max_gold,
-					)} vàng`,
-				);
-		}
-
-		if (field.typeGold === 'rgold') {
-			if (Number(field.amount) < min_rgold)
-				amountElement.setCustomValidity(
-					`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
-						min_rgold,
-					)} thỏi vàng`,
-				);
-			if (Number(field.amount) > max_rgold)
-				amountElement.setCustomValidity(
-					`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
-						max_rgold,
-					)} thỏi vàng`,
-				);
-		}
 
 		// If valid, proceed with form submission logic
 		try {
+			setLoad(true);
+			// Config with ESHOP;
+			const {
+				min_gold = 50e6,
+				min_rgold = 5,
+				max_gold = 600e6,
+				max_rgold = 40,
+			} = eshop.option ?? {};
+
+			const playerNameElement = e.currentTarget.elements.namedItem(
+				'playerName',
+			) as HTMLInputElement;
+			const amountElement = e.currentTarget.elements.namedItem(
+				'amount',
+			) as HTMLInputElement;
+
+			// Check if the playerName is empty
+			if (!field.playerName || field.playerName.trim().length === 0) {
+				playerNameElement.setCustomValidity('Tên nhân vật là bắt buộc.');
+			} else {
+				playerNameElement.setCustomValidity(''); // Clear error if valid
+			}
+
+			// Check if the amount is empty or not a valid number
+			if (
+				!field.amount ||
+				isNaN(Number(field.amount)) ||
+				Number(field.amount) <= 0
+			) {
+				amountElement.setCustomValidity(
+					`Nhập số lượng ${
+						field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
+					} là bắt buộc.`,
+				);
+			} else {
+				amountElement.setCustomValidity(''); // Clear error if valid
+			}
+
+			// Trigger validation
+			if (
+				!playerNameElement.reportValidity() ||
+				!amountElement.reportValidity()
+			) {
+				return; // Stop submission if input is invalid
+			}
+
+			if (field.typeGold === 'gold') {
+				if (Number(field.amount) < min_gold)
+					amountElement.setCustomValidity(
+						`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
+							min_gold,
+						)} vàng`,
+					);
+				if (Number(field.amount) > max_gold)
+					amountElement.setCustomValidity(
+						`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
+							max_gold,
+						)} vàng`,
+					);
+			}
+
+			if (field.typeGold === 'rgold') {
+				if (Number(field.amount) < min_rgold)
+					amountElement.setCustomValidity(
+						`Bạn không thể rút thấp hơn ${new Intl.NumberFormat('vi').format(
+							min_rgold,
+						)} thỏi vàng`,
+					);
+				if (Number(field.amount) > max_rgold)
+					amountElement.setCustomValidity(
+						`Bạn không thể rút lớn hơn ${new Intl.NumberFormat('vi').format(
+							max_rgold,
+						)} thỏi vàng`,
+					);
+			}
 			const { typeGold, amount, playerName } = field;
 			const { data } = await apiClient.post(
 				'/service/create',
@@ -126,8 +126,9 @@ function Withdraw() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
-		setLoad((e) => !e);
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -257,7 +258,7 @@ function Withdraw() {
 	}, []);
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/logo_withdraw.jpg')" }}
+			style={{ backgroundImage: "url('/image/background/logo_withdraw.webp')" }}
 			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover select-none">
 			<div className="flex flex-col gap-2 w-full max-w-7xl rounded-box shadow-lg shadow-white/80 bg-white/50 backdrop-blur-lg text-black p-8">
 				<h1 className="w-full text-center font-chakra-petch font-bold uppercase text-4xl text-amber-800">

@@ -355,7 +355,7 @@ function Home() {
 
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/2.png')" }}
+			style={{ backgroundImage: "url('/image/background/2_main.webp')" }}
 			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
 			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full">

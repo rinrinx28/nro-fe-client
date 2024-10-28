@@ -115,7 +115,7 @@ function UserContext() {
 	}, []);
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/logo_user.jpg')" }}
+			style={{ backgroundImage: "url('/image/background/logo_user.webp')" }}
 			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8">
 			<div className="flex flex-row w-full gap-2 max-w-7xl h-full">
 				{/* Navigate User */}

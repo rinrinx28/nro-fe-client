@@ -220,7 +220,7 @@ function Resigter() {
 				{/*  */}
 				<div
 					style={{
-						backgroundImage: "url('/image/background/logo_resigter.jpg')",
+						backgroundImage: "url('/image/background/logo_resigter.webp')",
 					}}
 					className="h-[600px] w-full bg-no-repeat bg-cover bg-center rounded-l-box md:inline-block hidden"></div>
 			</div>

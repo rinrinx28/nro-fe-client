@@ -32,68 +32,68 @@ function Deposit() {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
-		setLoad((e) => !e);
-
-		const playerNameElement = e.currentTarget.elements.namedItem(
-			'playerName',
-		) as HTMLInputElement;
-		const amountElement = e.currentTarget.elements.namedItem(
-			'amount',
-		) as HTMLInputElement;
-
-		// Config with ESHOP;
-		const { min_gold = 50e6, min_rgold = 5 } = eshop.option ?? {};
-
-		// Check if the playerName is empty
-		if (!field.playerName || field.playerName.trim().length === 0) {
-			playerNameElement.setCustomValidity('Tên nhân vật là bắt buộc.');
-		} else {
-			playerNameElement.setCustomValidity(''); // Clear error if valid
-		}
-
-		// Check if the amount is empty or not a valid number
-		if (
-			!field.amount ||
-			isNaN(Number(field.amount)) ||
-			Number(field.amount) <= 0
-		) {
-			amountElement.setCustomValidity(
-				`Nhập số lượng ${
-					field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
-				} là bắt buộc.`,
-			);
-		} else {
-			amountElement.setCustomValidity(''); // Clear error if valid
-		}
-
-		if (field.typeGold === 'gold') {
-			if (Number(field.amount) < min_gold)
-				amountElement.setCustomValidity(
-					`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
-						min_gold,
-					)} vàng`,
-				);
-		}
-
-		if (field.typeGold === 'rgold') {
-			if (Number(field.amount) < min_rgold)
-				amountElement.setCustomValidity(
-					`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
-						min_rgold,
-					)} thỏi vàng`,
-				);
-		}
-
-		// Trigger validation
-		if (
-			!playerNameElement.reportValidity() ||
-			!amountElement.reportValidity()
-		) {
-			return; // Stop submission if input is invalid
-		}
 
 		// If valid, proceed with form submission logic
 		try {
+			setLoad(true);
+
+			const playerNameElement = e.currentTarget.elements.namedItem(
+				'playerName',
+			) as HTMLInputElement;
+			const amountElement = e.currentTarget.elements.namedItem(
+				'amount',
+			) as HTMLInputElement;
+
+			// Config with ESHOP;
+			const { min_gold = 50e6, min_rgold = 5 } = eshop.option ?? {};
+
+			// Check if the playerName is empty
+			if (!field.playerName || field.playerName.trim().length === 0) {
+				playerNameElement.setCustomValidity('Tên nhân vật là bắt buộc.');
+			} else {
+				playerNameElement.setCustomValidity(''); // Clear error if valid
+			}
+
+			// Check if the amount is empty or not a valid number
+			if (
+				!field.amount ||
+				isNaN(Number(field.amount)) ||
+				Number(field.amount) <= 0
+			) {
+				amountElement.setCustomValidity(
+					`Nhập số lượng ${
+						field.typeGold === 'rgold' ? 'thỏi vàng' : 'vàng'
+					} là bắt buộc.`,
+				);
+			} else {
+				amountElement.setCustomValidity(''); // Clear error if valid
+			}
+
+			if (field.typeGold === 'gold') {
+				if (Number(field.amount) < min_gold)
+					amountElement.setCustomValidity(
+						`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
+							min_gold,
+						)} vàng`,
+					);
+			}
+
+			if (field.typeGold === 'rgold') {
+				if (Number(field.amount) < min_rgold)
+					amountElement.setCustomValidity(
+						`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
+							min_rgold,
+						)} thỏi vàng`,
+					);
+			}
+
+			// Trigger validation
+			if (
+				!playerNameElement.reportValidity() ||
+				!amountElement.reportValidity()
+			) {
+				return; // Stop submission if input is invalid
+			}
 			const { amount, playerName, typeGold } = field;
 			const { data } = await apiClient.post(
 				'/service/create',
@@ -112,9 +112,9 @@ function Deposit() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
-
-		setLoad((e) => !e);
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -256,7 +256,7 @@ function Deposit() {
 	}, []);
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/logo_deposit.jpg')" }}
+			style={{ backgroundImage: "url('/image/background/logo_deposit.webp')" }}
 			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover select-none">
 			<div className="flex flex-col gap-2 w-full max-w-7xl rounded-box shadow-lg shadow-white/80 bg-white/50 backdrop-blur-lg text-black p-8">
 				<h1 className="w-full text-center font-chakra-petch font-bold uppercase text-4xl text-amber-800">

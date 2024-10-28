@@ -161,7 +161,9 @@ function Login() {
 				</form>
 				{/*  */}
 				<div
-					style={{ backgroundImage: "url('/image/background/logo_login.jpg')" }}
+					style={{
+						backgroundImage: "url('/image/background/logo_login.webp')",
+					}}
 					className="h-[600px] w-full bg-no-repeat bg-cover bg-center rounded-r-box md:inline-block hidden"></div>
 			</div>
 			<dialog

@@ -25,7 +25,7 @@ function TablesTop() {
 
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/3.jpg')" }}
+			style={{ backgroundImage: "url('/image/background/3.webp')" }}
 			className="flex justify-center items-center w-full p-8">
 			<div className="flex 2xl:flex-row flex-col items-start gap-2 w-full max-w-7xl justify-start">
 				{/* Table Top User */}
