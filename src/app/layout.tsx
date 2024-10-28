@@ -3,8 +3,6 @@ import type { Metadata } from 'next';
 import Providers from '@/lib/redux/Provider';
 import Navbar from '@/components/controller/navbar';
 import Footer from '@/components/controller/footer';
-import { Suspense } from 'react';
-import Loading from '@/components/controller/Loading';
 import CircularMenu from '@/components/controller/circularMenu';
 import Clans from '@/components/controller/clans';
 import { SocketProvider } from '@/lib/server/socket';

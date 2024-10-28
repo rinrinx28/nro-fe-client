@@ -15,6 +15,10 @@ const nextConfig = {
 	distDir: 'dist',
 	reactStrictMode: false,
 	swcMinify: true,
+	experimental: {
+		useLightningcss: true,
+		webVitalsAttribution: ['CLS', 'LCP'],
+	},
 };
 
 export default nextConfig;
