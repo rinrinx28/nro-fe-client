@@ -495,6 +495,14 @@ function Clans() {
 							)}
 						</div>
 					</div>
+
+					<form
+						method="dialog"
+						className="modal-backdrop">
+						<button>
+							<FaMinus size={24} />
+						</button>
+					</form>
 				</div>
 			</dialog>
 			<dialog
@@ -525,7 +533,9 @@ function Clans() {
 								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
-							<form method="dialog">
+							<form
+								method="dialog"
+								className="modal-backdrop">
 								<button className="py-2 px-4 rounded-lg bg-black border border-orange-500 text-orange-500 hover:duration-300 active:hover:scale-90">
 									Không
 								</button>
@@ -533,6 +543,14 @@ function Clans() {
 						</div>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="clan_leavel_q"
@@ -562,7 +580,9 @@ function Clans() {
 								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
-							<form method="dialog">
+							<form
+								method="dialog"
+								className="modal-backdrop">
 								<button className="py-2 px-4 rounded-lg bg-black border border-orange-500 text-orange-500 hover:duration-300 active:hover:scale-90">
 									Không
 								</button>
@@ -570,6 +590,14 @@ function Clans() {
 						</div>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="clan_kick_q"
@@ -601,7 +629,9 @@ function Clans() {
 								className="py-2 px-4 rounded-lg bg-orange-500 text-white hover:duration-300 active:hover:scale-90">
 								Có
 							</button>
-							<form method="dialog">
+							<form
+								method="dialog"
+								className="modal-backdrop">
 								<button className="py-2 px-4 rounded-lg bg-black border border-orange-500 text-orange-500 hover:duration-300 active:hover:scale-90">
 									Không
 								</button>
@@ -609,6 +639,14 @@ function Clans() {
 						</div>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="clan_chat_box_screen"
@@ -673,6 +711,14 @@ function Clans() {
 						</div>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="clan_notice_q"
@@ -690,6 +736,14 @@ function Clans() {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</>
 	);
@@ -855,6 +909,14 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);
@@ -1200,6 +1262,14 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);
@@ -1375,6 +1445,14 @@ const ClanSettingQ = ({
 						<p className="">{msg}</p>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);
@@ -1508,6 +1586,14 @@ const ClanTransferQ = ({
 						<p className="">{msg}</p>
 					</div>
 				</div>
+
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);

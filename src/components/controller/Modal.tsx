@@ -41,6 +41,11 @@ function Modal({ id, customClass, children }: ConfigModal) {
 				</form>
 				{children}
 			</div>
+			<form
+				method="dialog"
+				className="modal-backdrop">
+				<button>close</button>
+			</form>
 		</dialog>
 	);
 }

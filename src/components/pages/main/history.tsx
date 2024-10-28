@@ -326,6 +326,13 @@ function History() {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);

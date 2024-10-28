@@ -270,6 +270,13 @@ function UserContext() {
 						</button>
 					</form>
 				</div>
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="profile_notice"
@@ -287,6 +294,13 @@ function UserContext() {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);
@@ -1330,6 +1344,13 @@ function HistoryService() {
 								<p className="">{msg}</p>
 							</div>
 						</div>
+						<form
+							method="dialog"
+							className="modal-backdrop">
+							<button>
+								<FaMinus size={24} />
+							</button>
+						</form>
 					</dialog>
 				</>
 			)}
@@ -1703,6 +1724,13 @@ function HistoryBet() {
 								<p className="">{msg}</p>
 							</div>
 						</div>
+						<form
+							method="dialog"
+							className="modal-backdrop">
+							<button>
+								<FaMinus size={24} />
+							</button>
+						</form>
 					</dialog>
 				</>
 			)}

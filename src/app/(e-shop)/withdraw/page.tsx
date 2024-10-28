@@ -640,7 +640,9 @@ function Withdraw() {
 				<div className="modal-box font-chakra-petch text-orange-500 p-2">
 					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
 						<h1 className="text-lg">Thông Báo</h1>
-						<form method="dialog">
+						<form
+							method="dialog"
+							className="modal-backdrop">
 							<button>
 								<FaMinus size={24} />
 							</button>
@@ -650,6 +652,11 @@ function Withdraw() {
 						<p className="">{msg}</p>
 					</div>
 				</div>
+				<form method="dialog">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 		</div>
 	);
