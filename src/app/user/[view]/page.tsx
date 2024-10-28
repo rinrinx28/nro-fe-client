@@ -456,7 +456,7 @@ function Profile() {
 													<img
 														src={`/image/banghoi/b${
 															myClan?.meta?.type ?? 1
-														}.gif`}
+														}.webp`}
 														alt={`Clan ${myClan?.meta?.type ?? 1} icon`}
 													/>
 												</div>
@@ -534,7 +534,7 @@ function Profile() {
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
-											src={`/image/icon/s1.png`}
+											src={`/image/icon/s1.webp`}
 											alt={`Icon gold`}
 										/>
 									</div>
@@ -578,7 +578,7 @@ function Profile() {
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
-											src={`/image/icon/d1.png`}
+											src={`/image/icon/d1.webp`}
 											alt={`Point Icon`}
 										/>
 									</div>
@@ -606,7 +606,7 @@ function Profile() {
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
-											src={`/image/icon/gem.png`}
+											src={`/image/icon/gem.webp`}
 											alt={`Gem Icon`}
 										/>
 									</div>
@@ -705,7 +705,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -725,7 +725,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -753,7 +753,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/s1.png`}
+										src={`/image/icon/s1.webp`}
 										alt={`Icon gold`}
 									/>
 								</div>
@@ -778,7 +778,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -787,7 +787,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/s1.png`}
+										src={`/image/icon/s1.webp`}
 										alt={`Icon gold`}
 									/>
 								</div>
@@ -803,7 +803,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -816,7 +816,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -827,7 +827,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/s1.png`}
+										src={`/image/icon/s1.webp`}
 										alt={`Icon gold`}
 									/>
 								</div>
@@ -840,7 +840,7 @@ function ExchangeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-4 rounded-xl">
 									<img
-										src={`/image/icon/gem.png`}
+										src={`/image/icon/gem.webp`}
 										alt={`Icon Gem`}
 									/>
 								</div>
@@ -941,7 +941,7 @@ function TradeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/s1.png`}
+										src={`/image/icon/s1.webp`}
 										alt={`Icon gold`}
 									/>
 								</div>
@@ -976,7 +976,7 @@ function TradeGold(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/s1.png`}
+										src={`/image/icon/s1.webp`}
 										alt={`Icon gold`}
 									/>
 								</div>
@@ -1989,7 +1989,7 @@ function TableMission(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/d1.png`}
+										src={`/image/icon/d1.webp`}
 										alt={`Point Icon`}
 									/>
 								</div>
@@ -2018,7 +2018,7 @@ function TableMission(props: { showNotice: any }) {
 										<div className="flex flex-col gap-2 shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold items-center justify-center ">
 											<div className="w-24 rounded-xl">
 												<img
-													src={`/image/icon/${i + 1}.png`}
+													src={`/image/icon/${i + 1}.webp`}
 													alt={`icon ball ${i + 1}`}
 												/>
 											</div>
@@ -2189,7 +2189,7 @@ function TableVIP(props: { showNotice: any }) {
 							<div className="avatar">
 								<div className="w-8 rounded-xl">
 									<img
-										src={`/image/icon/d1.png`}
+										src={`/image/icon/d1.webp`}
 										alt={`Point Icon`}
 									/>
 								</div>
@@ -2217,8 +2217,8 @@ function TableVIP(props: { showNotice: any }) {
 												<img
 													src={`/image/icon/${
 														isVip && user?.meta?.rewardCollected
-															? 'vipOpen.png'
-															: 'vipclose.png'
+															? 'vipOpen.webp'
+															: 'vipclose.webp'
 													}`}
 													alt={`icon chest ${
 														isVip && user?.meta?.rewardCollected

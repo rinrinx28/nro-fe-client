@@ -308,7 +308,7 @@ function Clans() {
 								<div className="avatar">
 									<div className="w-12 rounded-xl">
 										<img
-											src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.gif`}
+											src={`/image/banghoi/b${myClan?.meta?.type ?? 1}.webp`}
 										/>
 									</div>
 								</div>
@@ -857,7 +857,7 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 							className="flex flex-row gap-2 items-center cursor-pointer">
 							<div className="avatar">
 								<div className="lg:w-24 w-12 rounded-xl">
-									<img src={`/image/banghoi/b${type}.gif`} />
+									<img src={`/image/banghoi/b${type}.webp`} />
 								</div>
 							</div>
 							<div className="flex flex-col font-bold lg:text-base text-sm">
@@ -1218,7 +1218,7 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						})}
 					</select>
 					<img
-						src={`/image/banghoi/b${field.type ?? '1'}.gif`}
+						src={`/image/banghoi/b${field.type ?? '1'}.webp`}
 						style={{ width: '52px', height: 'auto' }}
 						alt={`type_clan_${field.type ?? '1'}_b`}
 					/>
@@ -1401,7 +1401,7 @@ const ClanSettingQ = ({
 						})}
 					</select>
 					<img
-						src={`/image/banghoi/b${field.type ?? '1'}.gif`}
+						src={`/image/banghoi/b${field.type ?? '1'}.webp`}
 						style={{ width: '52px', height: 'auto' }}
 						alt={`type_clan_${field.type ?? '1'}_b`}
 					/>

@@ -110,7 +110,7 @@ function Navbar() {
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
-											src={`/image/icon/s1.png`}
+											src={`/image/icon/s1.webp`}
 											alt={`Icon gold`}
 										/>
 									</div>
@@ -169,7 +169,7 @@ function Navbar() {
 												<div className="avatar">
 													<div className="w-8 rounded-xl">
 														<img
-															src={`/image/icon/s1.png`}
+															src={`/image/icon/s1.webp`}
 															alt={`Icon gold`}
 														/>
 													</div>

@@ -756,7 +756,7 @@ function Home() {
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
-											src={`/image/icon/s1.png`}
+											src={`/image/icon/s1.webp`}
 											alt={`Icon gold`}
 										/>
 									</div>
@@ -975,7 +975,7 @@ function Home() {
 										}>
 										<div className="w-8 rounded-xl">
 											<img
-												src={`/image/icon/s1.png`}
+												src={`/image/icon/s1.webp`}
 												alt={`Icon gold`}
 											/>
 										</div>
@@ -1135,7 +1135,7 @@ function Home() {
 																		<img
 																			src={`/image/banghoi/b${
 																				targetClan?.meta?.type ?? 1
-																			}.gif`}
+																			}.webp`}
 																		/>
 																	</div>
 																</div>

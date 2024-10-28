@@ -112,7 +112,7 @@ function TablesTop() {
 									<div className="avatar animate-bounce z-[100]">
 										<div className="mb-l:size-24 size-16 bg-transparent z-50">
 											<img
-												src={`/image/banghoi/b${type ?? '1'}.gif`}
+												src={`/image/banghoi/b${type ?? '1'}.webp`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
