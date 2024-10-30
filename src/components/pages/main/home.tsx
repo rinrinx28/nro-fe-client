@@ -712,11 +712,11 @@ function Home() {
 														data-tip={r}>
 														<div
 															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-																Number(`${number_result}`) < 5
+																Number(`${number_result}`) < 50
 																	? 'bg-red-500'
 																	: 'bg-green-500'
 															}`}>
-															{Number(`${number_result}`) > 4 ? 'T' : 'X'}
+															{Number(`${number_result}`) > 49 ? 'T' : 'X'}
 														</div>
 													</div>
 												</li>
