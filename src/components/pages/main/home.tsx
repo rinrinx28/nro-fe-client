@@ -1246,7 +1246,7 @@ function Home() {
 						<p className="">
 							-{' '}
 							<span className="text-orange-500 font-bold">Dự đoán tài xỉu</span>
-							: kết quả từ 5-9 là tài còn từ 0-4 là xỉu
+							: kết quả từ 50-99 là tài còn từ 0-49 là xỉu
 						</p>
 						<p className="">
 							Tỷ lệ:{' '}
@@ -1255,9 +1255,9 @@ function Home() {
 							</span>
 						</p>
 						<p className="">
-							Ví dụ kết quả của con số là 35,16,27,58,09 thì kết quả được tính
-							là 1 số cuối. Tương tự lần lượt là: 5-9 là bên Tài thắng, ngược
-							lại số cuối từ 0-4 sẽ là Xỉu thắng
+							Ví dụ con số may mắn là 1 số từ 0-49 như 0, 1, 2, 35, 48, 49...
+							thì đặt bên Xỉu thắng, ngược lại con số may mắn là 1 số từ 50-99
+							như 50, 51, 52, 67, 87, 98, 99 thì đặt bên Tài thắng
 						</p>
 						<p className="">
 							-{' '}
