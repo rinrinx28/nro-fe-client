@@ -702,7 +702,7 @@ function Home() {
 									<p className="text-orange-500">TX:</p>
 									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
 										{gameBox?.lastResult?.split('-').map((r, i) => {
-											const number_result = r.length > 1 ? r[1] : r;
+											const number_result = r;
 											return (
 												<li
 													key={i + 'tx'}
@@ -712,11 +712,11 @@ function Home() {
 														data-tip={r}>
 														<div
 															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-																Number(`${number_result}`) < 50
+																parseInt(number_result, 10) < 50
 																	? 'bg-red-500'
 																	: 'bg-green-500'
 															}`}>
-															{Number(`${number_result}`) > 49 ? 'T' : 'X'}
+															{parseInt(number_result, 10) > 49 ? 'T' : 'X'}
 														</div>
 													</div>
 												</li>
