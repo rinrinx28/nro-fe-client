@@ -1646,12 +1646,9 @@ function HistoryBet() {
 														</div>
 													</div>
 												</td>
-												<td className="font-number-font font-bold">
-													{new Intl.NumberFormat('vi').format(amount)}
-												</td>
 												<td>
 													{typeBet === 'cl'
-														? 'CL'
+														? 'Chẵn Lẻ'
 														: typeBet === 'g'
 														? 'Dự Đoán Số'
 														: 'Xiên'}
@@ -1663,6 +1660,10 @@ function HistoryBet() {
 													) : (
 														result
 													)}
+												</td>
+
+												<td className="font-number-font font-bold">
+													{new Intl.NumberFormat('vi').format(amount)}
 												</td>
 												<td>
 													<div
