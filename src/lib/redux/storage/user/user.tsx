@@ -10,6 +10,7 @@ export interface User {
 	name?: string;
 	money?: number;
 	email?: string;
+	role?: string;
 	meta?: Record<string, any>;
 	isBaned?: boolean;
 	server?: string;
