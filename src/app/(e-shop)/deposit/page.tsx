@@ -94,6 +94,15 @@ function Deposit() {
 			) {
 				return; // Stop submission if input is invalid
 			}
+			let bot_status = [...(bots ?? [])]
+				.filter((b) => user.server === b.server)
+				.filter(
+					(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
+				);
+			if (bot_status.length === 0)
+				return showNoticeEShop(
+					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
+				);
 			const { amount, playerName, typeGold } = field;
 			const { data } = await apiClient.post(
 				'/service/create',
