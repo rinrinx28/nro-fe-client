@@ -994,6 +994,60 @@ function TradeGold(props: { showNotice: any }) {
 							/>
 						</div>
 					</div>
+					{user?.meta?.rewardDayCollected?.length > 0 && (
+						<>
+							<div className="form-control w-full">
+								<div className="label">
+									<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+										Phí dịch vụ
+									</span>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center gap-2  font-number-font uppercase border-2 border-black px-2 rounded-btn z-10">
+									<div className="avatar">
+										<div className="w-8 rounded-xl">
+											<img
+												src={`/image/icon/s1.webp`}
+												alt={`Icon gold`}
+											/>
+										</div>
+									</div>
+									<input
+										value={getNumbetFromString(
+											`${(field?.amount ?? 0) * 0.05}`,
+										)}
+										disabled
+										type="text"
+										className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-sf-trans-robotics text-orange-700 text-xl"
+									/>
+								</div>
+							</div>
+							<div className="form-control w-full">
+								<div className="label">
+									<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+										Tổng giao dịch
+									</span>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center gap-2  font-number-font uppercase border-2 border-black px-2 rounded-btn z-10">
+									<div className="avatar">
+										<div className="w-8 rounded-xl">
+											<img
+												src={`/image/icon/s1.webp`}
+												alt={`Icon gold`}
+											/>
+										</div>
+									</div>
+									<input
+										value={getNumbetFromString(
+											`${(field?.amount ?? 0) * 0.05 + (field?.amount ?? 0)}`,
+										)}
+										disabled
+										type="text"
+										className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-sf-trans-robotics text-orange-700 text-xl"
+									/>
+								</div>
+							</div>
+						</>
+					)}
 
 					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
 						<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
