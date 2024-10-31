@@ -998,11 +998,13 @@ function TradeGold(props: { showNotice: any }) {
 					<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500/30 text-black p-2 rounded-box bg-orange-500/30 font-bold">
 						<p>Hạn mức hôm nay (0h00p sẽ reset): 0</p>
 						<p>Đã sử dụng: 0</p>
+						{user?.meta?.rewardDayCollected?.length > 0 && (
+							<p>
+								Bạn sẽ chịu <span className="text-red-500">5% phí</span> khi sử
+								dụng dịch vụ!
+							</p>
+						)}
 						<p>Vui lòng chơi để nâng thêm hạn mức !</p>
-						{/* <p>
-							Bạn chuyển trên <span className="text-red-500">500tr</span> sẽ
-							chịu <span className="text-red-500">10% fee</span> dịch vụ!
-						</p> */}
 					</div>
 					<button
 						onClick={tranfer}
