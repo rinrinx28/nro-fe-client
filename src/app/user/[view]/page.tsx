@@ -1426,7 +1426,7 @@ function HistoryBet() {
 		totalPages: 1,
 	});
 	const [limited, setLimited] = useState<number>(25);
-	const [server, setServer] = useState<string>('24');
+	const [server, setServer] = useState<string>('all');
 	const [data, setData] = useState<UserBet[]>([]);
 	const dispatch = useAppDispatch();
 	const [msg, setMsg] = useState<string>('');
@@ -1567,7 +1567,7 @@ function HistoryBet() {
 			{user.isLogin && (
 				<>
 					<select
-						defaultValue={`${server}`}
+						defaultValue={`all`}
 						onChange={(e) => setServer(e.target.value)}
 						className="select select-bordered w-full max-w-fit bg-transparent text-black border border-black">
 						{Array.from({ length: 7 }).map((_, k) => (
@@ -1586,6 +1586,7 @@ function HistoryBet() {
 							</option>
 						))}
 						<option value={'24'}>Máy Chủ 24/24</option>
+						<option value={'all'}>Tất cả</option>
 					</select>
 					<div className="overflow-auto w-full h-[600px]">
 						<table className="table border border-black text-nowrap">
