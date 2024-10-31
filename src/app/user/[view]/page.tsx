@@ -1463,7 +1463,9 @@ function HistoryBet() {
 	useEffect(() => {
 		if (userBets) {
 			const targets = [...userBets].filter(
-				(bet) => bet.uid === (user._id ?? '') && bet.server === server,
+				server === 'all'
+					? (bet) => bet.uid === (user._id ?? '')
+					: (bet) => bet.uid === (user._id ?? '') && bet.server === server,
 			);
 			let new_main_server = targets;
 			let new_channel: UserBet[] = [];
