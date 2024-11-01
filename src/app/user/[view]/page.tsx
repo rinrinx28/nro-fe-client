@@ -887,7 +887,7 @@ function TradeGold(props: { showNotice: any }) {
 			setLoad(true);
 			const { data } = await apiClient.post(
 				'/service/tranfer',
-				{ ...field },
+				{ ...field, targetId: field.targetId?.toLocaleLowerCase() },
 				{
 					headers: {
 						Authorization: 'Bearer ' + user.token,
