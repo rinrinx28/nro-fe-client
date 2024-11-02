@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://nrogame.me
+
+# Sitemaps
+Sitemap: https://nrogame.me/sitemap.xml
+Sitemap: https://nrogame.me/server-sitemap.xml
