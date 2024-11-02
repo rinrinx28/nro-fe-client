@@ -42,6 +42,23 @@ export default function RootLayout({
 			data-theme="luxury"
 			suppressHydrationWarning>
 			<head>
+				{/* Google Analytics */}
+				<script
+					async
+					src={`https://www.googletagmanager.com/gtag/js?id=G-HRS4HJW621`}
+				/>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+							window.dataLayer = window.dataLayer || [];
+							function gtag(){dataLayer.push(arguments);}
+							gtag('js', new Date());
+							gtag('config', 'G-HRS4HJW621', {
+								page_path: window.location.pathname,
+							});
+							`,
+					}}
+				/>
 				<link
 					href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap"
 					rel="stylesheet"
