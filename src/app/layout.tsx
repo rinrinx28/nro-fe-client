@@ -86,6 +86,9 @@ export default function RootLayout({
 					href="https://fonts.cdnfonts.com/css/dynotherm"
 					rel="stylesheet"
 				/>
+				<meta
+					name="google-adsense-account"
+					content="ca-pub-4917659447292650"></meta>
 			</head>
 			<body
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
