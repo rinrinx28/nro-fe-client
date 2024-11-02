@@ -126,7 +126,7 @@ function History() {
 							{data
 								?.sort(
 									(a, b) =>
-										moment(b?.updatedAt).unix() - moment(a?.updatedAt).unix(),
+										moment(b?.createdAt).unix() - moment(a?.createdAt).unix(),
 								)
 								?.map((bet, i) => {
 									const {
