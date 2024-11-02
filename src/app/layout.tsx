@@ -59,6 +59,11 @@ export default function RootLayout({
 							`,
 					}}
 				/>
+				{/* Google AdSense */}
+				<script
+					async
+					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4917659447292650"
+					crossOrigin="anonymous"></script>
 				<link
 					href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap"
 					rel="stylesheet"
@@ -86,9 +91,6 @@ export default function RootLayout({
 					href="https://fonts.cdnfonts.com/css/dynotherm"
 					rel="stylesheet"
 				/>
-				<meta
-					name="google-adsense-account"
-					content="ca-pub-4917659447292650"></meta>
 			</head>
 			<body
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
