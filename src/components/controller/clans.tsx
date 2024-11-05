@@ -109,6 +109,7 @@ function Clans() {
 	const [fieldMsgClan, setFieldMsgClan] = useState<FieldMsgClan>({});
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [target, setTarget] = useState<string | null>(null);
+	const [search, setSearch] = useState<string>('');
 
 	const socket = useSocket();
 	const dispatch = useAppDispatch();
@@ -287,6 +288,7 @@ function Clans() {
 	const updateMember = (data: any) => {
 		setMember(data);
 	};
+
 	const updateView = (data: any) => {
 		setView(data);
 	};
@@ -345,6 +347,8 @@ function Clans() {
 										type="text"
 										className="grow"
 										placeholder="Search"
+										value={search}
+										onChange={(e) => setSearch(e.target.value)}
 									/>
 									<FaSearch size={24} />
 								</label>
@@ -463,6 +467,7 @@ function Clans() {
 							</div>
 							{view === 'clans_list' && (
 								<ClanList
+									search={search}
 									setMember={updateMember}
 									setView={updateView}
 								/>
@@ -750,8 +755,8 @@ function Clans() {
 }
 
 // Clans List
-const ClanList = (props: { setView: any; setMember: any }) => {
-	const { setMember, setView } = props;
+const ClanList = (props: { setView: any; setMember: any; search: string }) => {
+	const { setMember, setView, search } = props;
 	const clans = useAppSelector((state) => state.clans);
 	const user = useAppSelector((state) => state.user);
 	const eConfig = useAppSelector((state) => state.econfig);
@@ -809,29 +814,7 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 	// Auto Update List Clan
 	useEffect(() => {
 		if (clans && clans.length > 0) {
-			// Tạo một bản sao của mảng clans trước khi sắp xếp
-			const targets = [...clans].sort(
-				(a, b) => (b?.score ?? 0) - (a?.score ?? 0),
-			);
-
-			let new_main_server = targets;
-			let new_channel: Clan[] = [];
-
-			for (const msg of new_main_server) {
-				if (new_channel.length >= 10) {
-					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
-				}
-				new_channel.push(msg);
-			}
-
-			if (new_channel.length > 0) {
-				// Sắp xếp và cập nhật channel với bản sao
-				setChannel(
-					[...new_channel].sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)),
-				);
-			} else {
-				setChannel([]);
-			}
+			setChannel([...clans].sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)));
 		}
 	}, [clans]);
 
@@ -844,55 +827,58 @@ const ClanList = (props: { setView: any; setMember: any }) => {
 	}, [eConfig]);
 	return (
 		<div className="flex flex-col gap-2 overflow-auto h-[400px] w-full p-2 bg-black/30 rounded-lg scroll-smooth snap-y">
-			{channel.map((c, i) => {
-				const { meta = {}, score = 0, member = 0, _id = '' } = c;
-				const { name = 'nro', type = '1', description = 'nrogame' } = meta;
-				return (
-					<div
-						key={i + '_list_clans'}
-						className="flex flex-row items-center justify-between gap-2 hover:bg-white/10 hover:duration-500 transition-all ease-in-out rounded-lg  snap-center">
-						{/* Avatar & Info */}
+			{channel
+				.filter((c) => c?.meta?.name.includes(search))
+				.map((c, i) => {
+					const { meta = {}, score = 0, member = 0, _id = '' } = c;
+					const { name = 'nro', type = '1', description = 'nrogame' } = meta;
+					return (
 						<div
-							onClick={() => listClanMemberNoCall(_id)}
-							className="flex flex-row gap-2 items-center cursor-pointer">
-							<div className="avatar">
-								<div className="lg:w-24 w-12 rounded-xl">
-									<img src={`/image/banghoi/b${type}.webp`} />
+							key={i + '_list_clans'}
+							className="flex flex-row items-center justify-between gap-2 hover:bg-white/10 hover:duration-500 transition-all ease-in-out rounded-lg  snap-center">
+							{/* Avatar & Info */}
+							<div className="flex flex-row gap-2 items-center cursor-pointer">
+								<div
+									className="avatar"
+									onClick={() => listClanMemberNoCall(_id)}>
+									<div className="lg:w-24 w-12 rounded-xl">
+										<img src={`/image/banghoi/b${type}.webp`} />
+									</div>
+								</div>
+								<div className="flex flex-col font-bold lg:text-base text-sm">
+									<h1>{name}</h1>
+									<p className="flex flex-row items-center gap-2">
+										{description}
+									</p>
+									{/* Button xin gia nhap */}
+									<button
+										onClick={() => sendColleter(_id)}
+										className="btn bg-green-500 text-white rounded-lg btn-sm w-32">
+										{isLoad ? (
+											<span className="loading loading-bars loading-sm"></span>
+										) : (
+											'Xin vào'
+										)}
+									</button>
 								</div>
 							</div>
-							<div className="flex flex-col font-bold lg:text-base text-sm">
-								<h1>{name}</h1>
-								<p className="flex flex-row items-center gap-2">
-									{description}
+
+							{/* Score & Length Menbers */}
+							<div className="flex flex-col gap-2 font-bold items-end">
+								<p className="font-sf-trans-robotics uppercase lg:text-base text-xs">
+									{new Intl.NumberFormat('vi').format(score)}{' '}
+									<span className="font-chakra-petch">điểm</span>
+								</p>
+								<p className="font-protest-strike-regular flex flex-row gap-2 items-center lg:text-base text-xs">
+									{member}/{config?.option?.max}{' '}
+									<span>
+										<FaUsers size={24} />
+									</span>
 								</p>
 							</div>
 						</div>
-						{/* Button xin gia nhap */}
-						<button
-							onClick={() => sendColleter(_id)}
-							className="btn bg-green-500 text-white rounded-lg btn-sm">
-							{isLoad ? (
-								<span className="loading loading-bars loading-sm"></span>
-							) : (
-								'Xin vào'
-							)}
-						</button>
-						{/* Score & Length Menbers */}
-						<div className="flex flex-col gap-2 font-bold items-end">
-							<p className="font-sf-trans-robotics uppercase lg:text-base text-xs">
-								{new Intl.NumberFormat('vi').format(score)}{' '}
-								<span className="font-chakra-petch">điểm</span>
-							</p>
-							<p className="font-protest-strike-regular flex flex-row gap-2 items-center lg:text-base text-xs">
-								{member}/{config?.option?.max}{' '}
-								<span>
-									<FaUsers size={24} />
-								</span>
-							</p>
-						</div>
-					</div>
-				);
-			})}
+					);
+				})}
 			<dialog
 				id="clan_notice_invite"
 				className="modal z-[1100]">
@@ -983,13 +969,21 @@ const MemberList = (props: {
 							<p className="font-protest-strike-regular flex flex-row gap-2 items-center">
 								<p className="font-sf-trans-robotics uppercase flex flex-row gap-2">
 									<span className="font-chakra-petch">Số Dư:</span>
-									{myClan?.ownerId !== user?._id &&
+									{!myClan &&
 										(balance.length <= 3
 											? '***'
 											: balance.length > 6
 											? '***.' + balance.slice(-3)
 											: balance)}
-									{myClan?.ownerId === user?._id &&
+									{myClan &&
+										myClan?.ownerId !== user?._id &&
+										(balance.length <= 3
+											? '***'
+											: balance.length > 6
+											? '***.' + balance.slice(-3)
+											: balance)}
+									{myClan &&
+										myClan?.ownerId === user?._id &&
 										new Intl.NumberFormat('vi').format(money)}
 								</p>
 							</p>

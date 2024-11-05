@@ -7,7 +7,7 @@ export default function Page() {
 	return (
 		<div
 			id="home_page"
-			className="flex flex-col gap-10 justify-center items-center w-full select-none">
+			className="flex flex-col gap-2 justify-center items-center w-full select-none bg-[#C1121F]">
 			<Home />
 			<div
 				style={{ backgroundImage: "url('/image/background/banner_1.webp')" }}

@@ -93,7 +93,7 @@ export default function RootLayout({
 				/>
 			</head>
 			<body
-				className={`antialiased min-h-screen transition-all duration-300 flex flex-col gap-5`}>
+				className={`antialiased min-h-screen transition-all duration-300 flex flex-col`}>
 				<Providers>
 					<SocketProvider>
 						<Navbar />

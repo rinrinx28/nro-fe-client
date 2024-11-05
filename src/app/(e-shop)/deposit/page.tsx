@@ -263,6 +263,7 @@ function Deposit() {
 			getServices();
 		}
 	}, []);
+
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_deposit.webp')" }}
@@ -568,6 +569,16 @@ function Deposit() {
 									})}
 							</tbody>
 						</table>
+						{[...(bots ?? [])]
+							.filter((b) => user.server === b.server)
+							.filter(
+								(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
+							).length === 0 &&
+							user.isLogin && (
+								<p>
+									Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát
+								</p>
+							)}
 					</div>
 				</div>
 			</div>

@@ -234,38 +234,6 @@ function Withdraw() {
 			getServices();
 		}
 	}, []);
-
-	// Auto Call Request;
-	useEffect(() => {
-		const listClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/clan');
-				dispatch(setClans(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-
-		// listClan();
-		listConfig();
-		// listBot();
-	}, []);
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.webp')" }}
@@ -556,6 +524,17 @@ function Withdraw() {
 									})}
 							</tbody>
 						</table>
+
+						{[...(bots ?? [])]
+							.filter((b) => user.server === b.server)
+							.filter(
+								(b) => b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
+							).length === 0 &&
+							user.isLogin && (
+								<p>
+									Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát
+								</p>
+							)}
 					</div>
 				</div>
 			</div>
