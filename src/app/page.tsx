@@ -53,7 +53,7 @@ export default function Page() {
 						className={`${
 							isShow ? 'flex' : 'hidden'
 						} flex-col gap-2 items-center w-full justify-center`}>
-						<form
+						{/* <form
 							onSubmit={(e) => {
 								e.preventDefault();
 								let input_url_ybt = document.getElementById(
@@ -82,13 +82,13 @@ export default function Page() {
 								className="btn">
 								<IoPlayCircle size={32} />
 							</button>
-						</form>
+						</form> */}
 						<div className="w-full max-w-[500px] max-h-[600]">
 							<iframe
 								className="w-full h-[400px] max-h-[500px]"
 								src={link ?? ''}
 								title="YouTube video player"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+								allow="accelerometer; autoplay; loop; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
 						</div>
 					</div>
 				</div>
