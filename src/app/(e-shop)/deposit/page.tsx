@@ -569,16 +569,16 @@ function Deposit() {
 									})}
 							</tbody>
 						</table>
-						{[...(bots ?? [])]
+						{/* {[...(bots ?? [])]
 							.filter((b) => user.server === b.server)
 							.filter(
 								(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
 							).length === 0 &&
 							user.isLogin && (
-								<p>
+								<div className="text-center w-full bg-white text-orange-500">
 									Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát
-								</p>
-							)}
+								</div>
+							)} */}
 					</div>
 				</div>
 			</div>

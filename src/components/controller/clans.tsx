@@ -174,6 +174,25 @@ function Clans() {
 		}
 	}, [myClan]);
 
+	useEffect(() => {
+		const dialog = document.getElementById(
+			'clan_box_screen',
+		) as HTMLDialogElement;
+		if (dialog) {
+			dialog.addEventListener('close', (e) => {
+				if (myClan) {
+					setView('members');
+				} else {
+					setView('clans_list');
+				}
+			});
+
+			return () => {
+				dialog.removeEventListener('close', (e) => {});
+			};
+		}
+	}, [myClan]);
+
 	const showNoticeClan = (message: string) => {
 		let dialog = document.getElementById('clan_notice_q') as HTMLDialogElement;
 		if (dialog) {
@@ -509,6 +528,13 @@ function Clans() {
 						</button>
 					</form>
 				</div>
+				<form
+					method="dialog"
+					className="modal-backdrop">
+					<button>
+						<FaMinus size={24} />
+					</button>
+				</form>
 			</dialog>
 			<dialog
 				id="clan_delete_q"
@@ -541,7 +567,16 @@ function Clans() {
 							<form
 								method="dialog"
 								className="modal-backdrop">
-								<button className="py-2 px-4 rounded-lg bg-black border border-orange-500 text-orange-500 hover:duration-300 active:hover:scale-90">
+								<button
+									onClick={() => {
+										let dialog = document.getElementById(
+											'clan_delete_q',
+										) as HTMLDialogElement;
+										if (dialog) {
+											dialog.close();
+										}
+									}}
+									className="py-2 px-4 rounded-lg bg-black border border-orange-500 text-orange-500 hover:duration-300 active:hover:scale-90">
 									Không
 								</button>
 							</form>
@@ -552,9 +587,7 @@ function Clans() {
 				<form
 					method="dialog"
 					className="modal-backdrop">
-					<button>
-						<FaMinus size={24} />
-					</button>
+					<button>close</button>
 				</form>
 			</dialog>
 			<dialog
@@ -697,7 +730,12 @@ function Clans() {
 						</div>
 
 						{/* Input Chat */}
-						<div className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								sendChatClan();
+							}}
+							className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
 							<input
 								type="text"
 								placeholder="Type here"
@@ -709,11 +747,10 @@ function Clans() {
 							/>
 							<button
 								disabled={isLoad}
-								onClick={sendChatClan}
 								className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
 								<IoIosSend size={32} />
 							</button>
-						</div>
+						</form>
 					</div>
 				</div>
 

@@ -439,8 +439,8 @@ function Profile() {
 										<div className="avatar">
 											<div className="w-12 rounded-xl">
 												<img
-													src={`/image/vip/v${user?.meta?.vip ?? '0'}.png`}
-													alt={`VIP ${user?.meta?.vip ?? '0'}`}
+													src={`/image/vip/v${user?.meta?.vip ?? '1'}.png`}
+													alt={`VIP ${user?.meta?.vip ?? '1'}`}
 												/>
 											</div>
 										</div>

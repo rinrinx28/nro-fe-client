@@ -1,7 +1,6 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { useEffect, useState } from 'react';
-import { GrMoney } from 'react-icons/gr';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
@@ -531,9 +530,9 @@ function Withdraw() {
 								(b) => b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
 							).length === 0 &&
 							user.isLogin && (
-								<p>
-									Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát
-								</p>
+								<div className="text-center w-full bg-white text-orange-500">
+									Hệ thống rút đang quá tải, xin quay lại trong vài phút!
+								</div>
 							)}
 					</div>
 				</div>

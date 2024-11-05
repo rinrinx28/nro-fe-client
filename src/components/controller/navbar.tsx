@@ -68,7 +68,7 @@ function Navbar() {
 				</ul>
 			</div>
 			{/* Navigate */}
-			<div className="flex flex-row items-center gap-4 font-protest-strike-regular uppercase">
+			<div className="flex flex-row items-center gap-4 font-protest-strike-regular">
 				{/* <ThemeSwitch classHidden="lg:inline-block hidden" /> */}
 				{!user.isLogin && (
 					<>
