@@ -119,7 +119,7 @@ function TablesTop() {
 									</div>
 									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
 										<p>
-											Clan {name} | TOP {i + 1}
+											{name} | TOP {i + 1}
 										</p>
 										{/* <p>Phần Thưởng</p> */}
 										<div className="flex flex-row gap-1 items-center justify-center">
