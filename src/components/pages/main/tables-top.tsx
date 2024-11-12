@@ -52,7 +52,7 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
+									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular px-1">
 									<div className="avatar animate-bounce z-[100] duration-1000">
 										<div className="mb-l:size-24 size-16 bg-transparent">
 											<img
@@ -108,7 +108,7 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular uppercase px-1">
+									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular px-1">
 									<div className="avatar animate-bounce z-[100]">
 										<div className="mb-l:size-24 size-16 bg-transparent z-50">
 											<img
