@@ -65,9 +65,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 	useEffect(() => {
 		socket.connect();
 
-		socket.on('bot.status', (payload: Bot) => {
-			dispatch(setBot(payload));
-		});
+		// socket.on('bot.status', (payload: Bot) => {
+		// 	dispatch(setBot(payload));
+		// });
 
 		socket.on(
 			'mini.bet',
@@ -154,7 +154,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
 		return () => {
 			socket.disconnect();
-			socket.off('bot.status');
+			// socket.off('bot.status');
 			socket.off('mini.bet');
 			socket.off('user.update');
 			socket.off('service.update');

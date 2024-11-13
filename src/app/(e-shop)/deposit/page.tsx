@@ -7,11 +7,12 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
-import { Bot } from '@/lib/redux/storage/eshop/bots';
+import { Bot, setBot } from '@/lib/redux/storage/eshop/bots';
 import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
 import { setService } from '@/lib/redux/storage/eshop/service';
 import Modal from '@/components/controller/Modal';
 import { setClans } from '@/lib/redux/storage/clan/clans';
+import { useSocket } from '@/lib/server/socket';
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
@@ -29,6 +30,8 @@ function Deposit() {
 	});
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
+
+	const socket = useSocket();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
@@ -155,6 +158,16 @@ function Deposit() {
 		}
 	};
 
+	// Auto get Bot Info
+	useEffect(() => {
+		socket.on('bot.status', (payload: Bot) => {
+			dispatch(setBot(payload));
+		});
+		return () => {
+			socket.off('bot.status');
+		};
+	}, [socket]);
+
 	// Auto Call Request;
 	useEffect(() => {
 		const listClan = async () => {
@@ -187,11 +200,6 @@ function Deposit() {
 		// listBot();
 	}, []);
 
-	// Auto Update Bot
-	useEffect(() => {
-		setBotD(bots);
-	}, [bots]);
-
 	// Update data ESHOP;
 	useEffect(() => {
 		const e_shop = econfig.find((e) => e.name === 'e_shop');
@@ -215,33 +223,33 @@ function Deposit() {
 				setTutorial(vipLevels);
 				let timeout = setTimeout(() => {
 					showTutorialVIP();
-				}, 2e3);
+				}, 1e3);
 
 				return () => clearTimeout(timeout);
 			}
 		}
 	}, [econfig]);
 
-	useEffect(() => {
-		const showTutorialVIP = () => {
-			let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
-			if (dialog) {
-				dialog.show();
-			}
-		};
-		if (econfig) {
-			const target = [...econfig].find((e) => e.name === 'e_reward');
-			if (target) {
-				const vipLevels = target?.option?.vipLevels ?? [];
-				setTutorial(vipLevels);
-				let timeout = setTimeout(() => {
-					showTutorialVIP();
-				}, 2e3);
+	// useEffect(() => {
+	// 	const showTutorialVIP = () => {
+	// 		let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
+	// 		if (dialog) {
+	// 			dialog.show();
+	// 		}
+	// 	};
+	// 	if (econfig) {
+	// 		const target = [...econfig].find((e) => e.name === 'e_reward');
+	// 		if (target) {
+	// 			const vipLevels = target?.option?.vipLevels ?? [];
+	// 			setTutorial(vipLevels);
+	// 			let timeout = setTimeout(() => {
+	// 				showTutorialVIP();
+	// 			}, 2e3);
 
-				return () => clearTimeout(timeout);
-			}
-		}
-	}, []);
+	// 			return () => clearTimeout(timeout);
+	// 		}
+	// 	}
+	// }, []);
 
 	useEffect(() => {
 		const getServices = async () => {

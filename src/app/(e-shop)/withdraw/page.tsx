@@ -7,9 +7,10 @@ import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
-import { Bot } from '@/lib/redux/storage/eshop/bots';
+import { Bot, setBot } from '@/lib/redux/storage/eshop/bots';
 import { setService } from '@/lib/redux/storage/eshop/service';
 import { setClans } from '@/lib/redux/storage/clan/clans';
+import { useSocket } from '@/lib/server/socket';
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
@@ -25,7 +26,8 @@ function Withdraw() {
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
 	const [eshop, setEshop] = useState<EConfig>({});
-	const [botD, setBotD] = useState<Bot[]>([]);
+
+	const socket = useSocket();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent form submission
@@ -168,10 +170,16 @@ function Withdraw() {
 			showNoticeEShop(err.response.data.message.message);
 		}
 	};
-	// Auto Update Bot
+
+	// Auto get Bot Info
 	useEffect(() => {
-		setBotD(bots);
-	}, [bots]);
+		socket.on('bot.status', (payload: Bot) => {
+			dispatch(setBot(payload));
+		});
+		return () => {
+			socket.off('bot.status');
+		};
+	}, [socket]);
 
 	// Auto Call Request;
 	useEffect(() => {
