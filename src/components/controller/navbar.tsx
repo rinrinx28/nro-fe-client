@@ -27,7 +27,7 @@ function Navbar() {
 					href={'/'}
 					className="btn btn-link">
 					<Image
-						src={'/image/logo_nro.gif'}
+						src={'/image/logo_nro.webp'}
 						alt="logo_nro"
 						width={150}
 						height={32}
