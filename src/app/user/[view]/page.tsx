@@ -1091,6 +1091,7 @@ function HistoryService() {
 	const [data, setData] = useState<Service[]>([]);
 	const [typeS, setTypeS] = useState<string>('0');
 	const [msg, setMsg] = useState<string>('');
+	const [isLoad, setLoad] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -1186,6 +1187,7 @@ function HistoryService() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
+			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
@@ -1202,6 +1204,8 @@ function HistoryService() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
 	};
 
@@ -1307,8 +1311,13 @@ function HistoryService() {
 													) : (
 														<button
 															onClick={() => cancelService(service._id ?? '')}
+															disabled={isLoad}
 															className="p-2 rounded-lg bg-red-500 text-white">
-															Hủy
+															{isLoad ? (
+																<span className="loading loading-bars loading-sm"></span>
+															) : (
+																'Hủy'
+															)}
 														</button>
 													)}
 												</td>
@@ -1428,6 +1437,7 @@ function HistoryBet() {
 	const [limited, setLimited] = useState<number>(25);
 	const [server, setServer] = useState<string>('all');
 	const [data, setData] = useState<UserBet[]>([]);
+	const [isLoad, setLoad] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 	const [msg, setMsg] = useState<string>('');
 
@@ -1529,6 +1539,7 @@ function HistoryBet() {
 
 	const cancelPlace = async (userBetId: string) => {
 		try {
+			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
@@ -1545,6 +1556,8 @@ function HistoryBet() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
 	};
 
@@ -1704,8 +1717,13 @@ function HistoryBet() {
 														!isEnd && status === 0 ? (
 															<button
 																onClick={() => cancelPlace(bet._id ?? '')}
+																disabled={isLoad}
 																className="p-2 rounded-lg bg-red-500 text-white">
-																Hủy
+																{isLoad ? (
+																	<span className="loading loading-bars loading-sm"></span>
+																) : (
+																	'Hủy'
+																)}
 															</button>
 														) : (
 															''

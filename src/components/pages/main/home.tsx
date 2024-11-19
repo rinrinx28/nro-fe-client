@@ -141,8 +141,8 @@ function Home() {
 	};
 
 	const placeBet = async () => {
-		setLoad(true);
 		try {
+			setLoad(true);
 			let { amount, place, typeBet } = betField;
 			if (!user.isLogin) return resetBetFildAndNotice('Bạn chưa đăng nhập');
 

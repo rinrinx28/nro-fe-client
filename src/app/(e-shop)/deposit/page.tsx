@@ -29,6 +29,7 @@ function Deposit() {
 		typeGold: 'gold',
 	});
 	const [isLoad, setLoad] = useState<boolean>(false);
+	const [isLoadSub, setLoadSub] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
 
 	const socket = useSocket();
@@ -38,7 +39,7 @@ function Deposit() {
 
 		// If valid, proceed with form submission logic
 		try {
-			setLoad(true);
+			setLoadSub(true);
 
 			const playerNameElement = e.currentTarget.elements.namedItem(
 				'playerName',
@@ -125,7 +126,7 @@ function Deposit() {
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
 		} finally {
-			setLoad(false);
+			setLoadSub(false);
 		}
 	};
 
@@ -139,6 +140,7 @@ function Deposit() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
+			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
@@ -155,6 +157,8 @@ function Deposit() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
 	};
 
@@ -529,8 +533,9 @@ function Deposit() {
 						<div className="p-4 w-full">
 							<button
 								className="font-protest-strike-regular w-full uppercase py-4 px-2 bg-orange-500 text-white rounded-box hover:border-orange-500 hover:border hover:bg-transparent hover:text-orange-500 hover:duration-300 active:hover:scale-90"
+								disabled={isLoadSub}
 								type="submit">
-								{isLoad ? (
+								{isLoadSub ? (
 									<span className="loading loading-bars loading-sm"></span>
 								) : (
 									'Nạp Ngay'
@@ -664,8 +669,13 @@ function Deposit() {
 												) : (
 													<button
 														onClick={() => cancelService(s._id ?? '')}
+														disabled={isLoad}
 														className="p-2 rounded-lg bg-red-500 text-white">
-														Hủy
+														{isLoad ? (
+															<span className="loading loading-bars loading-sm"></span>
+														) : (
+															'Hủy'
+														)}
 													</button>
 												)}
 											</td>

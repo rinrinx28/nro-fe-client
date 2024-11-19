@@ -16,6 +16,7 @@ function History() {
 	const user = useAppSelector((state) => state.user);
 	const userBets = useAppSelector((state) => state.userBets);
 	const server = useAppSelector((state) => state.server);
+	const [isLoad, setLoad] = useState<boolean>(false);
 
 	const dispatch = useAppDispatch();
 
@@ -64,6 +65,7 @@ function History() {
 
 	const cancelPlace = async (userBetId: string) => {
 		try {
+			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
@@ -80,6 +82,8 @@ function History() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
 	};
 
@@ -231,8 +235,13 @@ function History() {
 													!isEnd && status === 0 ? (
 														<button
 															onClick={() => cancelPlace(bet._id ?? '')}
+															disabled={isLoad}
 															className="p-2 rounded-lg bg-red-500 text-white">
-															Hủy
+															{isLoad ? (
+																<span className="loading loading-bars loading-sm"></span>
+															) : (
+																'Hủy'
+															)}
 														</button>
 													) : (
 														''

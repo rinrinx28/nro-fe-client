@@ -24,17 +24,17 @@ function Withdraw() {
 		typeGold: 'gold',
 	});
 	const [isLoad, setLoad] = useState<boolean>(false);
+	const [isLoadSub, setLoadSub] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
 	const [eshop, setEshop] = useState<EConfig>({});
 
 	const socket = useSocket();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault(); // Prevent form submission
-
 		// If valid, proceed with form submission logic
 		try {
-			setLoad(true);
+			e.preventDefault(); // Prevent form submission
+			setLoadSub(true);
 			// Config with ESHOP;
 			const {
 				min_gold = 50e6,
@@ -138,7 +138,7 @@ function Withdraw() {
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
 		} finally {
-			setLoad(false);
+			setLoadSub(false);
 		}
 	};
 
@@ -152,6 +152,7 @@ function Withdraw() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
+			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
@@ -168,6 +169,8 @@ function Withdraw() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+		} finally {
+			setLoad(false);
 		}
 	};
 
@@ -482,9 +485,10 @@ function Withdraw() {
 						</div>
 						<div className="p-4 w-full">
 							<button
+								disabled={isLoadSub}
 								className="font-protest-strike-regular w-full uppercase py-4 px-2 bg-orange-500 text-white rounded-box hover:border-orange-500 hover:border hover:bg-transparent hover:text-orange-500 hover:duration-300 active:hover:scale-90"
 								type="submit">
-								{isLoad ? (
+								{isLoadSub ? (
 									<span className="loading loading-bars loading-sm"></span>
 								) : (
 									'Rút Ngay'
@@ -619,8 +623,13 @@ function Withdraw() {
 												) : (
 													<button
 														onClick={() => cancelService(s._id ?? '')}
+														disabled={isLoad}
 														className="p-2 rounded-lg bg-red-500 text-white">
-														Hủy
+														{isLoad ? (
+															<span className="loading loading-bars loading-sm"></span>
+														) : (
+															'Hủy'
+														)}
 													</button>
 												)}
 											</td>
