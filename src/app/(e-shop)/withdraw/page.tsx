@@ -130,7 +130,7 @@ function Withdraw() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -162,7 +162,7 @@ function Withdraw() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -230,7 +230,7 @@ function Withdraw() {
 			try {
 				const res = await apiClient.get(`/service/history`, {
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				});
 				const { data, page, totalItems, totalPages } = res.data;

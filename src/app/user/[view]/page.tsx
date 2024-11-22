@@ -81,7 +81,7 @@ function UserContext() {
 				{ ...fieldChangePwd },
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -645,7 +645,7 @@ function ExchangeGold(props: { showNotice: any }) {
 				{ ...field },
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -891,7 +891,7 @@ function TradeGold(props: { showNotice: any }) {
 				{ ...field, targetId: field.targetId?.toLocaleLowerCase() },
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1101,7 +1101,7 @@ function HistoryService() {
 			try {
 				const res = await apiClient.get(`/service/history?limited=${limited}`, {
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				});
 				const { data, page, totalItems, totalPages } = res.data;
@@ -1145,7 +1145,7 @@ function HistoryService() {
 				`/service/history?page=${pageNumber}&limited=${limited}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1169,7 +1169,7 @@ function HistoryService() {
 				`/service/history?page=${pageNumber}&limited=${limited}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1199,7 +1199,7 @@ function HistoryService() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1451,7 +1451,7 @@ function HistoryBet() {
 					`/user/history/bet?limited=${limited}&server=${server}`,
 					{
 						headers: {
-							Authorization: 'Bearer ' + user.token,
+							Authorization: `Bearer ${user.token ?? ''}`,
 						},
 					},
 				);
@@ -1498,7 +1498,7 @@ function HistoryBet() {
 				`/user/history/bet?page=${pageNumber}&limited=${limited}&server=${server}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1522,7 +1522,7 @@ function HistoryBet() {
 				`/user/history/bet?page=${pageNumber}&limited=${limited}&server=${server}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1552,7 +1552,7 @@ function HistoryBet() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1841,7 +1841,7 @@ function HistoryActivity() {
 					`/user/history/active?limited=${limited}`,
 					{
 						headers: {
-							Authorization: 'Bearer ' + user.token,
+							Authorization: `Bearer ${user.token ?? ''}`,
 						},
 					},
 				);
@@ -1867,7 +1867,7 @@ function HistoryActivity() {
 				`/user/history/active?page=${pageNumber}&limited=${limited}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1889,7 +1889,7 @@ function HistoryActivity() {
 				`/user/history/active?page=${pageNumber}&limited=${limited}`,
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -2040,7 +2040,7 @@ function TableMission(props: { showNotice: any }) {
 		try {
 			const { data } = await apiClient.get(`/user/claim/daily/${index}`, {
 				headers: {
-					Authorization: 'Bearer ' + user.token,
+					Authorization: `Bearer ${user.token ?? ''}`,
 				},
 			});
 			const { message } = data;
@@ -2240,7 +2240,7 @@ function TableVIP(props: { showNotice: any }) {
 		try {
 			const { data } = await apiClient.get(`/user/claim/vip`, {
 				headers: {
-					Authorization: 'Bearer ' + user.token,
+					Authorization: `Bearer ${user.token ?? ''}`,
 				},
 			});
 			const { message } = data;

@@ -64,10 +64,10 @@ function History() {
 	}, [server, filter]);
 
 	const cancelPlace = async (userBetId: string) => {
+		if (!user.isLogin || !user.token)
+			return showNoticeEShop('Bạn chưa đăng nhập');
 		try {
 			setLoad(true);
-			if (!user.isLogin || !user.token)
-				return showNoticeEShop('Bạn chưa đăng nhập');
 			const { data } = await apiClient.post(
 				'/mini-game/cancel',
 				{
@@ -75,7 +75,7 @@ function History() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);

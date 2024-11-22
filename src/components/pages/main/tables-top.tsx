@@ -1,8 +1,6 @@
 'use client';
 import { useAppSelector } from '@/lib/redux/hook';
-import { Clan } from '@/lib/redux/storage/clan/clans';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
-import { User } from '@/lib/redux/storage/user/user';
 import { useEffect, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { MdLeaderboard } from 'react-icons/md';
@@ -15,11 +13,13 @@ function TablesTop() {
 
 	// Update data ESHOP;
 	useEffect(() => {
-		const e_shop = econfig.filter(
-			(e) => e.name === 'e_clan' || e.name === 'e_user_rank',
-		);
-		if (e_shop) {
-			setEshop(e_shop);
+		if (econfig) {
+			const e_shop = econfig.filter(
+				(e) => e.name === 'e_clan' || e.name === 'e_user_rank',
+			);
+			if (e_shop) {
+				setEshop(e_shop);
+			}
 		}
 	}, [econfig]);
 
@@ -40,7 +40,7 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{users?.map((u, i) => {
+						{[...(users ?? [])]?.map((u, i) => {
 							const { meta, name } = u;
 							const e_rank_day = eshop.find((e) => e.name === 'e_user_rank');
 							const {
@@ -96,7 +96,7 @@ function TablesTop() {
 					</div>
 					<div className="h-12 w-full"></div>
 					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
-						{clans?.map((c, i) => {
+						{[...(clans ?? [])]?.map((c, i) => {
 							const { score, meta = {} } = c ?? {};
 							const { type, name } = meta;
 							const e_clan = eshop.find((e) => e.name === 'e_clan');

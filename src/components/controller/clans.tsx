@@ -134,7 +134,7 @@ function Clans() {
 			try {
 				const { data } = await apiClient.get(`/clan/list/msg/${clanId}`, {
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				});
 				dispatch(setMsgClans(data));
@@ -156,7 +156,7 @@ function Clans() {
 			try {
 				const { data } = await apiClient.get(`/clan/invite/list/${clanId}`, {
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				});
 				const { invites } = data;
@@ -237,7 +237,7 @@ function Clans() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -263,7 +263,7 @@ function Clans() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -294,7 +294,7 @@ function Clans() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -837,7 +837,7 @@ const ClanList = (props: { setView: any; setMember: any; search: string }) => {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1048,7 +1048,7 @@ const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1067,7 +1067,7 @@ const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1181,7 +1181,7 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1362,7 +1362,7 @@ const ClanSettingQ = ({
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -1521,7 +1521,7 @@ const ClanTransferQ = ({
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);

@@ -181,19 +181,17 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		};
 		const reLoadUser = async () => {
-			let token = localStorage.getItem('token');
-			apiClient
-				.get('/auth/relogin', {
+			try {
+				let token = localStorage.getItem('token');
+				const { data } = await apiClient.get('/auth/relogin', {
 					headers: {
-						Authorization: 'Bearer ' + token,
+						Authorization: `Bearer ${token ?? ''}`,
 					},
-				})
-				.then((res) => {
-					dispatch(updateUser({ isLogin: true, token: token, ...res.data }));
-				})
-				.catch((err) => {
-					localStorage.removeItem('token');
 				});
+				dispatch(updateUser({ isLogin: true, token: token, ...data }));
+			} catch (err: any) {
+				localStorage.removeItem('token');
+			}
 		};
 		socket.on('clan.reload', (msg: string) => {
 			reLoadClan();

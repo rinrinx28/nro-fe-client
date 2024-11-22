@@ -118,7 +118,7 @@ function Deposit() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -150,7 +150,7 @@ function Deposit() {
 				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				},
 			);
@@ -261,7 +261,7 @@ function Deposit() {
 			try {
 				const res = await apiClient.get(`/service/history`, {
 					headers: {
-						Authorization: 'Bearer ' + user.token,
+						Authorization: `Bearer ${user.token ?? ''}`,
 					},
 				});
 				const { data, page, totalItems, totalPages } = res.data;

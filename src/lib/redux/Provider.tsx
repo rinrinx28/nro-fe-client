@@ -67,7 +67,7 @@ export default function StoreProvider({
 					{ hash: visitorId },
 					{
 						headers: {
-							Authorization: 'Bearer ' + token,
+							Authorization: `Bearer ${token ?? ''}`,
 						},
 					},
 				)

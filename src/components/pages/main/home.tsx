@@ -141,39 +141,65 @@ function Home() {
 	};
 
 	const placeBet = async () => {
+		const { amount, place, typeBet } = betField;
+		const { isLogin, token } = user;
+
+		// Input validation
+		if (!isLogin) {
+			resetBetFildAndNotice('Bạn chưa đăng nhập');
+			return;
+		}
+
+		if (!gameBox || !gameBox._id) {
+			resetBetFildAndNotice('Phiên cược không tồn tại');
+			return;
+		}
+
+		const n_amount = Number(amount);
+		if (n_amount <= 0) {
+			resetBetFildAndNotice('Xin vui lòng đặt tiền cược');
+			return;
+		}
+
+		if (!place?.length) {
+			resetBetFildAndNotice('Xin vui lòng đặt cược');
+			return;
+		}
+
+		if (!typeBet?.length) {
+			resetBetFildAndNotice('Xin vui lòng chọn hình thức cược');
+			return;
+		}
+
 		try {
 			setLoad(true);
-			let { amount, place, typeBet } = betField;
-			if (!user.isLogin) return resetBetFildAndNotice('Bạn chưa đăng nhập');
 
-			if (!gameBox || gameBox._id?.length === 0)
-				return resetBetFildAndNotice('Phiên cược không tồn tại');
-
-			let n_amount = Number(amount);
-			if (n_amount <= 0)
-				return resetBetFildAndNotice('Xin vui lòng đặt tiền cược');
-
-			if (place?.length === 0)
-				return resetBetFildAndNotice('Xin vui lòng đặt cược');
-			if (typeBet?.length === 0)
-				return resetBetFildAndNotice('Xin vui lòng chọn hình thức cược');
-
-			const { data, status } = await apiClient.post(
+			// API call
+			const response = await apiClient.post(
 				'/mini-game/place',
-				{ ...betField, amount: n_amount, betId: gameBox?._id, server: server },
+				{
+					...betField,
+					amount: n_amount,
+					betId: gameBox._id,
+					server,
+				},
 				{
 					headers: {
-						Authorization: 'Bearer ' + (user.token ?? ''),
+						Authorization: `Bearer ${token || ''}`,
 					},
 				},
 			);
-			const { message } = data;
+
+			// Handle success
+			const { data } = response;
 			dispatch(updateUser(data.user));
-			return resetBetFildAndNotice(message);
+			resetBetFildAndNotice(data.message);
 		} catch (err: any) {
-			const { message } = err.response.data.message;
-			setLoad(false);
-			return resetBetFildAndNotice(message);
+			// Handle error gracefully
+			const errorMessage =
+				err?.response?.data?.message?.message ||
+				'Đã xảy ra lỗi, vui lòng thử lại';
+			resetBetFildAndNotice(errorMessage);
 		} finally {
 			setLoad(false);
 		}
