@@ -694,7 +694,8 @@ function Deposit() {
 					<div className="sticky top-0 backdrop-blur-lg flex flex-row w-full py-2 justify-between items-center uppercase font-bold">
 						<h1 className="text-lg">Thông Báo</h1>
 						<form method="dialog">
-							<button>
+							{/* if there is a button in form, it will close the modal */}
+							<button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-[1200]">
 								<FaMinus size={24} />
 							</button>
 						</form>
@@ -706,9 +707,7 @@ function Deposit() {
 				<form
 					method="dialog"
 					className="modal-backdrop">
-					<button>
-						<FaMinus size={24} />
-					</button>
+					<button>close</button>
 				</form>
 			</dialog>
 
