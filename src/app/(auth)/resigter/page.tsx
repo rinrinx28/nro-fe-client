@@ -45,6 +45,7 @@ function Resigter() {
 				data: { message },
 			} = err.response;
 			showNotice(message.message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}

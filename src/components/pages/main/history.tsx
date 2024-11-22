@@ -82,6 +82,7 @@ function History() {
 			showNoticeEShop(data.message);
 		} catch (err: any) {
 			showNoticeEShop(err.response.data.message.message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}

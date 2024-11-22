@@ -217,6 +217,7 @@ function Clans() {
 				token: user.token,
 			});
 			setFieldMsgClan({});
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}
@@ -1191,6 +1192,7 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 		} catch (err: any) {
 			const { message } = err.response.data.message;
 			showNoticeClan(message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}
@@ -1371,6 +1373,7 @@ const ClanSettingQ = ({
 		} catch (err: any) {
 			const { message } = err.response.data.message;
 			showNoticeClan(message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}
@@ -1529,6 +1532,7 @@ const ClanTransferQ = ({
 		} catch (err: any) {
 			const { message } = err.response.data.message;
 			showNoticeClan(message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}

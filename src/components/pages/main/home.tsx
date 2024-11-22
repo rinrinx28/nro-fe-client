@@ -172,6 +172,7 @@ function Home() {
 			return resetBetFildAndNotice(message);
 		} catch (err: any) {
 			const { message } = err.response.data.message;
+			setLoad(false);
 			return resetBetFildAndNotice(message);
 		} finally {
 			setLoad(false);

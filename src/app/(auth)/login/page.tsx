@@ -53,6 +53,7 @@ function Login() {
 		} catch (err: any) {
 			const { message } = err.response.data;
 			showNotice(message.message);
+			setLoad(false);
 		} finally {
 			setLoad(false);
 		}
