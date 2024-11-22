@@ -2504,4 +2504,6 @@ const KeyConfig = [
 	{ key: 'exchange_diamon', name: 'Đổi Gem' },
 	{ key: 'tranfer_f', name: 'Chuyển vàng đi' },
 	{ key: 'tranfer_t', name: 'Nhận chuyển vàng' },
+	{ key: 'vip_expired', name: 'Hết hạn VIP' },
+	{ key: 'vip_inactive', name: 'Hết hạn VIP' },
 ];
