@@ -190,12 +190,13 @@ function Resigter() {
 									</option>
 								))}
 								<option value={'8'}>Máy Chủ 8-9-10</option>
-								{Array.from({ length: 3 }).map((_, i) => (
+								<option value={'11'}>Máy Chủ 11</option>
+								{Array.from({ length: 2 }).map((_, i) => (
 									<option
 										disabled
 										key={i + 'resigter_server'}
-										value={i + 11}>
-										Máy Chủ {i + 11}
+										value={i + 12}>
+										Máy Chủ {i + 12}
 									</option>
 								))}
 							</select>
