@@ -1930,7 +1930,7 @@ function HistoryActivity() {
 							</thead>
 							<tbody className="font-bold">
 								{/* row 1 */}
-								{actives.map((ac, i) => {
+								{[...actives.filter((ac) => ac.active?.name !== 'login' || ac.active?.name !== 'resigter' )].map((ac, i) => {
 									const {
 										name = 'nro',
 										m_current = 0,
