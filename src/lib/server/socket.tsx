@@ -149,6 +149,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			dispatch(updateJackpot(payload));
 		});
 
+		socket.on('updates', (data: { service: any; user: any }) => {
+			const { service, user } = data;
+			dispatch(setUserStore(user));
+			dispatch(setService(service));
+		});
+
 		// get jackpot;
 		socket.emit('jackpot.get', 'jackpot');
 

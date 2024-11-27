@@ -3,9 +3,16 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { setUserBet, UserBet } from '@/lib/redux/storage/user/userBet';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaMinus } from 'react-icons/fa';
 import { MdOutlineHistoryEdu } from 'react-icons/md';
+import { io, Socket } from 'socket.io-client';
+
+const urlConfig = {
+	dev: 'http://localhost:3037',
+	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
+};
 
 interface FieldRow {
 	row: '10' | '25' | '50' | '100';
@@ -26,6 +33,7 @@ function History() {
 		show: 'all',
 	});
 	const [msg, setMsg] = useState<string>('');
+	const socketAuth = useRef<Socket | null>(null);
 
 	useEffect(() => {
 		if (userBets) {
@@ -63,29 +71,62 @@ function History() {
 		}
 	}, [server, filter]);
 
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			let dialog = document.getElementById(
+				'usert_bet_place_notice',
+			) as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+				setMsg(message);
+			}
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'minigame.cancel.re',
+				(data: { message: string; user?: any }) => {
+					setLoad(false);
+					showModleSocket(data.message);
+				},
+			);
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('minigame.cancel.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
+
 	const cancelPlace = async (userBetId: string) => {
 		if (!user.isLogin || !user.token)
 			return showNoticeEShop('Bạn chưa đăng nhập');
+
+		if (!socketAuth.current) {
+			return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+		}
 		try {
 			setLoad(true);
-			const { data } = await apiClient.post(
-				'/mini-game/cancel',
-				{
-					userBetId: userBetId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			socketAuth.current.emit('minigame.cancel', {
+				userBetId: userBetId,
+			});
+		} catch (err: any) {}
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -97,6 +138,7 @@ function History() {
 			setMsg(message);
 		}
 	};
+
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/2_history.webp')" }}

@@ -1,7 +1,6 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { useEffect, useState } from 'react';
-import { GrMoney } from 'react-icons/gr';
+import { use, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
@@ -13,6 +12,13 @@ import { setService } from '@/lib/redux/storage/eshop/service';
 import Modal from '@/components/controller/Modal';
 import { setClans } from '@/lib/redux/storage/clan/clans';
 import { useSocket } from '@/lib/server/socket';
+import { io, Socket } from 'socket.io-client';
+
+const urlConfig = {
+	dev: 'http://localhost:3037',
+	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
+};
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
@@ -22,7 +28,7 @@ function Deposit() {
 	const dispatch = useAppDispatch();
 
 	const [eshop, setEshop] = useState<EConfig>({});
-	const [botD, setBotD] = useState<Bot[]>([]);
+	// const [botD, setBotD] = useState<Bot[]>([]);
 	const [tutorial, setTutorial] = useState<any[]>([]);
 	const [field, setField] = useState<InputField>({
 		type: '0',
@@ -31,6 +37,7 @@ function Deposit() {
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const [isLoadSub, setLoadSub] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
+	const socketAuth = useRef<Socket | null>(null);
 
 	const socket = useSocket();
 
@@ -39,8 +46,6 @@ function Deposit() {
 
 		// If valid, proceed with form submission logic
 		try {
-			setLoadSub(true);
-
 			const playerNameElement = e.currentTarget.elements.namedItem(
 				'playerName',
 			) as HTMLInputElement;
@@ -107,27 +112,18 @@ function Deposit() {
 				return showNoticeEShop(
 					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
 				);
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			setLoadSub(true);
 			const { amount, playerName, typeGold } = field;
-			const { data } = await apiClient.post(
-				'/service/create',
-				{
-					type: typeGold === 'gold' ? '3' : '2',
-					amount: Number(amount),
-					playerName,
-					server: user.server,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-		} finally {
-			setLoadSub(false);
-		}
+			socketAuth.current?.emit('service.create', {
+				type: typeGold === 'gold' ? '3' : '2',
+				amount: Number(amount),
+				playerName,
+				server: user.server,
+			});
+		} catch (err: any) {}
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -140,27 +136,16 @@ function Deposit() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
-			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/service/cancel',
-				{
-					serviceId: serviceId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			setLoad(true);
+			socketAuth.current?.emit('service.cancel', {
+				serviceId: serviceId,
+			});
+		} catch (err: any) {}
 	};
 
 	// Auto get Bot Info
@@ -235,27 +220,6 @@ function Deposit() {
 		}
 	}, [econfig]);
 
-	// useEffect(() => {
-	// 	const showTutorialVIP = () => {
-	// 		let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
-	// 		if (dialog) {
-	// 			dialog.show();
-	// 		}
-	// 	};
-	// 	if (econfig) {
-	// 		const target = [...econfig].find((e) => e.name === 'e_reward');
-	// 		if (target) {
-	// 			const vipLevels = target?.option?.vipLevels ?? [];
-	// 			setTutorial(vipLevels);
-	// 			let timeout = setTimeout(() => {
-	// 				showTutorialVIP();
-	// 			}, 2e3);
-
-	// 			return () => clearTimeout(timeout);
-	// 		}
-	// 	}
-	// }, []);
-
 	useEffect(() => {
 		const getServices = async () => {
 			try {
@@ -275,7 +239,59 @@ function Deposit() {
 		if (user.isLogin) {
 			getServices();
 		}
-	}, []);
+	}, [user]);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			let dialog = document.getElementById(
+				'eshop_deposit',
+			) as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+				setMsg(message);
+			}
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'service.create.re',
+				(data: { message: string; user?: any }) => {
+					setLoadSub(false);
+					setLoad(false);
+					showModleSocket(data.message);
+				},
+			);
+
+			socket_auth.on('service.cancel.re', (data: { message: string }) => {
+				setLoadSub(false);
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoadSub(false);
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('service.create.re');
+				socket_auth.off('service.cancel.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
 
 	return (
 		<div

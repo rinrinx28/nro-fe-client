@@ -1,6 +1,6 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
@@ -11,6 +11,13 @@ import { Bot, setBot } from '@/lib/redux/storage/eshop/bots';
 import { setService } from '@/lib/redux/storage/eshop/service';
 import { setClans } from '@/lib/redux/storage/clan/clans';
 import { useSocket } from '@/lib/server/socket';
+import { io, Socket } from 'socket.io-client';
+
+const urlConfig = {
+	dev: 'http://localhost:3037',
+	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
+};
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
@@ -27,6 +34,7 @@ function Withdraw() {
 	const [isLoadSub, setLoadSub] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
 	const [eshop, setEshop] = useState<EConfig>({});
+	const socketAuth = useRef<Socket | null>(null);
 
 	const socket = useSocket();
 
@@ -34,7 +42,6 @@ function Withdraw() {
 		// If valid, proceed with form submission logic
 		try {
 			e.preventDefault(); // Prevent form submission
-			setLoadSub(true);
 			// Config with ESHOP;
 			const {
 				min_gold = 50e6,
@@ -119,27 +126,18 @@ function Withdraw() {
 				return showNoticeEShop(
 					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
 				);
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			setLoadSub(true);
 			const { typeGold, amount, playerName } = field;
-			const { data } = await apiClient.post(
-				'/service/create',
-				{
-					type: typeGold === 'gold' ? '1' : '0',
-					amount: Number(amount),
-					playerName,
-					server: user.server,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-		} finally {
-			setLoadSub(false);
-		}
+			socketAuth.current?.emit('service.create', {
+				type: typeGold === 'gold' ? '1' : '0',
+				amount: Number(amount),
+				playerName,
+				server: user.server,
+			});
+		} catch (err: any) {}
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -152,27 +150,19 @@ function Withdraw() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
-			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/service/cancel',
-				{
-					serviceId: serviceId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			setLoad(true);
+			socketAuth.current?.emit('service.cancel', {
+				serviceId: serviceId,
+			});
+		} catch (err: any) {}
 	};
 
 	// Auto get Bot Info
@@ -245,6 +235,59 @@ function Withdraw() {
 			getServices();
 		}
 	}, []);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			let dialog = document.getElementById(
+				'eshop_withdraw',
+			) as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+				setMsg(message);
+			}
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'service.create.re',
+				(data: { message: string; user?: any }) => {
+					setLoadSub(false);
+					setLoad(false);
+					showModleSocket(data.message);
+				},
+			);
+
+			socket_auth.on('service.cancel.re', (data: { message: string }) => {
+				setLoadSub(false);
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoadSub(false);
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('service.create.re');
+				socket_auth.off('service.cancel.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
+
 	return (
 		<div
 			style={{ backgroundImage: "url('/image/background/logo_withdraw.webp')" }}

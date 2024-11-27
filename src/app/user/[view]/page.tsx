@@ -8,19 +8,24 @@ import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaExchangeAlt, FaMinus, FaRegUser, FaTable } from 'react-icons/fa';
 import { GiDragonShield, GiSeaDragon } from 'react-icons/gi';
-import { GrMoney, GrTrigger } from 'react-icons/gr';
 import { MdOutlineEmail, MdOutlineHistory } from 'react-icons/md';
-import { RiLockPasswordLine, RiVipCrownLine, RiVipFill } from 'react-icons/ri';
+import { RiLockPasswordLine } from 'react-icons/ri';
 import './user.css';
-import { DiVim } from 'react-icons/di';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
 import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
 import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
 import { getNumbetFromString } from '@/components/pages/main/home';
+import { io, Socket } from 'socket.io-client';
+
+const urlConfig = {
+	dev: 'http://localhost:3037',
+	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
+};
 
 type PageView =
 	| 'profile'
@@ -333,18 +338,8 @@ function Profile() {
 				console.log(err.response.data.message.message);
 			}
 		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-
 		listClan();
 		listConfig();
-		// listBot();
 	}, []);
 
 	useEffect(() => {
@@ -432,7 +427,7 @@ function Profile() {
 								</div>
 							</div>
 							<div className="flex flex-row gap-2 border-t border-current py-2 items-center select-none">
-								{user?.meta?.vip && (
+								{user?.meta?.vip && user?.meta?.vip !== 0 && (
 									<div
 										data-tip={`VIP ${user?.meta?.vip ?? '0'}`}
 										className="tooltip">
@@ -637,25 +632,18 @@ function ExchangeGold(props: { showNotice: any }) {
 		diamon?: number;
 	}>({});
 
+	const socketAuth = useRef<Socket | null>(null);
+
 	const exchange = async () => {
 		try {
+			if (!socketAuth.current) {
+				return showNotice('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
 			setLoad(true);
-			const { data } = await apiClient.post(
-				'/service/exchange',
-				{ ...field },
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNotice(data.message);
-		} catch (err: any) {
-			showNotice(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			socketAuth.current.emit('service.exchange.diamon', {
+				...field,
+			});
+		} catch (err: any) {}
 	};
 
 	useEffect(() => {
@@ -666,6 +654,44 @@ function ExchangeGold(props: { showNotice: any }) {
 			}
 		}
 	}, [econfig]);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			showNotice(message);
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'service.exchange.diamon.re',
+				(data: { message: string; user?: any }) => {
+					setLoad(false);
+					showModleSocket(data.message);
+				},
+			);
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('service.exchange.diamon.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
+
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -883,26 +909,58 @@ function TradeGold(props: { showNotice: any }) {
 		server: user.server,
 	});
 
+	const socketAuth = useRef<Socket | null>(null);
+
 	const tranfer = async () => {
 		try {
+			if (!socketAuth.current) {
+				return showNotice('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
 			setLoad(true);
-			const { data } = await apiClient.post(
-				'/service/tranfer',
-				{ ...field, targetId: field.targetId?.toLocaleLowerCase() },
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
+			socketAuth.current.emit('service.tranfer.money', {
+				...field,
+				targetId: field.targetId?.toLocaleLowerCase(),
+			});
+		} catch (err: any) {}
+	};
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			showNotice(message);
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'service.tranfer.money.re',
+				(data: { message: string; user?: any }) => {
+					setLoad(false);
+					showModleSocket(data.message);
 				},
 			);
-			showNotice(data.message);
-		} catch (err: any) {
-			showNotice(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('service.tranfer.money.re');
+				socket_auth.disconnect();
+			};
 		}
-	};
+	}, [user, socketAuth]);
+
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -1094,6 +1152,8 @@ function HistoryService() {
 	const [typeS, setTypeS] = useState<string>('0');
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
+
+	const socketAuth = useRef<Socket | null>(null);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -1189,27 +1249,16 @@ function HistoryService() {
 
 	const cancelService = async (serviceId: string) => {
 		try {
-			setLoad(true);
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/service/cancel',
-				{
-					serviceId: serviceId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			setLoad(true);
+			socketAuth.current?.emit('service.cancel', {
+				serviceId: serviceId,
+			});
+		} catch (err: any) {}
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -1221,6 +1270,47 @@ function HistoryService() {
 			setMsg(message);
 		}
 	};
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			let dialog = document.getElementById(
+				'profile_service',
+			) as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+				setMsg(message);
+			}
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on('service.cancel.re', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('service.cancel.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
+
 	return (
 		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
 			<div className="flex flex-row gap-2 items-center">
@@ -1443,6 +1533,7 @@ function HistoryBet() {
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const dispatch = useAppDispatch();
 	const [msg, setMsg] = useState<string>('');
+	const socketAuth = useRef<Socket | null>(null);
 
 	useEffect(() => {
 		const getUserBets = async () => {
@@ -1491,6 +1582,49 @@ function HistoryBet() {
 			setData(new_channel);
 		}
 	}, [userBets, server, limited]);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			let dialog = document.getElementById(
+				'usert_bet_place_notice',
+			) as HTMLDialogElement;
+			if (dialog) {
+				dialog.show();
+				setMsg(message);
+			}
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'minigame.cancel.re',
+				(data: { message: string; user?: any }) => {
+					setLoad(false);
+					showModleSocket(data.message);
+				},
+			);
+
+			socket_auth.on('error', (data: { message: string }) => {
+				setLoad(false);
+				showModleSocket(data.message);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('minigame.cancel.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth]);
 
 	const nextPage = async (pageNumber: number) => {
 		try {
@@ -1542,27 +1676,16 @@ function HistoryBet() {
 
 	const cancelPlace = async (userBetId: string) => {
 		try {
-			setLoad(true);
 			if (!user.isLogin || !user.token)
 				return showNoticeEShop('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/mini-game/cancel',
-				{
-					userBetId: userBetId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
-			showNoticeEShop(data.message);
-		} catch (err: any) {
-			showNoticeEShop(err.response.data.message.message);
-			setLoad(false);
-		} finally {
-			setLoad(false);
-		}
+			if (!socketAuth.current) {
+				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+			}
+			setLoad(true);
+			socketAuth.current?.emit('minigame.cancel', {
+				userBetId: userBetId,
+			});
+		} catch (err: any) {}
 	};
 
 	const showNoticeEShop = (message: string) => {
@@ -1930,7 +2053,13 @@ function HistoryActivity() {
 							</thead>
 							<tbody className="font-bold">
 								{/* row 1 */}
-								{[...actives.filter((ac) => ac.active?.name !== 'login' || ac.active?.name !== 'resigter' )].map((ac, i) => {
+								{[
+									...actives.filter(
+										(ac) =>
+											ac.active?.name !== 'login' ||
+											ac.active?.name !== 'resigter',
+									),
+								].map((ac, i) => {
 									const {
 										name = 'nro',
 										m_current = 0,

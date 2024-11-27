@@ -1,8 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
 import { GiPerspectiveDiceSixFacesTwo } from 'react-icons/gi';
-import { GrMoney } from 'react-icons/gr';
 import {
 	IoIosSend,
 	IoIosStarHalf,
@@ -33,8 +32,15 @@ import apiClient from '@/lib/server/apiClient';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import { useSocket } from '@/lib/server/socket';
 import { TbPokerChip } from 'react-icons/tb';
-import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
+import { setClans } from '@/lib/redux/storage/clan/clans';
 import { setConfigs } from '@/lib/redux/storage/eshop/config';
+import { io, Socket } from 'socket.io-client';
+
+const urlConfig = {
+	dev: 'http://localhost:3037',
+	vps: 'http://144.126.145.81:3037',
+	sv: 'https://api.nrogame.me',
+};
 
 export const getNumbetFromString = (value: string) => {
 	let num = value.replace(/[^\d]/g, '');
@@ -93,6 +99,7 @@ function Home() {
 	const [msg, setMsg] = useState<MessageField>();
 	const [notice, setNotice] = useState<string>();
 	const [isLoad, setLoad] = useState<boolean>(false);
+	const socketAuth = useRef<Socket | null>(null);
 
 	const showNotice = (type: 'controll' | 'chat-box', mess: string) => {
 		switch (type) {
@@ -172,37 +179,19 @@ function Home() {
 		}
 
 		try {
+			if (!socketAuth.current) {
+				return resetBetFildAndNotice(
+					'Bạn chưa đăng nhập, xin vui lòng đăng nhập',
+				);
+			}
 			setLoad(true);
-
-			// API call
-			const response = await apiClient.post(
-				'/mini-game/place',
-				{
-					...betField,
-					amount: n_amount,
-					betId: gameBox._id,
-					server,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${token || ''}`,
-					},
-				},
-			);
-
-			// Handle success
-			const { data } = response;
-			dispatch(updateUser(data.user));
-			resetBetFildAndNotice(data.message);
-		} catch (err: any) {
-			// Handle error gracefully
-			const errorMessage =
-				err?.response?.data?.message?.message ||
-				'Đã xảy ra lỗi, vui lòng thử lại';
-			resetBetFildAndNotice(errorMessage);
-		} finally {
-			setLoad(false);
-		}
+			socketAuth.current.emit('minigame.place', {
+				...betField,
+				amount: n_amount,
+				betId: gameBox._id,
+				server,
+			});
+		} catch (err: any) {}
 	};
 
 	const sendMsg = () => {
@@ -268,22 +257,6 @@ function Home() {
 
 	useEffect(() => {
 		if (gameBox) {
-			// if (gameBox?.server === '24') {
-			// if (gameBox.isEnd && gameBox.server !== '24') {
-			// 	const loop = setInterval(() => {
-			// 		let now = moment().unix();
-			// 		let timeEnd = moment(gameBox?.timeEnd).unix();
-			// 		let time = Math.floor(now - timeEnd);
-			// 		if (time < 0) {
-			// 			setCounter(null);
-			// 		} else {
-			// 			setCounter(time);
-			// 		}
-			// 	}, 1e3);
-			// 	return () => {
-			// 		clearInterval(loop);
-			// 	};
-			// } else {
 			const loop = setInterval(() => {
 				let now = moment().unix();
 				let timeEnd = moment(gameBox?.timeEnd).unix();
@@ -357,19 +330,64 @@ function Home() {
 				console.log(err.response.data.message.message);
 			}
 		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-
 		listClan();
 		listConfig();
-		// listBot();
 	}, []);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			const div_notice = document.getElementById(
+				'notice-bet-controll',
+			) as HTMLDivElement;
+			if (div_notice) {
+				div_notice.classList.toggle('hidden');
+				setNotice(message);
+			}
+			let autoClose = setTimeout(() => {
+				let div_notice = document.getElementById(
+					'notice-bet-controll',
+				) as HTMLDivElement;
+				if (div_notice) {
+					div_notice.classList.toggle('hidden');
+				}
+			}, 3e3);
+			return () => {
+				clearTimeout(autoClose);
+			};
+		};
+		if (user.isLogin || user.token) {
+			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+				path: '/socket.io/',
+				transports: ['websocket'],
+				secure: true,
+				reconnectionAttempts: 5, // Limit reconnection attempts
+				auth: {
+					token: `${user.token}`, // Ensure to pass a valid token
+				},
+			});
+			socketAuth.current = socket_auth;
+
+			socket_auth.on(
+				'minigame.place.re',
+				(data: { message: string; user?: any }) => {
+					showModleSocket(data.message);
+					dispatch(updateUser(data.user));
+					setLoad(false);
+				},
+			);
+
+			socket_auth.on('error', (data: { message: string }) => {
+				showModleSocket(data.message);
+				setLoad(false);
+			});
+			return () => {
+				socketAuth.current = null;
+				socket_auth.off('error');
+				socket_auth.off('minigame.place.re');
+				socket_auth.disconnect();
+			};
+		}
+	}, [user, socketAuth, dispatch]);
 
 	const openTutorialJackpot = () => {
 		let dialog = document.getElementById(
