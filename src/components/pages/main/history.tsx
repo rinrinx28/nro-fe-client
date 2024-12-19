@@ -141,7 +141,7 @@ function History() {
 
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/2_history.webp')" }}
+			// style={{ backgroundImage: "url('/image/background/2_history.webp')" }}
 			className="w-full flex items-center justify-center p-8">
 			<div className="max-w-7xl w-full select-none flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
 				<div

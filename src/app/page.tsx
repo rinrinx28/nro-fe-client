@@ -37,10 +37,10 @@ export default function Page() {
 	return (
 		<div
 			id="home_page"
-			className="flex flex-col gap-2 justify-center items-center w-full select-none bg-[#C1121F]">
+			className="flex flex-col gap-2 justify-center items-center w-full select-none">
 			<Home />
 			<div
-				style={{ backgroundImage: "url('/image/background/banner_1.webp')" }}
+				// style={{ backgroundImage: "url('/image/background/banner_1.webp')" }}
 				className="w-full bg-cover bg-repeat bg-top">
 				<div className="flex flex-col items-center p-2 w-full justify-center gap-4">
 					<button
@@ -95,13 +95,13 @@ export default function Page() {
 			</div>
 
 			<History />
-			<div
+			{/* <div
 				style={{ backgroundImage: "url('/image/background/banner_1.webp')" }}
-				className="w-full h-20 bg-cover bg-repeat bg-center"></div>
+				className="w-full h-20 bg-cover bg-repeat bg-center"></div> */}
 			<TablesTop />
-			<div
+			{/* <div
 				style={{ backgroundImage: "url('/image/background/banner_1.webp')" }}
-				className="w-full h-20 bg-cover bg-repeat bg-bottom"></div>
+				className="w-full h-20 bg-cover bg-repeat bg-bottom"></div> */}
 		</div>
 	);
 }

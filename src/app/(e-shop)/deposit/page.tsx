@@ -176,18 +176,8 @@ function Deposit() {
 				console.log(err.response.data.message.message);
 			}
 		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-
 		listClan();
 		listConfig();
-		// listBot();
 	}, []);
 
 	// Update data ESHOP;
@@ -295,8 +285,8 @@ function Deposit() {
 
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/logo_deposit.webp')" }}
-			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover select-none">
+			// style={{ backgroundImage: "url('/image/background/logo_deposit.webp')" }}
+			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover select-none bg-white">
 			<div className="flex flex-col gap-2 w-full max-w-7xl rounded-box shadow-lg shadow-white/80 bg-white/50 backdrop-blur-lg text-black p-8">
 				<h1 className="w-full text-center font-chakra-petch font-bold uppercase text-4xl text-amber-800">
 					Nạp Vàng
@@ -354,11 +344,11 @@ function Deposit() {
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
 								disabled
+								defaultValue={user.server}
 								className="select select-bordered w-full border-2 ">
 								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
-										selected={user.server === `${i + 1}`}
 										key={i + 'resigter_server'}
 										value={i + 1}>
 										Máy Chủ {i + 1}
@@ -366,7 +356,6 @@ function Deposit() {
 								))}
 								<option
 									key={'8-9-10' + 'resigter_server'}
-									selected={user.server === `8`}
 									value={'8'}>
 									Máy Chủ 8-9-10
 								</option>
@@ -374,7 +363,6 @@ function Deposit() {
 								{Array.from({ length: 3 }).map((_, i) => (
 									<option
 										key={i + 'resigter_server'}
-										selected={user.server === `${i + 11}`}
 										value={i + 11}>
 										Máy Chủ {i + 11}
 									</option>

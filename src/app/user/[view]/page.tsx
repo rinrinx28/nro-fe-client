@@ -97,31 +97,10 @@ function UserContext() {
 			showNotice(err.response.data.message.message);
 		}
 	};
-	// Auto Call Request;
-	useEffect(() => {
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-		listConfig();
-		// listBot();
-	}, []);
 	return (
 		<div
-			style={{ backgroundImage: "url('/image/background/logo_user.webp')" }}
-			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8">
+			// style={{ backgroundImage: "url('/image/background/logo_user.webp')" }}
+			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8 bg-white overflow-y-hidden">
 			<div className="flex flex-row w-full gap-2 max-w-7xl h-full">
 				{/* Navigate User */}
 				<div className="lg:flex hidden flex-col bg-white/30 backdrop-blur-lg rounded-box w-fit text-nowrap py-4 px-8 gap-5 text-black">
@@ -373,7 +352,7 @@ function Profile() {
 		}
 	}, [user, users]);
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -693,7 +672,7 @@ function ExchangeGold(props: { showNotice: any }) {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -962,7 +941,7 @@ function TradeGold(props: { showNotice: any }) {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -1312,7 +1291,7 @@ function HistoryService() {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2029,7 +2008,7 @@ function HistoryActivity() {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-4 text-black slide-in-right">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2056,8 +2035,7 @@ function HistoryActivity() {
 								{[
 									...actives.filter(
 										(ac) =>
-											ac.active?.name !== 'login' ||
-											ac.active?.name !== 'resigter',
+											!['login', 'register'].includes(ac.active?.name ?? ''),
 									),
 								].map((ac, i) => {
 									const {
@@ -2181,7 +2159,7 @@ function TableMission(props: { showNotice: any }) {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right font-chakra-petch">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2212,8 +2190,8 @@ function TableMission(props: { showNotice: any }) {
 							</p>
 						</div>
 					</div>
-					<div className="overflow-auto w-full select-none">
-						<div className="grid grid-flow-col gap-5">
+					<div className="overflow-hidden w-full select-none">
+						<div className="flex flex-row gap-5 w-full overflow-auto">
 							{daily.map((d, i) => {
 								const { dailyPointsTarget = 0 } = d;
 								const { rewardDayCollected = [] } = user.meta ?? {};
@@ -2381,7 +2359,7 @@ function TableVIP(props: { showNotice: any }) {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full py-4 px-8 gap-5 text-black slide-in-right font-chakra-petch">
+		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
