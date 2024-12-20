@@ -1,6 +1,6 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { use, useEffect, useRef, useState } from 'react';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
@@ -79,21 +79,23 @@ function Deposit() {
 			}
 
 			if (field.typeGold === 'gold') {
-				if (Number(field.amount) < min_gold)
+				if (Number(field.amount) < min_gold) {
 					amountElement.setCustomValidity(
 						`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
 							min_gold,
 						)} vàng`,
 					);
+				}
 			}
 
 			if (field.typeGold === 'rgold') {
-				if (Number(field.amount) < min_rgold)
+				if (Number(field.amount) < min_rgold) {
 					amountElement.setCustomValidity(
 						`Bạn không thể nạp thấp hơn ${new Intl.NumberFormat('vi').format(
 							min_rgold,
 						)} thỏi vàng`,
 					);
+				}
 			}
 
 			// Trigger validation
@@ -103,18 +105,23 @@ function Deposit() {
 			) {
 				return; // Stop submission if input is invalid
 			}
+
 			let bot_status = [...(bots ?? [])]
 				.filter((b) => user.server === b.server)
 				.filter(
 					(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
 				);
-			if (bot_status.length === 0)
+
+			if (bot_status.length === 0) {
 				return showNoticeEShop(
 					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
 				);
+			}
+
 			if (!socketAuth.current) {
 				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
 			}
+
 			setLoadSub(true);
 			const { amount, playerName, typeGold } = field;
 			socketAuth.current?.emit('service.create', {
@@ -123,40 +130,61 @@ function Deposit() {
 				playerName,
 				server: user.server,
 			});
-		} catch (err: any) {}
+		} catch (err: any) {
+			console.error(err); // Log the error
+		}
 	};
 
-	const showNoticeEShop = (message: string) => {
+	const showNoticeEShop = useCallback((message: string) => {
 		let dialog = document.getElementById('eshop_deposit') as HTMLDialogElement;
 		if (dialog) {
 			dialog.show();
 			setMsg(message);
 		}
-	};
+	}, []);
 
 	const cancelService = async (serviceId: string) => {
 		try {
-			if (!user.isLogin || !user.token)
+			if (!user.isLogin || !user.token) {
 				return showNoticeEShop('Bạn chưa đăng nhập');
+			}
+
 			if (!socketAuth.current) {
 				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
 			}
+
 			setLoad(true);
 			socketAuth.current?.emit('service.cancel', {
 				serviceId: serviceId,
 			});
-		} catch (err: any) {}
+		} catch (err: any) {
+			console.error(err); // Log the error
+		}
 	};
 
 	// Auto get Bot Info
 	useEffect(() => {
-		socket.on('bot.status', (payload: Bot) => {
-			dispatch(setBot(payload));
-		});
-		return () => {
-			socket.off('bot.status');
-		};
-	}, [socket]);
+		if (socket) {
+			socket.on('bot.status', (payload: Bot) => {
+				dispatch(setBot(payload));
+			});
+
+			socket.on(
+				'notification.user',
+				(payload: { uid: string; message: string }) => {
+					const { message, uid } = payload;
+					if (user && uid === user._id) {
+						showNoticeEShop(message);
+					}
+				},
+			);
+
+			return () => {
+				socket.off('bot.status');
+				socket.off('notification.user');
+			};
+		}
+	}, [socket, user, showNoticeEShop]);
 
 	// Auto Call Request;
 	useEffect(() => {
@@ -345,24 +373,23 @@ function Deposit() {
 							<select
 								disabled
 								defaultValue={user.server}
-								className="select select-bordered w-full border-2 ">
+								className="select select-bordered w-full border-2">
 								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
-										key={i + 'resigter_server'}
+										key={`register_server_${i + 1}`}
 										value={i + 1}>
 										Máy Chủ {i + 1}
 									</option>
 								))}
 								<option
-									key={'8-9-10' + 'resigter_server'}
-									value={'8'}>
+									key="register_server_8-9-10"
+									value="8">
 									Máy Chủ 8-9-10
 								</option>
-								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 3 }).map((_, i) => (
 									<option
-										key={i + 'resigter_server'}
+										key={`register_server_${i + 11}`}
 										value={i + 11}>
 										Máy Chủ {i + 11}
 									</option>
@@ -371,8 +398,8 @@ function Deposit() {
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
-								defaultValue={field.typeGold}
-								className="select select-bordered w-full border-2 "
+								value={field.typeGold}
+								className="select select-bordered w-full border-2"
 								onChange={(e) => {
 									setField((f) => ({
 										...f,
@@ -380,8 +407,8 @@ function Deposit() {
 										amount: '0',
 									}));
 								}}>
-								<option value={'gold'}>Giao dịch vàng</option>
-								<option value={'rgold'}>Giao dịch thỏi vàng</option>
+								<option value="gold">Giao dịch vàng</option>
+								<option value="rgold">Giao dịch thỏi vàng</option>
 							</select>
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
@@ -497,6 +524,7 @@ function Deposit() {
 										Number(field.amount ?? 0) *
 											(field.typeGold === 'rgold' ? 1e6 * 37 : 1),
 									)}
+									readOnly
 								/>
 							</div>
 						</label>
@@ -587,16 +615,6 @@ function Deposit() {
 									})}
 							</tbody>
 						</table>
-						{/* {[...(bots ?? [])]
-							.filter((b) => user.server === b.server)
-							.filter(
-								(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
-							).length === 0 &&
-							user.isLogin && (
-								<div className="text-center w-full bg-white text-orange-500">
-									Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát
-								</div>
-							)} */}
 					</div>
 				</div>
 			</div>

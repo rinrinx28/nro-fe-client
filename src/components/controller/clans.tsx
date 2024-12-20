@@ -337,7 +337,7 @@ function Clans() {
 							) : (
 								<GiVikingLonghouse size={32} />
 							)}
-							<p>{myClan?.meta?.name ?? ''}</p>
+							<div>{myClan?.meta?.name ?? ''}</div>
 						</div>
 					) : (
 						<GiVikingLonghouse size={32} />
@@ -1004,7 +1004,7 @@ const MemberList = (props: {
 								<span className="font-chakra-petch">điểm:</span>
 								{new Intl.NumberFormat('vi').format(score ?? 0)}{' '}
 							</p>
-							<p className="font-protest-strike-regular flex flex-row gap-2 items-center">
+							<div className="font-protest-strike-regular flex flex-row gap-2 items-center">
 								<p className="font-sf-trans-robotics uppercase flex flex-row gap-2">
 									<span className="font-chakra-petch">Số Dư:</span>
 									{!myClan &&
@@ -1024,7 +1024,7 @@ const MemberList = (props: {
 										myClan?.ownerId === user?._id &&
 										new Intl.NumberFormat('vi').format(money)}
 								</p>
-							</p>
+							</div>
 						</div>
 					</div>
 				);
@@ -1599,10 +1599,10 @@ const ClanTransferQ = ({
 				</button>
 
 				<div className="flex flex-col gap-1 text-sm shadow-inner shadow-orange-500 text-white p-2 rounded-box bg-orange-500 font-bold">
-					<p>
+					<div>
 						Lưu ý: Khi chuyển nhượng Bang hội, bạn sẽ chuyển thành Member trong
 						bang hội
-					</p>
+					</div>
 				</div>
 			</form>
 			<dialog

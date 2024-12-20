@@ -1,6 +1,6 @@
 'use client';
 import { getNumbetFromString } from '@/components/pages/main/home';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
@@ -140,13 +140,13 @@ function Withdraw() {
 		} catch (err: any) {}
 	};
 
-	const showNoticeEShop = (message: string) => {
+	const showNoticeEShop = useCallback((message: string) => {
 		let dialog = document.getElementById('eshop_withdraw') as HTMLDialogElement;
 		if (dialog) {
 			dialog.show();
 			setMsg(message);
 		}
-	};
+	}, []);
 
 	const cancelService = async (serviceId: string) => {
 		try {
@@ -167,13 +167,27 @@ function Withdraw() {
 
 	// Auto get Bot Info
 	useEffect(() => {
-		socket.on('bot.status', (payload: Bot) => {
-			dispatch(setBot(payload));
-		});
-		return () => {
-			socket.off('bot.status');
-		};
-	}, [socket]);
+		if (socket) {
+			socket.on('bot.status', (payload: Bot) => {
+				dispatch(setBot(payload));
+			});
+
+			socket.on(
+				'notification.user',
+				(payload: { uid: string; message: string }) => {
+					const { message, uid } = payload;
+					if (user && uid === user._id) {
+						showNoticeEShop(message);
+					}
+				},
+			);
+
+			return () => {
+				socket.off('bot.status');
+				socket.off('notification.user');
+			};
+		}
+	}, [socket, user, showNoticeEShop]);
 
 	// Auto Call Request;
 	useEffect(() => {
@@ -333,27 +347,24 @@ function Withdraw() {
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
 								disabled
-								className="select select-bordered w-full border-2 ">
+								defaultValue={user.server}
+								className="select select-bordered w-full border-2">
 								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
-										selected={user.server === `${i + 1}`}
-										key={i + 'withdraw'}
+										key={`register_server_${i + 1}`}
 										value={i + 1}>
 										Máy Chủ {i + 1}
 									</option>
 								))}
 								<option
-									key={'8-9-10' + 'withdraw'}
-									selected={user.server === `8`}
-									value={'8'}>
+									key="register_server_8-9-10"
+									value="8">
 									Máy Chủ 8-9-10
 								</option>
-								<option disabled>Chọn Máy Chủ</option>
 								{Array.from({ length: 3 }).map((_, i) => (
 									<option
-										key={i + 'withdraw'}
-										selected={user.server === `${i + 11}`}
+										key={`register_server_${i + 11}`}
 										value={i + 11}>
 										Máy Chủ {i + 11}
 									</option>
@@ -362,7 +373,7 @@ function Withdraw() {
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
-								defaultValue={field.typeGold}
+								value={field.typeGold}
 								className="select select-bordered w-full border-2 "
 								onChange={(e) => {
 									setField((f) => ({
@@ -488,6 +499,7 @@ function Withdraw() {
 										Number(field.amount ?? 0) *
 											(field.typeGold === 'rgold' ? 1e6 * 37 : 1),
 									)}
+									readOnly
 								/>
 							</div>
 						</label>
