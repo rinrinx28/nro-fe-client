@@ -178,6 +178,8 @@ function Withdraw() {
 					const { message, uid } = payload;
 					if (user && uid === user._id) {
 						showNoticeEShop(message);
+						setLoadSub(false);
+						setLoad(false);
 					}
 				},
 			);

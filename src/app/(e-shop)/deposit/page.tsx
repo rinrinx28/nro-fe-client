@@ -175,6 +175,8 @@ function Deposit() {
 					const { message, uid } = payload;
 					if (user && uid === user._id) {
 						showNoticeEShop(message);
+						setLoadSub(false);
+						setLoad(false);
 					}
 				},
 			);
@@ -281,14 +283,14 @@ function Deposit() {
 			});
 			socketAuth.current = socket_auth;
 
-			socket_auth.on(
-				'service.create.re',
-				(data: { message: string; user?: any }) => {
-					setLoadSub(false);
-					setLoad(false);
-					showModleSocket(data.message);
-				},
-			);
+			// socket_auth.on(
+			// 	'service.create.re',
+			// 	(data: { message: string; user?: any }) => {
+			// 		setLoadSub(false);
+			// 		setLoad(false);
+			// 		showModleSocket(data.message);
+			// 	},
+			// );
 
 			socket_auth.on('service.cancel.re', (data: { message: string }) => {
 				setLoadSub(false);
