@@ -401,9 +401,9 @@ function Home() {
 	return (
 		<div
 			// style={{ backgroundImage: "url('/image/background/2_main.webp')" }}
-			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch bg-white">
+			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch bg-gray-300">
 			{/* Hero */}
-			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full">
+			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full z-10">
 				<h1 className="lg:text-3xl text-xl font-bold uppercase">nrogame.me</h1>
 				<div className="py-2 lg:text-2xl text-sm w-full text-center">
 					<Typewriter
@@ -418,7 +418,7 @@ function Home() {
 				</div>
 			</div>
 			{/* Button Game */}
-			<div className="max-w-7xl w-full flex flex-wrap justify-center gap-2 items-center">
+			<div className="max-w-7xl w-full flex flex-wrap justify-center gap-2 items-center z-10">
 				{Array.from({ length: 7 }).map((_, k) => (
 					<button
 						key={`${k}-button`}
@@ -477,7 +477,7 @@ function Home() {
 				</button>
 			</div>
 			{/* Group Func Quick */}
-			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5">
+			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5 z-10">
 				<div className="dropdown dropdown-bottom dropdown-end">
 					<div
 						tabIndex={0}
@@ -595,36 +595,45 @@ function Home() {
 				</div>
 			)}
 			{/* Game Info */}
-			<div className="grid lg:grid-cols-2 max-w-7xl w-full gap-4 select-none h-fit p-2">
+			<div className="grid lg:grid-cols-2 grid-cols-1 max-w-7xl w-full gap-4 select-none h-fit p-2 z-10">
 				{/* Left Size Game Board */}
 				<div className="flex flex-col gap-5 w-full h-full">
 					{/* Background game */}
-					<div className="w-full flex flex-col justify-center items-center bg-auto bg-no-repeat bg-right rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
-						<svg
-							className="svg"
-							height="100%"
-							width="100%"
-							xmlns="http://www.w3.org/2000/svg">
-							<rect
-								rx="8"
-								ry="8"
-								className="line stroke-current rounded-box"
+					<div className="relative w-full">
+						<div className="absolute w-full top-0 left-0 z-10">
+							<img
+								src="/image/background/border-btn-top.png"
+								alt="Border frame 2"
+								style={{ width: '100%', margin: '0 auto' }}
+							/>
+						</div>
+
+						<div className="mt-5 w-full flex flex-col justify-center items-center bg-auto bg-no-repeat bg-black/80 bg-right rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
+							<svg
+								className="svg"
 								height="100%"
 								width="100%"
-								strokeLinejoin="round"
-							/>
-						</svg>
-						{/* Layout Box Game */}
-						<div className="flex flex-col justify-start w-full h-full mb-m:p-3 p-2 items-center gap-2 backdrop-blur-md bg-black/80 lg:text-base text-sm">
-							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
-								<SiGamejolt />
-								<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
-								<SiGamejolt />
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<p className="text-orange-500">Mã phiên:</p>
-								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
-									{/* {gameBox?.isEnd ? (
+								xmlns="http://www.w3.org/2000/svg">
+								<rect
+									rx="8"
+									ry="8"
+									className="line stroke-orange-500 rounded-box"
+									height="100%"
+									width="100%"
+									strokeLinejoin="round"
+								/>
+							</svg>
+							{/* Layout Box Game */}
+							<div className="flex flex-col justify-start w-full h-full mb-m:p-3 p-2 items-center gap-2 backdrop-blur-md lg:text-base text-sm">
+								<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
+									<SiGamejolt />
+									<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
+									<SiGamejolt />
+								</div>
+								<div className="z-10 flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Mã phiên:</p>
+									<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
+										{/* {gameBox?.isEnd ? (
 										<>
 											{gameBox._id}{' '}
 											<span className="text-orange-500">(đã kết thúc)</span>
@@ -633,150 +642,153 @@ function Home() {
 										gameBox?._id
 									)} */}
 
-									{gameBox?._id}
-								</p>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<p className="text-orange-500">Máy Chủ:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{server.replace('8', '8-9-10') ?? (
-										<span className="loading loading-bars loading-sm"></span>
-									)}
-								</p>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<p className="text-orange-500">Kết Quả Trước:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{(gameBox?.lastResult &&
-										gameBox?.lastResult.split('-')[0]) ?? (
-										<span className="loading loading-dots loading-sm"></span>
-									)}
-								</p>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<p className="text-orange-500">Thời Gian Còn:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
-									{counter ?? (
-										<span className="loading loading-dots loading-sm"></span>
-									)}
-								</p>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<div className="flex flex-row gap-2">
-									<p className="text-orange-500">Chẵn:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											gameBox?.resultUser?.c ?? 0,
-										)}
+										{gameBox?._id}
 									</p>
 								</div>
-								<div className="flex flex-row gap-2">
-									<p className="text-orange-500">Lẻ:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											gameBox?.resultUser?.l ?? 0,
-										)}
-									</p>
-								</div>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<div className="flex flex-row gap-2">
-									<p className="text-orange-500">Tài:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											gameBox?.resultUser?.t ?? 0,
-										)}
-									</p>
-								</div>
-								<div className="flex flex-row gap-2">
-									<p className="text-orange-500">Xỉu:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(
-											gameBox?.resultUser?.x ?? 0,
-										)}
-									</p>
-								</div>
-							</div>
-							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-								<p className="text-orange-500">Thời Gian Hoạt Động:</p>
-								<p className="text-white font-number-font font-bold">
-									{server === '24' ? '24/24' : '6h - 23h50'}
-								</p>
-							</div>
-							{server === '24' && (
 								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Jackpot:</p>
-									<p className="text-white font-number-font font-bold">
-										{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
-									</p>
-									<button
-										className="btn btn-sm bg-orange-500 text-white"
-										onClick={openTutorialJackpot}>
-										Chi tiết
-									</button>
-								</div>
-							)}
-							<div className="flex flex-col gap-2 justify-start w-full">
-								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">CL:</p>
-									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
-										{gameBox?.lastResult?.split('-').map((r, i) => {
-											const number_result = r.length > 1 ? r[1] : r;
-											return (
-												<li key={i + 'cl'}>
-													<div
-														className={`tooltip mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-															Number(`${number_result}`) % 2 === 0
-																? 'bg-orange-500'
-																: 'bg-yellow-500'
-														}`}
-														data-tip={r}>
-														<p className="">
-															{Number(`${number_result}`) % 2 === 0 ? 'C' : 'L'}
-														</p>
-													</div>
-												</li>
-											);
-										})}
-										{!gameBox && (
-											<span className="loading loading-ring loading-sm"></span>
+									<p className="text-orange-500">Máy Chủ:</p>
+									<p className="text-white drop-shadow-md font-number-font font-bold">
+										{server.replace('8', '8-9-10') ?? (
+											<span className="loading loading-bars loading-sm"></span>
 										)}
-									</ul>
+									</p>
 								</div>
-								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">TX:</p>
-									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
-										{gameBox?.lastResult?.split('-').map((r, i) => {
-											const number_result = r;
-											return (
-												<li
-													key={i + 'tx'}
-													data-tip={r}>
-													<div
-														className={`tooltip `}
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Kết Quả Trước:</p>
+									<p className="text-white drop-shadow-md font-number-font font-bold">
+										{(gameBox?.lastResult &&
+											gameBox?.lastResult.split('-')[0]) ?? (
+											<span className="loading loading-dots loading-sm"></span>
+										)}
+									</p>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Thời Gian Còn:</p>
+									<p className="text-white drop-shadow-md font-number-font font-bold">
+										{counter ?? (
+											<span className="loading loading-dots loading-sm"></span>
+										)}
+									</p>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<div className="flex flex-row gap-2">
+										<p className="text-orange-500">Chẵn:</p>
+										<p className="text-white drop-shadow-md font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(
+												gameBox?.resultUser?.c ?? 0,
+											)}
+										</p>
+									</div>
+									<div className="flex flex-row gap-2">
+										<p className="text-orange-500">Lẻ:</p>
+										<p className="text-white drop-shadow-md font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(
+												gameBox?.resultUser?.l ?? 0,
+											)}
+										</p>
+									</div>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<div className="flex flex-row gap-2">
+										<p className="text-orange-500">Tài:</p>
+										<p className="text-white drop-shadow-md font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(
+												gameBox?.resultUser?.t ?? 0,
+											)}
+										</p>
+									</div>
+									<div className="flex flex-row gap-2">
+										<p className="text-orange-500">Xỉu:</p>
+										<p className="text-white drop-shadow-md font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(
+												gameBox?.resultUser?.x ?? 0,
+											)}
+										</p>
+									</div>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Thời Gian Hoạt Động:</p>
+									<p className="text-white font-number-font font-bold">
+										{server === '24' ? '24/24' : '6h - 23h50'}
+									</p>
+								</div>
+								{server === '24' && (
+									<div className="z-10 flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+										<p className="text-orange-500">Jackpot:</p>
+										<p className="text-white font-number-font font-bold">
+											{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
+										</p>
+										<button
+											className="btn btn-sm bg-orange-500 text-white"
+											onClick={openTutorialJackpot}>
+											Chi tiết
+										</button>
+									</div>
+								)}
+								<div className="z-10 flex flex-col gap-2 justify-start w-full">
+									<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
+										<p className="text-orange-500">CL:</p>
+										<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+											{gameBox?.lastResult?.split('-').map((r, i) => {
+												const number_result = r.length > 1 ? r[1] : r;
+												return (
+													<li key={i + 'cl'}>
+														<div
+															className={`tooltip mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+																Number(`${number_result}`) % 2 === 0
+																	? 'bg-orange-500'
+																	: 'bg-yellow-500'
+															}`}
+															data-tip={r}>
+															<p className="">
+																{Number(`${number_result}`) % 2 === 0
+																	? 'C'
+																	: 'L'}
+															</p>
+														</div>
+													</li>
+												);
+											})}
+											{!gameBox && (
+												<span className="loading loading-ring loading-sm"></span>
+											)}
+										</ul>
+									</div>
+									<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
+										<p className="text-orange-500">TX:</p>
+										<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+											{gameBox?.lastResult?.split('-').map((r, i) => {
+												const number_result = r;
+												return (
+													<li
+														key={i + 'tx'}
 														data-tip={r}>
 														<div
-															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-																parseInt(number_result, 10) < 50
-																	? 'bg-red-500'
-																	: 'bg-green-500'
-															}`}>
-															{parseInt(number_result, 10) > 49 ? 'T' : 'X'}
+															className={`tooltip `}
+															data-tip={r}>
+															<div
+																className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+																	parseInt(number_result, 10) < 50
+																		? 'bg-red-500'
+																		: 'bg-green-500'
+																}`}>
+																{parseInt(number_result, 10) > 49 ? 'T' : 'X'}
+															</div>
 														</div>
-													</div>
-												</li>
-											);
-										})}
-										{!gameBox && (
-											<span className="loading loading-ring loading-sm"></span>
-										)}
-									</ul>
+													</li>
+												);
+											})}
+											{!gameBox && (
+												<span className="loading loading-ring loading-sm"></span>
+											)}
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 					{/* Game Controll */}
-					<div className="w-full flex flex-col justify-center items-center bg-cover rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
+					<div className="mt-5 w-full flex flex-col justify-center items-center bg-cover bg-black/80 rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
 						<svg
 							className="svg"
 							height="100%"
@@ -785,19 +797,19 @@ function Home() {
 							<rect
 								rx="8"
 								ry="8"
-								className="line stroke-current rounded-box"
+								className="line stroke-orange-500 rounded-box"
 								height="100%"
 								width="100%"
 								strokeLinejoin="round"
 							/>
 						</svg>
-						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md bg-black/80">
+						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md">
 							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 								<IoLogoGameControllerB size={24} />
 								<p className="uppercase font-protest-strike-regular">Dự Đoán</p>
 								<IoLogoGameControllerB size={24} />
 							</div>
-							<div className="flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
+							<div className="z-10 flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
@@ -811,7 +823,7 @@ function Home() {
 								</p>
 							</div>
 							{/* Select Type Bet */}
-							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn">
+							<div className="z-10 flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn">
 								<IoLogoGameControllerB size={24} />
 								<select
 									defaultValue={'cl'}
@@ -984,7 +996,7 @@ function Home() {
 								</div>
 							)}
 
-							<div className="lg:grid lg:grid-cols-7 flex flex-wrap gap-2 items-center justify-around w-full">
+							<div className="z-10 lg:grid lg:grid-cols-7 flex flex-wrap gap-2 items-center justify-around w-full">
 								{[50e6, 1e8, 3e8, 5e8, 1e9, 2e9, 4e9].map((n, i) => {
 									let text = ['50m', '100m', '300m', '500m', '1B', '2B', '4B'];
 									return (
@@ -1049,7 +1061,7 @@ function Home() {
 							<div
 								id="notice-bet-controll"
 								role="alert"
-								className={`alert shadow-lg hidden`}>
+								className={`alert shadow-lg hidden z-10`}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -1066,191 +1078,213 @@ function Home() {
 									<div className="text-xs">{notice}</div>
 								</div>
 							</div>
-							<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase z-10">
-								<button
-									onClick={placeBet}
-									disabled={isLoad}
-									className="btn capitalize max-w-xs w-full text-orange-500">
-									{!isLoad ? (
-										<>
-											<GiPerspectiveDiceSixFacesTwo size={24} />
-											Cược Ngay
-										</>
-									) : (
-										<span className="loading loading-bars loading-sm"></span>
-									)}
-								</button>
-							</div>
+							<button
+								onClick={placeBet}
+								disabled={isLoad}
+								className="relative flex items-center h-[80px] w-full group z-10">
+								<div className="absolute w-full top-0 left-0 z-10">
+									<img
+										src="/image/background/border-btn-2.png"
+										alt="Border frame 2"
+										style={{
+											width: '100%',
+											margin: '0 auto',
+											height: '80px',
+										}}
+									/>
+								</div>
+								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
+									<div className="btn capitalize w-full text-orange-500 group-hover:text-black group-hover:bg-orange-500">
+										{!isLoad ? (
+											<>
+												<GiPerspectiveDiceSixFacesTwo size={24} />
+												Cược Ngay
+											</>
+										) : (
+											<span className="loading loading-bars loading-sm"></span>
+										)}
+									</div>
+								</div>
+							</button>
 						</div>
 					</div>
 				</div>
 				{/* Right size chat Box */}
-				<div className=" bg-black/80 rounded-box border-ani border-none w-full flex flex-col">
-					<svg
-						className="svg"
-						height="100%"
-						width="100%"
-						xmlns="http://www.w3.org/2000/svg">
-						<rect
-							rx="8"
-							ry="8"
-							className="line stroke-orange-500 rounded-box"
+				<div className="relative w-full h-full">
+					<div className="absolute w-full top-0 left-0 z-10">
+						<img
+							src="/image/background/border-btn-top.png"
+							alt="Border frame 2"
+							style={{ width: '100%', margin: '0 auto' }}
+						/>
+					</div>
+					<div className="mt-5 bg-black/80 rounded-box border-ani border-none w-full flex flex-col h-full">
+						<svg
+							className="svg"
 							height="100%"
 							width="100%"
-							strokeLinejoin="round"
-						/>
-					</svg>
-					{/* Layout ChatBox */}
-					<div className="flex flex-col gap-3 p-4 font-chakra-petch w-full h-full text-orange-500 justify-between">
-						{/* Header */}
-						<div className="flex flex-row justify-between items-center  uppercase z-50">
-							<div className="flex flex-row gap-2 items-center text-xl">
-								<IoChatbubbleEllipsesSharp size={24} />
-								<h1>ChatBox</h1>
+							xmlns="http://www.w3.org/2000/svg">
+							<rect
+								rx="8"
+								ry="8"
+								className="line stroke-orange-500 rounded-box"
+								height="100%"
+								width="100%"
+								strokeLinejoin="round"
+							/>
+						</svg>
+						{/* Layout ChatBox */}
+						<div className="flex flex-col gap-3 p-4 font-chakra-petch w-full h-full text-orange-500 justify-between">
+							{/* Header */}
+							<div className="flex flex-row justify-between items-center uppercase ">
+								<div className="flex flex-row gap-2 items-center text-xl">
+									<IoChatbubbleEllipsesSharp size={24} />
+									<h1>ChatBox</h1>
+								</div>
 							</div>
-						</div>
-						{/* Chat */}
-						<div className="p-2 z-50 w-full h-full">
-							<div
-								id="chat_box_screen"
-								className="border border-orange-500 backdrop-blur-lg w-full h-[650px] overflow-auto scroll-smooth rounded-box p-2">
-								{channel.map((m, i) => {
-									const { content, meta, uid } = m;
-									const { clanId = null, vip = null } = meta ?? {};
-									const targetClan = clans.find((c) => c._id === clanId);
-									const topIndex = users.findIndex((u) => u._id === uid);
-									const top = topIndex > -1 ? topIndex + 1 : null;
-									return (
-										<div
-											key={i + 'chat_box'}
-											className={`chat ${
-												uid !== (user._id ?? '') ? 'chat-start' : 'chat-end'
-											}`}>
-											<div className="chat-image avatar">
-												<div className="w-10 rounded-box border border-orange-500">
-													<img
-														alt="Tailwind CSS chat bubble component"
-														src={`/image/avatar/${
-															uid === 'local'
-																? '2.webp'
-																: (meta?.avatar ?? '3') + '.webp'
-														}`}
-													/>
+							{/* Chat */}
+							<div className="p-2 z-50 w-full h-full">
+								<div
+									id="chat_box_screen"
+									className="border border-orange-500 backdrop-blur-lg w-full h-[650px] overflow-auto scroll-smooth rounded-box p-2">
+									{channel.map((m, i) => {
+										const { content, meta, uid } = m;
+										const { clanId = null, vip = null } = meta ?? {};
+										const targetClan = clans.find((c) => c._id === clanId);
+										const topIndex = users.findIndex((u) => u._id === uid);
+										const top = topIndex > -1 ? topIndex + 1 : null;
+										return (
+											<div
+												key={i + 'chat_box'}
+												className={`chat ${
+													uid !== (user._id ?? '') ? 'chat-start' : 'chat-end'
+												}`}>
+												<div className="chat-image avatar">
+													<div className="w-10 rounded-box border border-orange-500">
+														<img
+															alt="Tailwind CSS chat bubble component"
+															src={`/image/avatar/${
+																uid === 'local'
+																	? '2.webp'
+																	: (meta?.avatar ?? '3') + '.webp'
+															}`}
+														/>
+													</div>
 												</div>
-											</div>
-											<div className="chat-header">
-												<div
-													className={`flex ${
-														uid !== (user._id ?? '')
-															? 'flex-row-reverse'
-															: 'flex-row'
-													} flex-wrap gap-2 items-center`}>
-													{top && (
-														<div
-															data-tip={`Khứa này TOP ${top}`}
-															className={`z-[1000] tooltip  ${
-																uid !== (user._id ?? '')
-																	? 'tooltip-right'
-																	: 'tooltip-left'
-															}`}>
-															<div className="flex flex-row items-center justify-center px-1">
-																{top && top > 0 && (
+												<div className="chat-header">
+													<div
+														className={`flex ${
+															uid !== (user._id ?? '')
+																? 'flex-row-reverse'
+																: 'flex-row'
+														} flex-wrap gap-2 items-center`}>
+														{top && (
+															<div
+																data-tip={`Khứa này TOP ${top}`}
+																className={`z-[1000] tooltip  ${
+																	uid !== (user._id ?? '')
+																		? 'tooltip-right'
+																		: 'tooltip-left'
+																}`}>
+																<div className="flex flex-row items-center justify-center px-1">
+																	{top && top > 0 && (
+																		<div className="avatar">
+																			<div className="w-10 rounded-xl">
+																				<img
+																					src={`/image/rank/${top}_user.webp`}
+																				/>
+																			</div>
+																		</div>
+																	)}
+																</div>
+															</div>
+														)}
+														{targetClan && (
+															<div
+																data-tip={`Clan ${targetClan?.meta?.name}`}
+																className={`z-[1000] tooltip  ${
+																	uid !== (user._id ?? '')
+																		? 'tooltip-right'
+																		: 'tooltip-left'
+																}`}>
+																<div className="flex flex-row items-center justify-center px-1">
 																	<div className="avatar">
 																		<div className="w-10 rounded-xl">
 																			<img
-																				src={`/image/rank/${top}_user.webp`}
+																				src={`/image/banghoi/b${
+																					targetClan?.meta?.type ?? 1
+																				}.webp`}
 																			/>
 																		</div>
 																	</div>
-																)}
+																</div>
 															</div>
-														</div>
-													)}
-													{targetClan && (
-														<div
-															data-tip={`Clan ${targetClan?.meta?.name}`}
-															className={`z-[1000] tooltip  ${
-																uid !== (user._id ?? '')
-																	? 'tooltip-right'
-																	: 'tooltip-left'
-															}`}>
-															<div className="flex flex-row items-center justify-center px-1">
+														)}
+														{vip && vip > 0 && (
+															<div
+																data-tip={`VIP ${vip ?? '0'}`}
+																className={`z-[1000] tooltip  ${
+																	uid !== (user._id ?? '')
+																		? 'tooltip-right'
+																		: 'tooltip-left'
+																}`}>
 																<div className="avatar">
 																	<div className="w-10 rounded-xl">
 																		<img
-																			src={`/image/banghoi/b${
-																				targetClan?.meta?.type ?? 1
-																			}.webp`}
+																			src={`/image/vip/v${vip ?? '0'}.png`}
+																			alt={`VIP ${vip ?? '0'}`}
 																		/>
 																	</div>
 																</div>
 															</div>
-														</div>
-													)}
-													{vip && vip > 0 && (
-														<div
-															data-tip={`VIP ${vip ?? '0'}`}
-															className={`z-[1000] tooltip  ${
-																uid !== (user._id ?? '')
-																	? 'tooltip-right'
-																	: 'tooltip-left'
-															}`}>
-															<div className="avatar">
-																<div className="w-10 rounded-xl">
-																	<img
-																		src={`/image/vip/v${vip ?? '0'}.png`}
-																		alt={`VIP ${vip ?? '0'}`}
-																	/>
-																</div>
-															</div>
-														</div>
-													)}
-													{uid === 'local'
-														? 'Hệ thống'
-														: uid === (user._id ?? '')
-														? 'Bạn'
-														: meta?.name}
+														)}
+														{uid === 'local'
+															? 'Hệ thống'
+															: uid === (user._id ?? '')
+															? 'Bạn'
+															: meta?.name}
+													</div>
+													{/* <time className="text-xs opacity-50">12:45</time> */}
 												</div>
-												{/* <time className="text-xs opacity-50">12:45</time> */}
+												<div className="chat-bubble">
+													{content?.split('\n').map((c) => (
+														<p key={c}>{c}</p>
+													))}
+												</div>
+												{/* <div className="chat-footer opacity-50">Delivered</div> */}
 											</div>
-											<div className="chat-bubble">
-												{content?.split('\n').map((c) => (
-													<p key={c}>{c}</p>
-												))}
-											</div>
-											{/* <div className="chat-footer opacity-50">Delivered</div> */}
-										</div>
-									);
-								})}
+										);
+									})}
+								</div>
 							</div>
-						</div>
 
-						{/* Input Chat */}
-						<form
-							onSubmit={(e) => {
-								e.preventDefault();
-								sendMsg();
-							}}
-							className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
-							<input
-								type="text"
-								placeholder="Type here"
-								className="input input-bordered w-full border-orange-500"
-								value={msg?.content ?? ''}
-								onChange={(e) => {
-									// TODO Need to Add Meta & UID User
-									setMsg((m) => ({
-										...m,
-										content: e.target.value,
-									}));
+							{/* Input Chat */}
+							<form
+								onSubmit={(e) => {
+									e.preventDefault();
+									sendMsg();
 								}}
-							/>
-							<button
-								type="submit"
-								className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
-								<IoIosSend size={32} />
-							</button>
-						</form>
+								className="flex flex-row text-orange-500 w-full items-center gap-4 z-50">
+								<input
+									type="text"
+									placeholder="Type here"
+									className="input input-bordered w-full border-orange-500"
+									value={msg?.content ?? ''}
+									onChange={(e) => {
+										// TODO Need to Add Meta & UID User
+										setMsg((m) => ({
+											...m,
+											content: e.target.value,
+										}));
+									}}
+								/>
+								<button
+									type="submit"
+									className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
+									<IoIosSend size={32} />
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>

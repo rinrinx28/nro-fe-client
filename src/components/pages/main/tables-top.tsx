@@ -29,7 +29,7 @@ function TablesTop() {
 			className="flex justify-center items-center w-full p-8">
 			<div className="flex 2xl:flex-row flex-col items-start gap-2 w-full max-w-7xl justify-start">
 				{/* Table Top User */}
-				<div className="lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400">
+				<div className="mt-5 lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-slate-500 font-protest-strike-regular uppercase"
 						style={{
@@ -39,7 +39,7 @@ function TablesTop() {
 						<h1>Top Người Chơi</h1>
 					</div>
 					<div className="h-12 w-full"></div>
-					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
+					<div className="group-active:z-[9999] flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
 						{[...(users ?? [])]?.map((u, i) => {
 							const { meta, name } = u;
 							const e_rank_day = eshop.find((e) => e.name === 'e_user_rank');
@@ -85,7 +85,7 @@ function TablesTop() {
 				</div>
 
 				{/* Table Top Clan Rank */}
-				<div className="lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700">
+				<div className="mt-5 lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-amber-500 font-protest-strike-regular uppercase"
 						style={{

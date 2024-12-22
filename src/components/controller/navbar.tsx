@@ -93,30 +93,40 @@ function Navbar() {
 					<>
 						<Link
 							href={'/user/profile'}
-							className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
-							<div className="flex flex-row items-center gap-2">
-								<div className="avatar">
-									<div className="w-8 rounded-full">
-										<img src="/image/avatar/3.webp" />
-									</div>
-								</div>
-								{user.name}
+							className="relative flex items-center h-[90px] group">
+							<div className="absolute w-full top-0 left-0 z-10">
+								<img
+									src="/image/background/border-btn-top.png"
+									alt="Border frame 2"
+									style={{ width: '100%', margin: '0 auto', height: '90px' }}
+								/>
 							</div>
-							-
-							<div className="flex flex-row items-center gap-2 font-bold">
-								<p className="font-number-font">
-									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
-								</p>
-								<div className="avatar">
-									<div className="w-8 rounded-xl">
-										<img
-											src={`/image/icon/s1.webp`}
-											alt={`Icon gold`}
-										/>
+							<div className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:group-hover:bg-orange-500 lg:group-hover:text-white lg:group-hover:duration-300">
+								<div className="flex flex-row items-center gap-2">
+									<div className="avatar">
+										<div className="w-8 rounded-full">
+											<img src="/image/avatar/3.webp" />
+										</div>
+									</div>
+									{user.name}
+								</div>
+								-
+								<div className="flex flex-row items-center gap-2 font-bold">
+									<p className="font-number-font">
+										{new Intl.NumberFormat('vi').format(user.money ?? 0)}
+									</p>
+									<div className="avatar">
+										<div className="w-8 rounded-xl">
+											<img
+												src={`/image/icon/s1.webp`}
+												alt={`Icon gold`}
+											/>
+										</div>
 									</div>
 								</div>
 							</div>
 						</Link>
+
 						<button
 							className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300"
 							onClick={logout}>

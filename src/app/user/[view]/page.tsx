@@ -100,10 +100,10 @@ function UserContext() {
 	return (
 		<div
 			// style={{ backgroundImage: "url('/image/background/logo_user.webp')" }}
-			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8 bg-white overflow-y-hidden">
+			className="min-h-screen flex justify-center items-start w-full bg-no-repeat bg-center bg-cover p-8 bg-gray-300 overflow-y-hidden">
 			<div className="flex flex-row w-full gap-2 max-w-7xl h-full">
 				{/* Navigate User */}
-				<div className="lg:flex hidden flex-col bg-white/30 backdrop-blur-lg rounded-box w-fit text-nowrap py-4 px-8 gap-5 text-black">
+				<div className="lg:flex hidden flex-col bg-white/30 rounded-box w-fit text-nowrap py-4 px-8 gap-5 text-black drop-shadow-xl">
 					<div className="flex flex-row gap-2 items-center">
 						<GiSeaDragon size={34} />
 						<h1 className="font-sf-trans-robotics uppercase text-2xl">
@@ -352,7 +352,7 @@ function Profile() {
 		}
 	}, [user, users]);
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -548,7 +548,7 @@ function Profile() {
 									Điểm
 								</span>
 							</div>
-							<div className="input input-bordered bg-black/50 border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
@@ -576,7 +576,7 @@ function Profile() {
 									Gem
 								</span>
 							</div>
-							<div className="input input-bordered bg-black/50 border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2 lg:text-xl text-xs text-red-800">
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
@@ -672,7 +672,7 @@ function ExchangeGold(props: { showNotice: any }) {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -860,15 +860,24 @@ function ExchangeGold(props: { showNotice: any }) {
 					<button
 						onClick={exchange}
 						disabled={isLoad}
-						className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
-						{!isLoad ? (
-							<>
-								<FaExchangeAlt size={24} />
-								Đổi Ngay
-							</>
-						) : (
-							<span className="loading loading-bars loading-sm"></span>
-						)}
+						className="relative flex items-center h-[90px] group">
+						<div className="absolute w-full top-0 left-0 z-10">
+							<img
+								src="/image/background/border-btn-2.png"
+								alt="Border frame 2"
+								style={{ width: '100%', margin: '0 auto', height: '90px' }}
+							/>
+						</div>
+						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hover:bg-orange-500 group-hover:text-white group-hover:duration-300 group-active:group-hover:scale-90">
+							{!isLoad ? (
+								<>
+									<FaExchangeAlt size={24} />
+									Đổi Ngay
+								</>
+							) : (
+								<span className="loading loading-bars loading-sm"></span>
+							)}
+						</div>
 					</button>
 				</div>
 			)}
@@ -941,7 +950,7 @@ function TradeGold(props: { showNotice: any }) {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -1102,15 +1111,24 @@ function TradeGold(props: { showNotice: any }) {
 					<button
 						onClick={tranfer}
 						disabled={isLoad}
-						className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 hover:bg-orange-500 hover:text-white hover:duration-300 active:hover:scale-90">
-						{!isLoad ? (
-							<>
-								<FaExchangeAlt size={24} />
-								Chuyển Ngay
-							</>
-						) : (
-							<span className="loading loading-bars loading-sm"></span>
-						)}
+						className="relative flex items-center h-[90px] group">
+						<div className="absolute w-full top-0 left-0 z-10">
+							<img
+								src="/image/background/border-btn-2.png"
+								alt="Border frame 2"
+								style={{ width: '100%', margin: '0 auto', height: '90px' }}
+							/>
+						</div>
+						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hoverbg-orange-500 group-hovertext-white group-hoverduration-300 group-active:group-hoverscale-90">
+							{!isLoad ? (
+								<>
+									<FaExchangeAlt size={24} />
+									Chuyển Ngay
+								</>
+							) : (
+								<span className="loading loading-bars loading-sm"></span>
+							)}
+						</div>
 					</button>
 				</div>
 			)}
@@ -1291,7 +1309,7 @@ function HistoryService() {
 	}, [user, socketAuth]);
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2008,7 +2026,7 @@ function HistoryActivity() {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2159,7 +2177,7 @@ function TableMission(props: { showNotice: any }) {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">
@@ -2359,7 +2377,7 @@ function TableVIP(props: { showNotice: any }) {
 	};
 
 	return (
-		<div className="flex flex-col bg-white/30 backdrop-blur-lg rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
+		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
 				<GiDragonShield size={34} />
 				<h1 className="font-protest-strike-regular uppercase text-2xl">

@@ -70,7 +70,7 @@ function Resigter() {
 						e.preventDefault();
 						resigter();
 					}}
-					className="flex flex-col gap-2 w-full justify-around py-4 px-2 text-orange-500">
+					className="flex flex-col gap-2 w-full justify-around py-4 px-2 text-orange-500 z-10">
 					<div className="flex flex-col gap-5 w-full">
 						<h1 className="font-michelangelo w-full text-center text-6xl">
 							Resigter

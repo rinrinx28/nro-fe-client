@@ -6,6 +6,7 @@ import Footer from '@/components/controller/footer';
 import CircularMenu from '@/components/controller/circularMenu';
 import Clans from '@/components/controller/clans';
 import { SocketProvider } from '@/lib/server/socket';
+import FallingSnow from '@/components/controller/fallingSnow';
 
 export const metadata: Metadata = {
 	title: 'NROGAME.ME | Mini Game Kiếm Vàng Ngọc Rồng',
@@ -96,6 +97,7 @@ export default function RootLayout({
 				className={`antialiased min-h-screen transition-all duration-300 flex flex-col`}>
 				<Providers>
 					<SocketProvider>
+						<FallingSnow />
 						<Navbar />
 						{/* <Suspense fallback={<Loading />}>
 							{children}
