@@ -543,11 +543,3 @@
     opacity: 0;
   }
 }
-
-
-.noel-button {
-  background-image: url("/image/background/border-btn-2.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}

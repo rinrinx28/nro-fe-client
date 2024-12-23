@@ -861,11 +861,12 @@ function ExchangeGold(props: { showNotice: any }) {
 						onClick={exchange}
 						disabled={isLoad}
 						className="relative flex items-center h-[90px] group">
-						<div className="absolute w-full top-0 left-0 z-10">
+						<div className="absolute w-full top-0 ">
 							<img
 								src="/image/background/border-btn-2.png"
 								alt="Border frame 2"
 								style={{ width: '100%', margin: '0 auto', height: '90px' }}
+								className="pointer-events-none"
 							/>
 						</div>
 						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hover:bg-orange-500 group-hover:text-white group-hover:duration-300 group-active:group-hover:scale-90">
@@ -1112,11 +1113,12 @@ function TradeGold(props: { showNotice: any }) {
 						onClick={tranfer}
 						disabled={isLoad}
 						className="relative flex items-center h-[90px] group">
-						<div className="absolute w-full top-0 left-0 z-10">
+						<div className="absolute w-full top-0 ">
 							<img
 								src="/image/background/border-btn-2.png"
 								alt="Border frame 2"
 								style={{ width: '100%', margin: '0 auto', height: '90px' }}
+								className="pointer-events-none"
 							/>
 						</div>
 						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hoverbg-orange-500 group-hovertext-white group-hoverduration-300 group-active:group-hoverscale-90">

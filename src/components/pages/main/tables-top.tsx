@@ -29,7 +29,12 @@ function TablesTop() {
 			className="flex justify-center items-center w-full p-8">
 			<div className="flex 2xl:flex-row flex-col items-start gap-2 w-full max-w-7xl justify-start">
 				{/* Table Top User */}
-				<div className="mt-5 lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
+				<div className="relative lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
+					<div
+						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
+						style={{
+							backgroundImage: "url('/image/background/border-btn-top.png')",
+						}}></div>
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-slate-500 font-protest-strike-regular uppercase"
 						style={{
@@ -85,7 +90,12 @@ function TablesTop() {
 				</div>
 
 				{/* Table Top Clan Rank */}
-				<div className="mt-5 lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
+				<div className="relative lg:max-w-7xl w-full select-none flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
+					<div
+						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
+						style={{
+							backgroundImage: "url('/image/background/border-btn-top.png')",
+						}}></div>
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-amber-500 font-protest-strike-regular uppercase"
 						style={{

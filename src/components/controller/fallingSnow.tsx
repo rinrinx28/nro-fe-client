@@ -23,5 +23,5 @@ export default function FallingSnow() {
 			clearInterval(loop_falling_snow);
 		};
 	}, []);
-	return <div className="falling-snow"></div>;
+	return <div className="falling-snow pointer-events-none"></div>;
 }

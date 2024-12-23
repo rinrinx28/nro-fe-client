@@ -401,10 +401,19 @@ function Home() {
 	return (
 		<div
 			// style={{ backgroundImage: "url('/image/background/2_main.webp')" }}
-			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch bg-gray-300">
+			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
 			{/* Hero */}
-			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full z-10">
-				<h1 className="lg:text-3xl text-xl font-bold uppercase">nrogame.me</h1>
+			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full mt-10">
+				<div className="flex relative">
+					<img
+						src="/image/background/border-btn-hat-noel-2.png"
+						alt="Border frame 2"
+						className="w-1/4 absolute pointer-events-none -top-[1.3rem] -left-[1.1rem] -rotate-6 -z-[1]"
+					/>
+					<h1 className=" lg:text-3xl text-xl font-bold uppercase">
+						nrogame.me
+					</h1>
+				</div>
 				<div className="py-2 lg:text-2xl text-sm w-full text-center">
 					<Typewriter
 						options={{
@@ -418,7 +427,7 @@ function Home() {
 				</div>
 			</div>
 			{/* Button Game */}
-			<div className="max-w-7xl w-full flex flex-wrap justify-center gap-2 items-center z-10">
+			<div className="max-w-7xl w-full flex flex-wrap justify-center gap-2 items-center ">
 				{Array.from({ length: 7 }).map((_, k) => (
 					<button
 						key={`${k}-button`}
@@ -477,7 +486,7 @@ function Home() {
 				</button>
 			</div>
 			{/* Group Func Quick */}
-			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5 z-10">
+			<div className="flex flex-wrap justify-center items-center w-full capitalize gap-5 ">
 				<div className="dropdown dropdown-bottom dropdown-end">
 					<div
 						tabIndex={0}
@@ -488,7 +497,7 @@ function Home() {
 					</div>
 					<ul
 						tabIndex={0}
-						className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow text-white">
+						className="dropdown-content menu  rounded-box z-[1] w-52 p-2 shadow text-white">
 						<li>
 							<Link
 								href="/deposit"
@@ -570,9 +579,14 @@ function Home() {
 				<Link
 					href={'https://zalo.me/g/evqnqk421'}
 					target="_blank"
-					className="flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					className="relative flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
+					<img
+						src="/image/background/border-btn-hat-noel.png"
+						alt="Border frame 2"
+						className="w-full absolute pointer-events-none -top-[2.25rem] -right-[3.1rem] rotate-12"
+					/>
 					<SiZalo size={24} />
-					Box Chat
+					Hỗ Trợ
 				</Link>
 			</div>
 			{banner.length > 0 && (
@@ -595,45 +609,42 @@ function Home() {
 				</div>
 			)}
 			{/* Game Info */}
-			<div className="grid lg:grid-cols-2 grid-cols-1 max-w-7xl w-full gap-4 select-none h-fit p-2 z-10">
+			<div className="grid lg:grid-cols-2 grid-cols-1 max-w-7xl w-full gap-4 select-none h-fit p-2 ">
 				{/* Left Size Game Board */}
 				<div className="flex flex-col gap-5 w-full h-full">
 					{/* Background game */}
-					<div className="relative w-full">
-						<div className="absolute w-full top-0 left-0 z-10">
-							<img
-								src="/image/background/border-btn-top.png"
-								alt="Border frame 2"
-								style={{ width: '100%', margin: '0 auto' }}
-							/>
-						</div>
-
-						<div className="mt-5 w-full flex flex-col justify-center items-center bg-auto bg-no-repeat bg-black/80 bg-right rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
-							<svg
-								className="svg"
+					<div className="w-full flex flex-col justify-center items-center rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
+						<img
+							src="/image/background/border-btn-top.png"
+							alt="Border frame 2"
+							style={{ width: '100%', margin: '0 auto' }}
+							className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0"
+						/>
+						<svg
+							className="svg -z-[1] pointer-events-none"
+							height="100%"
+							width="100%"
+							xmlns="http://www.w3.org/2000/svg">
+							<rect
+								rx="8"
+								ry="8"
+								className="line stroke-orange-500 rounded-box "
 								height="100%"
 								width="100%"
-								xmlns="http://www.w3.org/2000/svg">
-								<rect
-									rx="8"
-									ry="8"
-									className="line stroke-orange-500 rounded-box"
-									height="100%"
-									width="100%"
-									strokeLinejoin="round"
-								/>
-							</svg>
-							{/* Layout Box Game */}
-							<div className="flex flex-col justify-start w-full h-full mb-m:p-3 p-2 items-center gap-2 backdrop-blur-md lg:text-base text-sm">
-								<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
-									<SiGamejolt />
-									<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
-									<SiGamejolt />
-								</div>
-								<div className="z-10 flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Mã phiên:</p>
-									<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
-										{/* {gameBox?.isEnd ? (
+								strokeLinejoin="round"
+							/>
+						</svg>
+						{/* Layout Box Game */}
+						<div className="flex flex-col justify-start w-full h-full mb-m:p-3 p-2 items-center gap-2 lg:text-base text-sm">
+							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
+								<SiGamejolt />
+								<p className="uppercase font-sf-trans-robotics">Phiên BET</p>
+								<SiGamejolt />
+							</div>
+							<div className=" flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<p className="text-orange-500">Mã phiên:</p>
+								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
+									{/* {gameBox?.isEnd ? (
 										<>
 											{gameBox._id}{' '}
 											<span className="text-orange-500">(đã kết thúc)</span>
@@ -642,155 +653,158 @@ function Home() {
 										gameBox?._id
 									)} */}
 
-										{gameBox?._id}
-									</p>
-								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Máy Chủ:</p>
+									{gameBox?._id}
+								</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<p className="text-orange-500">Máy Chủ:</p>
+								<p className="text-white drop-shadow-md font-number-font font-bold">
+									{server.replace('8', '8-9-10') ?? (
+										<span className="loading loading-bars loading-sm"></span>
+									)}
+								</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<p className="text-orange-500">Kết Quả Trước:</p>
+								<p className="text-white drop-shadow-md font-number-font font-bold">
+									{(gameBox?.lastResult &&
+										gameBox?.lastResult.split('-')[0]) ?? (
+										<span className="loading loading-dots loading-sm"></span>
+									)}
+								</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<p className="text-orange-500">Thời Gian Còn:</p>
+								<p className="text-white drop-shadow-md font-number-font font-bold">
+									{counter ?? (
+										<span className="loading loading-dots loading-sm"></span>
+									)}
+								</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<div className="flex flex-row gap-2">
+									<p className="text-orange-500">Chẵn:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{server.replace('8', '8-9-10') ?? (
-											<span className="loading loading-bars loading-sm"></span>
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.c ?? 0,
 										)}
 									</p>
 								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Kết Quả Trước:</p>
+								<div className="flex flex-row gap-2">
+									<p className="text-orange-500">Lẻ:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{(gameBox?.lastResult &&
-											gameBox?.lastResult.split('-')[0]) ?? (
-											<span className="loading loading-dots loading-sm"></span>
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.l ?? 0,
 										)}
 									</p>
 								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Thời Gian Còn:</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<div className="flex flex-row gap-2">
+									<p className="text-orange-500">Tài:</p>
 									<p className="text-white drop-shadow-md font-number-font font-bold">
-										{counter ?? (
-											<span className="loading loading-dots loading-sm"></span>
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.t ?? 0,
 										)}
 									</p>
 								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<div className="flex flex-row gap-2">
-										<p className="text-orange-500">Chẵn:</p>
-										<p className="text-white drop-shadow-md font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(
-												gameBox?.resultUser?.c ?? 0,
-											)}
-										</p>
-									</div>
-									<div className="flex flex-row gap-2">
-										<p className="text-orange-500">Lẻ:</p>
-										<p className="text-white drop-shadow-md font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(
-												gameBox?.resultUser?.l ?? 0,
-											)}
-										</p>
-									</div>
+								<div className="flex flex-row gap-2">
+									<p className="text-orange-500">Xỉu:</p>
+									<p className="text-white drop-shadow-md font-number-font font-bold">
+										{new Intl.NumberFormat('vi').format(
+											gameBox?.resultUser?.x ?? 0,
+										)}
+									</p>
 								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<div className="flex flex-row gap-2">
-										<p className="text-orange-500">Tài:</p>
-										<p className="text-white drop-shadow-md font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(
-												gameBox?.resultUser?.t ?? 0,
-											)}
-										</p>
-									</div>
-									<div className="flex flex-row gap-2">
-										<p className="text-orange-500">Xỉu:</p>
-										<p className="text-white drop-shadow-md font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(
-												gameBox?.resultUser?.x ?? 0,
-											)}
-										</p>
-									</div>
-								</div>
-								<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-									<p className="text-orange-500">Thời Gian Hoạt Động:</p>
+							</div>
+							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+								<p className="text-orange-500">Thời Gian Hoạt Động:</p>
+								<p className="text-white font-number-font font-bold">
+									{server === '24' ? '24/24' : '6h - 23h50'}
+								</p>
+							</div>
+							{server === '24' && (
+								<div className=" flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">Jackpot:</p>
 									<p className="text-white font-number-font font-bold">
-										{server === '24' ? '24/24' : '6h - 23h50'}
+										{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
 									</p>
+									<button
+										className="btn btn-sm bg-orange-500 text-white"
+										onClick={openTutorialJackpot}>
+										Chi tiết
+									</button>
 								</div>
-								{server === '24' && (
-									<div className="z-10 flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
-										<p className="text-orange-500">Jackpot:</p>
-										<p className="text-white font-number-font font-bold">
-											{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
-										</p>
-										<button
-											className="btn btn-sm bg-orange-500 text-white"
-											onClick={openTutorialJackpot}>
-											Chi tiết
-										</button>
-									</div>
-								)}
-								<div className="z-10 flex flex-col gap-2 justify-start w-full">
-									<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
-										<p className="text-orange-500">CL:</p>
-										<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
-											{gameBox?.lastResult?.split('-').map((r, i) => {
-												const number_result = r.length > 1 ? r[1] : r;
-												return (
-													<li key={i + 'cl'}>
-														<div
-															className={`tooltip mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-																Number(`${number_result}`) % 2 === 0
-																	? 'bg-orange-500'
-																	: 'bg-yellow-500'
-															}`}
-															data-tip={r}>
-															<p className="">
-																{Number(`${number_result}`) % 2 === 0
-																	? 'C'
-																	: 'L'}
-															</p>
-														</div>
-													</li>
-												);
-											})}
-											{!gameBox && (
-												<span className="loading loading-ring loading-sm"></span>
-											)}
-										</ul>
-									</div>
-									<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
-										<p className="text-orange-500">TX:</p>
-										<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
-											{gameBox?.lastResult?.split('-').map((r, i) => {
-												const number_result = r;
-												return (
-													<li
-														key={i + 'tx'}
+							)}
+							<div className=" flex flex-col gap-2 justify-start w-full">
+								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">CL:</p>
+									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+										{gameBox?.lastResult?.split('-').map((r, i) => {
+											const number_result = r.length > 1 ? r[1] : r;
+											return (
+												<li key={i + 'cl'}>
+													<div
+														className={`tooltip mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+															Number(`${number_result}`) % 2 === 0
+																? 'bg-orange-500'
+																: 'bg-yellow-500'
+														}`}
+														data-tip={r}>
+														<p className="">
+															{Number(`${number_result}`) % 2 === 0 ? 'C' : 'L'}
+														</p>
+													</div>
+												</li>
+											);
+										})}
+										{!gameBox && (
+											<span className="loading loading-ring loading-sm"></span>
+										)}
+									</ul>
+								</div>
+								<div className="flex flex-row w-full justify-start items-center gap-2 text-white font-chakra-petch font-bold uppercase">
+									<p className="text-orange-500">TX:</p>
+									<ul className="flex flex-row-reverse lg:gap-2 lg:text-base text-sm">
+										{gameBox?.lastResult?.split('-').map((r, i) => {
+											const number_result = r;
+											return (
+												<li
+													key={i + 'tx'}
+													data-tip={r}>
+													<div
+														className={`tooltip `}
 														data-tip={r}>
 														<div
-															className={`tooltip `}
-															data-tip={r}>
-															<div
-																className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
-																	parseInt(number_result, 10) < 50
-																		? 'bg-red-500'
-																		: 'bg-green-500'
-																}`}>
-																{parseInt(number_result, 10) > 49 ? 'T' : 'X'}
-															</div>
+															className={`mb-m:size-6 size-4 place-content-center text-white rounded-full ${
+																parseInt(number_result, 10) < 50
+																	? 'bg-red-500'
+																	: 'bg-green-500'
+															}`}>
+															{parseInt(number_result, 10) > 49 ? 'T' : 'X'}
 														</div>
-													</li>
-												);
-											})}
-											{!gameBox && (
-												<span className="loading loading-ring loading-sm"></span>
-											)}
-										</ul>
-									</div>
+													</div>
+												</li>
+											);
+										})}
+										{!gameBox && (
+											<span className="loading loading-ring loading-sm"></span>
+										)}
+									</ul>
 								</div>
 							</div>
 						</div>
 					</div>
 					{/* Game Controll */}
-					<div className="mt-5 w-full flex flex-col justify-center items-center bg-cover bg-black/80 rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
+					<div className="w-full flex flex-col justify-center items-center bg-cover bg-black/80 rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
+						<img
+							src="/image/background/border-btn-top.png"
+							alt="Border frame 2"
+							style={{ width: '100%', margin: '0 auto' }}
+							className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0 z-[1]"
+						/>
 						<svg
-							className="svg"
+							className="svg pointer-events-none"
 							height="100%"
 							width="100%"
 							xmlns="http://www.w3.org/2000/svg">
@@ -803,13 +817,13 @@ function Home() {
 								strokeLinejoin="round"
 							/>
 						</svg>
-						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 backdrop-blur-md">
+						<div className="flex flex-col justify-start w-full h-full p-4 items-center gap-2 ">
 							<div className="flex flex-row gap-2 items-center border-b border-current text-orange-500 text-xl">
 								<IoLogoGameControllerB size={24} />
 								<p className="uppercase font-protest-strike-regular">Dự Đoán</p>
 								<IoLogoGameControllerB size={24} />
 							</div>
-							<div className="z-10 flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
+							<div className=" flex flex-row w-full justify-start items-center gap-2 font-sf-trans-robotics uppercase border border-orange-500 rounded-md p-2">
 								<div className="avatar">
 									<div className="w-8 rounded-xl">
 										<img
@@ -823,14 +837,14 @@ function Home() {
 								</p>
 							</div>
 							{/* Select Type Bet */}
-							<div className="z-10 flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn">
+							<div className=" flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn">
 								<IoLogoGameControllerB size={24} />
 								<select
 									defaultValue={'cl'}
 									onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
 										setTypeBet(event.target.value as typeBet);
 									}}
-									className="outline-none border-0 z-10 w-full py-3 capitalize bg-transparent">
+									className="outline-none border-0  w-full py-3 capitalize bg-transparent">
 									<option value={'cl'}>
 										Chẵn Lẻ - Tài Xỉu (đặt 10tr được 19.5tr vàng)
 									</option>
@@ -842,7 +856,7 @@ function Home() {
 							</div>
 							{/* Type Bet */}
 							{typeBet === 'cl' && (
-								<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full font-protest">
+								<div className="flex flex-col gap-2 items-center mt-2  w-full font-protest">
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
 											onClick={() =>
@@ -910,7 +924,7 @@ function Home() {
 								</div>
 							)}
 							{typeBet === 'x' && (
-								<div className="flex flex-col gap-2 items-center mt-2 z-10 w-full">
+								<div className="flex flex-col gap-2 items-center mt-2  w-full">
 									<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
 										<button
 											onClick={() =>
@@ -978,7 +992,7 @@ function Home() {
 								</div>
 							)}
 							{typeBet === 'g' && (
-								<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn z-10">
+								<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-chakra-petch font-bold uppercase border border-orange-500 px-2 rounded-btn ">
 									<AiOutlineFieldNumber size={24} />
 									<input
 										type="number"
@@ -996,7 +1010,7 @@ function Home() {
 								</div>
 							)}
 
-							<div className="z-10 lg:grid lg:grid-cols-7 flex flex-wrap gap-2 items-center justify-around w-full">
+							<div className=" lg:grid lg:grid-cols-7 flex flex-wrap gap-2 items-center justify-around w-full">
 								{[50e6, 1e8, 3e8, 5e8, 1e9, 2e9, 4e9].map((n, i) => {
 									let text = ['50m', '100m', '300m', '500m', '1B', '2B', '4B'];
 									return (
@@ -1021,7 +1035,7 @@ function Home() {
 								})}
 							</div>
 
-							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-number-font uppercase border border-orange-500 px-2 rounded-btn z-10">
+							<div className="flex flex-row w-full justify-start items-center gap-2 divide-x-2 divide-orange-500 text-orange-500 font-number-font uppercase border border-orange-500 px-2 rounded-btn ">
 								<div
 									data-tip="Xóa"
 									className="tooltip tooltip-left">
@@ -1049,7 +1063,7 @@ function Home() {
 										}));
 									}}
 									type="text"
-									className="outline-none border-0 z-10 w-full py-3 px-2 bg-transparent font-bold text-white"
+									className="outline-none border-0  w-full py-3 px-2 bg-transparent font-bold text-white"
 									value={new Intl.NumberFormat('vi').format(
 										parseInt(
 											betField.amount.length > 0 ? betField.amount : '0',
@@ -1061,7 +1075,7 @@ function Home() {
 							<div
 								id="notice-bet-controll"
 								role="alert"
-								className={`alert shadow-lg hidden z-10`}>
+								className={`alert shadow-lg hidden `}>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
@@ -1081,46 +1095,35 @@ function Home() {
 							<button
 								onClick={placeBet}
 								disabled={isLoad}
-								className="relative flex items-center h-[80px] w-full group z-10">
-								<div className="absolute w-full top-0 left-0 z-10">
-									<img
-										src="/image/background/border-btn-2.png"
-										alt="Border frame 2"
-										style={{
-											width: '100%',
-											margin: '0 auto',
-											height: '80px',
-										}}
-									/>
-								</div>
-								<div className="flex flex-row w-full justify-center items-center gap-2 font-chakra-petch font-bold uppercase">
-									<div className="btn capitalize w-full text-orange-500 group-hover:text-black group-hover:bg-orange-500">
-										{!isLoad ? (
-											<>
-												<GiPerspectiveDiceSixFacesTwo size={24} />
-												Cược Ngay
-											</>
-										) : (
-											<span className="loading loading-bars loading-sm"></span>
-										)}
-									</div>
-								</div>
+								className="max-w-sm w-full btn btn-outline btn-active items-center flex relative text-orange-500 group-hover:text-black group-hover:bg-orange-500">
+								<img
+									src="/image/background/border-btn-full.png"
+									alt="Border frame 2"
+									className="w-full h-16 absolute pointer-events-none -top-2 -left-0"
+								/>
+								{!isLoad ? (
+									<>
+										<GiPerspectiveDiceSixFacesTwo size={24} />
+										Cược Ngay
+									</>
+								) : (
+									<span className="loading loading-bars loading-sm"></span>
+								)}
 							</button>
 						</div>
 					</div>
 				</div>
 				{/* Right size chat Box */}
 				<div className="relative w-full h-full">
-					<div className="absolute w-full top-0 left-0 z-10">
-						<img
-							src="/image/background/border-btn-top.png"
-							alt="Border frame 2"
-							style={{ width: '100%', margin: '0 auto' }}
-						/>
-					</div>
-					<div className="mt-5 bg-black/80 rounded-box border-ani border-none w-full flex flex-col h-full">
+					<img
+						src="/image/background/border-btn-top.png"
+						alt="Border frame 2"
+						style={{ width: '100%', margin: '0 auto' }}
+						className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0"
+					/>
+					<div className="rounded-box border-ani border-none w-full flex flex-col h-full">
 						<svg
-							className="svg"
+							className="svg pointer-events-none -z-[1]"
 							height="100%"
 							width="100%"
 							xmlns="http://www.w3.org/2000/svg">
@@ -1136,14 +1139,14 @@ function Home() {
 						{/* Layout ChatBox */}
 						<div className="flex flex-col gap-3 p-4 font-chakra-petch w-full h-full text-orange-500 justify-between">
 							{/* Header */}
-							<div className="flex flex-row justify-between items-center uppercase ">
+							<div className="flex flex-row justify-between items-center uppercase -z-[1]">
 								<div className="flex flex-row gap-2 items-center text-xl">
 									<IoChatbubbleEllipsesSharp size={24} />
 									<h1>ChatBox</h1>
 								</div>
 							</div>
 							{/* Chat */}
-							<div className="p-2 z-50 w-full h-full">
+							<div className="p-2 w-full h-full">
 								<div
 									id="chat_box_screen"
 									className="border border-orange-500 backdrop-blur-lg w-full h-[650px] overflow-auto scroll-smooth rounded-box p-2">
@@ -1278,11 +1281,18 @@ function Home() {
 										}));
 									}}
 								/>
-								<button
-									type="submit"
-									className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
-									<IoIosSend size={32} />
-								</button>
+								<div className="relative">
+									<img
+										src="/image/background/border-btn-snow-ice-small.png"
+										alt="Border frame 2"
+										className="w-full absolute pointer-events-none -bottom-[10px] -right-[20px]"
+									/>
+									<button
+										type="submit"
+										className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">
+										<IoIosSend size={32} />
+									</button>
+								</div>
 							</form>
 						</div>
 					</div>
