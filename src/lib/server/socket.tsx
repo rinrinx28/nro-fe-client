@@ -22,11 +22,8 @@ import {
 } from '../redux/storage/clan/invite';
 import { MsgClan, setMsgClan } from '../redux/storage/clan/msgClan';
 import apiClient from './apiClient';
-import { setConfigs } from '../redux/storage/eshop/config';
 import { Service, setService } from '../redux/storage/eshop/service';
 import { updateJackpot } from '../redux/storage/minigame/jackpot';
-import { setclanTops } from '../redux/storage/top/clanTop';
-import { setuserToptores } from '../redux/storage/top/userTop';
 moment().format();
 
 const urlConfig = {
@@ -40,9 +37,6 @@ const socket: Socket = io(urlConfig.sv, {
 	transports: ['websocket'],
 	secure: true,
 	reconnectionAttempts: 5, // Limit reconnection attempts
-	// auth: {
-	//   token: 'your-auth-token' // Ensure to pass a valid token
-	// }
 });
 
 const SocketContext = createContext<Socket | null>(null);
@@ -64,10 +58,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
 	useEffect(() => {
 		socket.connect();
-
-		// socket.on('bot.status', (payload: Bot) => {
-		// 	dispatch(setBot(payload));
-		// });
 
 		socket.on(
 			'mini.bet',
@@ -220,84 +210,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			}
 		}
 	}, [users]);
-
-	// Auto Call Request;
-	useEffect(() => {
-		const listClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/clan');
-				dispatch(setClans(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		// const listBot = async () => {
-		// 	try {
-		// 		const { data } = await apiClient.get('/bot/list');
-		// 		dispatch(setBots(data));
-		// 	} catch (err: any) {
-		// 		console.log(err.response.data.message.message);
-		// 	}
-		// };
-
-		listClan();
-		listConfig();
-		// listBot();
-	}, []);
-
-	// Auto TOP
-	useEffect(() => {
-		let loop = setInterval(() => {
-			const rankClan = async () => {
-				try {
-					const { data } = await apiClient.get('/no-call/rank/clan');
-					dispatch(setclanTops(data));
-				} catch (err: any) {
-					console.log(err.response.data.message.message);
-				}
-			};
-			const rankUser = async () => {
-				try {
-					const { data } = await apiClient.get('/no-call/rank/user');
-					dispatch(setuserToptores(data));
-				} catch (err: any) {
-					console.log(err.response.data.message.message);
-				}
-			};
-			rankClan();
-			rankUser();
-		}, 15e3);
-		return () => clearInterval(loop);
-	}, []);
-
-	useEffect(() => {
-		const rankClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/rank/clan');
-				dispatch(setclanTops(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const rankUser = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/rank/user');
-				dispatch(setuserToptores(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		rankClan();
-		rankUser();
-	}, []);
 
 	return (
 		<SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

@@ -28,12 +28,9 @@ import { BetField, MessageField, typeBet } from './(dto)/dto.bet';
 import { MiniGame } from '@/lib/redux/storage/minigame/minigame';
 import moment from 'moment';
 import { Message } from '@/lib/redux/storage/user/message';
-import apiClient from '@/lib/server/apiClient';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import { useSocket } from '@/lib/server/socket';
 import { TbPokerChip } from 'react-icons/tb';
-import { setClans } from '@/lib/redux/storage/clan/clans';
-import { setConfigs } from '@/lib/redux/storage/eshop/config';
 import { io, Socket } from 'socket.io-client';
 
 const urlConfig = {
@@ -73,7 +70,6 @@ function Home() {
 	const econfig = useAppSelector((state) => state.econfig);
 	const clans = useAppSelector((state) => state.clans);
 	const users = useAppSelector((state) => state.userTop);
-	const [top, setTop] = useState<number | null>(null);
 	const dispatch = useAppDispatch();
 	// defautl data;
 	const betFile_defautl: BetField = {
@@ -312,28 +308,6 @@ function Home() {
 		}
 	}, [econfig]);
 
-	// Auto Call Request;
-	useEffect(() => {
-		const listClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/clan');
-				dispatch(setClans(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		listClan();
-		listConfig();
-	}, []);
-
 	useEffect(() => {
 		const showModleSocket = (message: string) => {
 			const div_notice = document.getElementById(
@@ -497,7 +471,7 @@ function Home() {
 					</div>
 					<ul
 						tabIndex={0}
-						className="dropdown-content menu  rounded-box z-[1] w-52 p-2 shadow text-white">
+						className="dropdown-content menu bg-primary rounded-box z-[1] w-52 p-2 shadow">
 						<li>
 							<Link
 								href="/deposit"

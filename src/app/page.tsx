@@ -1,10 +1,28 @@
 'use client';
-import History from '@/components/pages/main/history';
-import TablesTop from '@/components/pages/main/tables-top';
-import Home from '@/components/pages/main/home';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '@/lib/redux/hook';
 import { FaMusic } from 'react-icons/fa';
+import dynamic from 'next/dynamic';
+
+// Lazy load components
+const Home = dynamic(() => import('@/components/pages/main/home'), {
+	loading: () => (
+		<div className="flex w-full items-center justify-center min-h-screen">
+			<img
+				src="/image/background/loading-screen.gif"
+				style={{ width: '100%', margin: '0 auto' }}
+				alt="Loading Screen Nrogame"
+			/>
+		</div>
+	), // Tùy chọn: Hiển thị trạng thái loading
+	ssr: false, // Tắt render phía server nếu không cần
+});
+const History = dynamic(() => import('@/components/pages/main/history'), {
+	ssr: false, // Tắt render phía server nếu không cần
+});
+const TablesTop = dynamic(() => import('@/components/pages/main/tables-top'), {
+	ssr: false, // Tắt render phía server nếu không cần
+});
 
 function getYouTubeVideoId(url: string) {
 	const urlObj = new URL(url);
@@ -16,12 +34,6 @@ export default function Page() {
 	const [link, setLink] = useState<string | null>(null);
 	const [isShow, setShow] = useState<boolean>(false);
 
-	const play = (url: string) => {
-		let id = getYouTubeVideoId(url);
-		let url_ytb = `https://www.youtube.com/embed/${id}`;
-		setLink(url_ytb);
-	};
-
 	useEffect(() => {
 		if (econfig.length > 0) {
 			let target = econfig.find((e) => e.name === 'e_shop');
@@ -32,6 +44,7 @@ export default function Page() {
 			}
 		}
 	}, [econfig]);
+
 	return (
 		<div
 			id="home_page"

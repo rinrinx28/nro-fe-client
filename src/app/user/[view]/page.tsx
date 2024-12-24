@@ -299,28 +299,6 @@ function Profile() {
 	const [myClan, setMyClan] = useState<Clan>();
 	const dispatch = useAppDispatch();
 
-	// Auto Call Request;
-	useEffect(() => {
-		const listClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/clan');
-				dispatch(setClans(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		listClan();
-		listConfig();
-	}, []);
-
 	useEffect(() => {
 		if (user.isLogin && clans) {
 			const { clanId } = user.meta ?? {};

@@ -1,6 +1,10 @@
 'use client';
-import { useAppSelector } from '@/lib/redux/hook';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
+import { Clan, setclanTops } from '@/lib/redux/storage/top/clanTop';
+import { setuserToptores } from '@/lib/redux/storage/top/userTop';
+import apiClient from '@/lib/server/apiClient';
+import { useSocket } from '@/lib/server/socket';
 import { useEffect, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { MdLeaderboard } from 'react-icons/md';
@@ -10,6 +14,8 @@ function TablesTop() {
 	const users = useAppSelector((state) => state.userTop);
 	const econfig = useAppSelector((state) => state.econfig);
 	const [eshop, setEshop] = useState<EConfig[]>([]);
+	const dispatch = useAppDispatch();
+	const socket = useSocket();
 
 	// Update data ESHOP;
 	useEffect(() => {
@@ -22,6 +28,38 @@ function TablesTop() {
 			}
 		}
 	}, [econfig]);
+
+	// Auto TOP
+	useEffect(() => {
+		const rankClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/clan');
+				dispatch(setclanTops(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const rankUser = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/rank/user');
+				dispatch(setuserToptores(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		rankClan();
+		rankUser();
+	}, []);
+
+	useEffect(() => {
+		socket.on('auto.rank.info', (data: { clans: Clan[]; users: any[] }) => {
+			dispatch(setclanTops(data.clans));
+			dispatch(setuserToptores(data.users));
+		});
+		return () => {
+			socket.off('auto.rank.info');
+		};
+	}, [socket, dispatch]);
 
 	return (
 		<div

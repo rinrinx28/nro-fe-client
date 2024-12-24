@@ -54,6 +54,30 @@ export default function StoreProvider({
 		window.scrollTo(0, 0); // Scroll to top when the page reloads
 	}, []); // Empty dependency array means it runs once when the component mounts
 
+	// Auto Call Request;
+	useEffect(() => {
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				storeRef.current?.dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				storeRef.current?.dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		if (storeRef) {
+			listConfig();
+			listClan();
+		}
+	}, [storeRef]);
+
 	// Auto Save fingerprintJS and reload;
 	useEffect(() => {
 		const setFp = async (token: string) => {

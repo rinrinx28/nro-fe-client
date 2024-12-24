@@ -4,20 +4,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { RiHome3Fill, RiLoginBoxFill, RiLogoutBoxFill } from 'react-icons/ri';
 import { PiHandDepositFill, PiHandWithdrawFill } from 'react-icons/pi';
-import { FaExchangeAlt, FaRegUser, FaTable, FaUser } from 'react-icons/fa';
+import { FaExchangeAlt, FaRegUser, FaTable } from 'react-icons/fa';
 import { MdOutlineHistory } from 'react-icons/md';
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
-import { GrMoney } from 'react-icons/gr';
-import { setUser } from '@/lib/redux/storage/user/user';
+import { useAppSelector } from '@/lib/redux/hook';
 import { IoLogOut } from 'react-icons/io5';
 
 function Navbar() {
 	const user = useAppSelector((state) => state.user);
-	const dispatch = useAppDispatch();
 
 	const logout = () => {
 		localStorage.removeItem('token');
-		dispatch(setUser({ isLogin: false }));
+		window.location.reload();
 	};
 	return (
 		<div className="flex flex-row items-center justify-between w-full sticky top-0 backdrop-blur-lg px-5 pt-2 z-[100] text-orange-500 h-[80px]">
@@ -25,6 +22,7 @@ function Navbar() {
 			<div className="flex flex-row items-center gap-2">
 				<Link
 					href={'/'}
+					prefetch={false}
 					className="btn btn-link relative">
 					<img
 						src="/image/background/border-btn-hat-noel.png"
@@ -44,21 +42,24 @@ function Navbar() {
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/'}>
+							href={'/'}
+							prefetch={false}>
 							Trang Chủ
 						</Link>
 					</li>
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/deposit'}>
+							href={'/deposit'}
+							prefetch={false}>
 							Nạp Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/withdraw'}>
+							href={'/withdraw'}
+							prefetch={false}>
 							Rút Vàng
 						</Link>
 					</li>
@@ -79,16 +80,19 @@ function Navbar() {
 					<>
 						<Link
 							href="/login"
+							prefetch={false}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg  lg:inline-block hidden uppercase text-orange-500">
 							Đăng Nhập
 						</Link>
 						<Link
 							href="/resigter"
+							prefetch={false}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg  lg:inline-block hidden uppercase text-orange-500">
 							Đăng Ký
 						</Link>
 						<Link
 							href={'/login'}
+							prefetch={false}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg text-orange-500 lg:hidden inline-block">
 							<RiLoginBoxFill size={24} />
 						</Link>
@@ -98,6 +102,7 @@ function Navbar() {
 					<>
 						<Link
 							href={'/user/profile'}
+							prefetch={false}
 							className="relative flex items-center h-[90px] group">
 							<div className="absolute w-full top-0 ">
 								<img
@@ -169,6 +174,7 @@ function Navbar() {
 									<li>
 										<Link
 											href={'/user/profile'}
+											prefetch={false}
 											className="flex flex-col items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
 											<div className="flex flex-row items-center gap-2">
 												<div className="avatar">
@@ -199,6 +205,7 @@ function Navbar() {
 										<li>
 											<Link
 												href="/login"
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<RiLoginBoxFill size={24} />
 												<p>Đăng nhập</p>
@@ -207,6 +214,7 @@ function Navbar() {
 										<li>
 											<Link
 												href="/resigter"
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<RiLoginBoxFill size={24} />
 												<p>Đăng Ký</p>
@@ -217,6 +225,7 @@ function Navbar() {
 								<li>
 									<Link
 										href="/"
+										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<RiHome3Fill size={24} />
 										<p>Trang Chủ</p>
@@ -225,6 +234,7 @@ function Navbar() {
 								<li>
 									<Link
 										href="/deposit"
+										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<PiHandDepositFill size={24} />
 										<p>Nạp vàng</p>
@@ -233,6 +243,7 @@ function Navbar() {
 								<li>
 									<Link
 										href="/withdraw"
+										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<PiHandWithdrawFill size={24} />
 										<p>Rút vàng</p>
@@ -243,6 +254,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/profile'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaRegUser size={24} />
 												Cài Đặt Tài Khoản
@@ -251,6 +263,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/trade_gold'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaExchangeAlt size={24} />
 												Chuyển Vàng
@@ -259,6 +272,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/exchange_diamon'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaExchangeAlt size={24} />
 												Đổi Vàng
@@ -267,6 +281,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_service'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch Sử giao dịch
@@ -275,6 +290,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_bet'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch sử cược
@@ -283,6 +299,7 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_activity'}
+												prefetch={false}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch Sử Hoạt Động
@@ -293,6 +310,7 @@ function Navbar() {
 								<li>
 									<Link
 										href={'/user/table_misson'}
+										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<FaTable size={24} />
 										Bảng Nhiệm Vụ
@@ -301,6 +319,7 @@ function Navbar() {
 								<li>
 									<Link
 										href={'/user/table_vip'}
+										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<FaTable size={24} />
 										Điểm Danh VIP

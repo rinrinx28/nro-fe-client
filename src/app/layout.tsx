@@ -99,12 +99,6 @@ export default function RootLayout({
 					<SocketProvider>
 						<FallingSnow />
 						<Navbar />
-						{/* <Suspense fallback={<Loading />}>
-							{children}
-							<CircularMenu />
-							<Clans />
-							<Footer />
-						</Suspense> */}
 						{children}
 						<CircularMenu />
 						<Clans />
