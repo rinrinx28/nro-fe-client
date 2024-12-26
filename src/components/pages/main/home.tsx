@@ -475,6 +475,8 @@ function Home() {
 						<li>
 							<Link
 								href="/deposit"
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<PiHandDepositFill size={24} />
 								<p>Nạp vàng</p>
@@ -483,6 +485,8 @@ function Home() {
 						<li>
 							<Link
 								href="/withdraw"
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<PiHandWithdrawFill size={24} />
 								<p>Rút vàng</p>
@@ -491,6 +495,8 @@ function Home() {
 						<li>
 							<Link
 								href={'/user/profile'}
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaRegUser size={24} />
 								Cài Đặt Tài Khoản
@@ -499,6 +505,8 @@ function Home() {
 						<li>
 							<Link
 								href={'/user/trade_gold'}
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaExchangeAlt size={24} />
 								Chuyển Vàng
@@ -507,6 +515,8 @@ function Home() {
 						<li>
 							<Link
 								href={'/user/exchange_diamon'}
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaExchangeAlt size={24} />
 								Đổi Vàng
@@ -515,6 +525,8 @@ function Home() {
 						<li>
 							<Link
 								href={'/user/table_misson'}
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaTable size={24} />
 								Bảng Nhiệm Vụ
@@ -523,6 +535,8 @@ function Home() {
 						<li>
 							<Link
 								href={'/user/table_vip'}
+								replace
+								prefetch={true}
 								className="link decoration-transparent flex justify-start items-center gap-2 hover:text-orange-500 hover:transition-colors hover:ease-in-out">
 								<FaTable size={24} />
 								Điểm Danh VIP
