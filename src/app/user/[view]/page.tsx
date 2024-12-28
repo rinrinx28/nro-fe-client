@@ -669,7 +669,7 @@ function ExchangeGold(props: { showNotice: any }) {
 		return () => {
 			socket.off('notification.user');
 		};
-	}, [socket]);
+	}, [socket, user]);
 
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
@@ -969,7 +969,7 @@ function TradeGold(props: { showNotice: any }) {
 		return () => {
 			socket.off('notification.user');
 		};
-	}, [socket]);
+	}, [socket, user]);
 
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
