@@ -599,6 +599,7 @@ function ExchangeGold(props: { showNotice: any }) {
 			setLoad(true);
 			socketAuth.current.emit('service.exchange.diamon', {
 				...field,
+				uid: user._id,
 			});
 		} catch (err: any) {}
 	};
@@ -887,6 +888,7 @@ function TradeGold(props: { showNotice: any }) {
 			socketAuth.current.emit('service.tranfer.money', {
 				...field,
 				targetId: field.targetId?.toLocaleLowerCase(),
+				uid: user._id,
 			});
 		} catch (err: any) {}
 	};
