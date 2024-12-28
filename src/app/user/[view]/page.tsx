@@ -20,6 +20,7 @@ import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
 import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { io, Socket } from 'socket.io-client';
+import { useSocket } from '@/lib/server/socket';
 
 const urlConfig = {
 	dev: 'http://localhost:3037',
@@ -590,6 +591,7 @@ function ExchangeGold(props: { showNotice: any }) {
 	}>({});
 
 	const socketAuth = useRef<Socket | null>(null);
+	const socket = useSocket();
 
 	const exchange = async () => {
 		try {
@@ -649,6 +651,25 @@ function ExchangeGold(props: { showNotice: any }) {
 			};
 		}
 	}, [user, socketAuth]);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			showNotice(message);
+		};
+		socket.on(
+			'notification.user',
+			(payload: { uid: string; message: string }) => {
+				const { message, uid } = payload;
+				if (user && uid === user._id) {
+					setLoad(false);
+					showModleSocket(message);
+				}
+			},
+		);
+		return () => {
+			socket.off('notification.user');
+		};
+	}, [socket]);
 
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
@@ -878,6 +899,7 @@ function TradeGold(props: { showNotice: any }) {
 	});
 
 	const socketAuth = useRef<Socket | null>(null);
+	const socket = useSocket();
 
 	const tranfer = async () => {
 		try {
@@ -929,6 +951,25 @@ function TradeGold(props: { showNotice: any }) {
 			};
 		}
 	}, [user, socketAuth]);
+
+	useEffect(() => {
+		const showModleSocket = (message: string) => {
+			showNotice(message);
+		};
+		socket.on(
+			'notification.user',
+			(payload: { uid: string; message: string }) => {
+				const { message, uid } = payload;
+				if (user && uid === user._id) {
+					setLoad(false);
+					showModleSocket(message);
+				}
+			},
+		);
+		return () => {
+			socket.off('notification.user');
+		};
+	}, [socket]);
 
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
