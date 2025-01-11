@@ -1024,7 +1024,7 @@ function TradeGold(props: { showNotice: any }) {
 					<div className="form-control w-full">
 						<div className="label">
 							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								ID Người Nhận
+								Tên Người Nhận (Tên hiển thị)
 							</span>
 						</div>
 						<input
