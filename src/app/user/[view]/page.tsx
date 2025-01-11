@@ -1024,13 +1024,13 @@ function TradeGold(props: { showNotice: any }) {
 					<div className="form-control w-full">
 						<div className="label">
 							<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
-								Tên Người Nhận (Tên hiển thị)
+								Tên Người Nhận
 							</span>
 						</div>
 						<input
 							className="input text-orange-500"
 							type="text"
-							placeholder="Nhập ID Người Nhận"
+							placeholder="Nhập Tên hiển thị"
 							onChange={(e) =>
 								setField((f) => ({ ...f, targetId: e.target.value }))
 							}
