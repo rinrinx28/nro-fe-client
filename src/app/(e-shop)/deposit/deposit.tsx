@@ -352,9 +352,13 @@ function Deposit() {
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
 							<select
 								disabled
-								defaultValue={user.server}
+								value={user.server ?? '0'}
 								className="select select-bordered w-full border-2">
-								<option disabled>Chọn Máy Chủ</option>
+								<option
+									disabled
+									value={'0'}>
+									Chọn Máy Chủ
+								</option>
 								{Array.from({ length: 7 }).map((_, i) => (
 									<option
 										key={`register_server_${i + 1}`}
