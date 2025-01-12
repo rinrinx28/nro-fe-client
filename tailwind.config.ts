@@ -39,6 +39,7 @@ const config: Config = {
 			'sf-trans-robotics': ['SF TransRobotics', 'sans-serif'],
 			'number-font': ['Chakra Petch', 'sans-serif'],
 			protest: ['Protest Strike', 'sans-serif'],
+			'cygnito-mono': ['Cygnito Mono', 'monospace'],
 		},
 		screens: {
 			'mb-m': '375px',

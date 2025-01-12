@@ -82,7 +82,7 @@ function TablesTop() {
 						<h1>Top Người Chơi</h1>
 					</div>
 					<div className="h-12 w-full"></div>
-					<div className="group-active:z-[9999] flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
+					<div className="flex flex-col justify-start items-center gap-10 w-full overflow-auto h-[600px] py-2 snap-y">
 						{[...(users ?? [])]?.map((u, i) => {
 							const { meta, name } = u;
 							const e_rank_day = eshop.find((e) => e.name === 'e_user_rank');
@@ -95,16 +95,16 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular px-1">
-									<div className="avatar animate-bounce z-[100] duration-1000">
+									className="snap-center flash cursor-pointer text-white flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center font-cygnito-mono px-1">
+									{/* <div className="avatar animate-bounce z-[100] duration-1000">
 										<div className="mb-l:size-24 size-16 bg-transparent">
 											<img
 												src={`/image/rank/${i + 1}_user.webp`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
-									</div>
-									<div className="flex flex-col items-center justify-center lg:text-base text-sm">
+									</div> */}
+									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
 										<p>
 											#{i + 1} | {name}
 										</p>
@@ -156,15 +156,15 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-protest-strike-regular px-1">
-									<div className="avatar animate-bounce z-[100]">
+									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-cygnito-mono px-1">
+									{/* <div className="avatar animate-bounce z-[100]">
 										<div className="mb-l:size-24 size-16 bg-transparent z-50">
 											<img
 												src={`/image/banghoi/b${type ?? '1'}.webp`}
 												alt="Avatar Tailwind CSS Component"
 											/>
 										</div>
-									</div>
+									</div> */}
 									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
 										<p>
 											{name} | TOP {i + 1}

@@ -156,7 +156,7 @@ function History() {
 					<h1>Lịch Sử Cược</h1>
 				</div>
 				<div className="overflow-x-auto max-h-[600px]">
-					<table className="table table-zebra font-chakra-petch">
+					<table className="table table-zebra font-cygnito-mono">
 						{/* head */}
 						<thead className="text-center">
 							<tr>
@@ -171,7 +171,7 @@ function History() {
 								<th></th>
 							</tr>
 						</thead>
-						<tbody className="text-center text-lg select-text">
+						<tbody className="text-center text-lg select-text font-cygnito-mono">
 							{/* row 1 */}
 							{data
 								?.sort(
@@ -266,7 +266,7 @@ function History() {
 																? 'bg-green-500 text-black'
 																: 'bg-red-500 text-white'
 															: 'bg-cyan-500 text-black'
-													} font-chakra-petch capitalize font-bold`}>
+													} capitalize font-bold`}>
 													{status === 1
 														? 'Đã Hủy'
 														: status === 2
@@ -303,7 +303,7 @@ function History() {
 					</table>
 				</div>
 				{/* Filter */}
-				<div className="flex flex-row justify-between items-center">
+				<div className="flex flex-row justify-between items-center font-cygnito-mono">
 					{/* Filter Bet  */}
 					<select
 						defaultValue={filter.show}
