@@ -399,9 +399,9 @@ function Withdraw() {
 								/>
 							</div>
 							<div className="label">
-								<span className="label-text-alt">
-									Tên nhân vật chú ý ghi thường, không dấu cách, chuẩn tên trong
-									game!
+								<span className="label-text-alt text-red-500">
+									Lưu ý: Tên nhân vật chú ý ghi thường, không dấu cách, chuẩn
+									tên trong game!
 								</span>
 							</div>
 						</label>
