@@ -17,8 +17,8 @@ import { RiLockPasswordLine } from 'react-icons/ri';
 import './user.css';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import Modal from '@/components/controller/Modal';
-import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
-import { Clan, setClans } from '@/lib/redux/storage/clan/clans';
+import { EConfig } from '@/lib/redux/storage/eshop/config';
+import { Clan } from '@/lib/redux/storage/clan/clans';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { io, Socket } from 'socket.io-client';
 import { useSocket } from '@/lib/server/socket';
@@ -299,7 +299,6 @@ function Profile() {
 	const users = useAppSelector((state) => state.userTop);
 	const [top, setTop] = useState<number | null>(null);
 	const [myClan, setMyClan] = useState<Clan>();
-	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		if (user.isLogin && clans) {
@@ -474,7 +473,19 @@ function Profile() {
 							</div>
 							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
 								<FaRegUser size={24} />
-								<p>{user.name ?? 'RIN'}</p>
+								<p>{user.name ?? '???'}</p>
+							</div>
+						</div>
+						{/* Server */}
+						<div className="form-control w-full">
+							<div className="label">
+								<span className="label-text text-black capitalize text-xl font-chakra-petch font-semibold">
+									Máy Chủ
+								</span>
+							</div>
+							<div className="input input-bordered bg-transparent border-2 border-black flex items-center gap-2">
+								<FaRegUser size={24} />
+								<p>{user.server ?? '???'}</p>
 							</div>
 						</div>
 						{/* Vàng */}
@@ -2178,7 +2189,7 @@ function TableMission(props: { showNotice: any }) {
 
 	useEffect(() => {
 		if (econfig && user.isLogin) {
-			const target = [...econfig].find((e) => e.name === 'e_reward');
+			const target = (econfig ?? []).find((e) => e.name === 'e_reward');
 			if (target) {
 				setDaily(target?.option?.daily ?? []);
 			}
@@ -2356,7 +2367,7 @@ function TableVIP(props: { showNotice: any }) {
 
 	useEffect(() => {
 		if (econfig && user.isLogin) {
-			const target = [...econfig].find((e) => e.name === 'e_reward');
+			const target = (econfig ?? []).find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setVipClain(vipLevels);
@@ -2372,7 +2383,7 @@ function TableVIP(props: { showNotice: any }) {
 			}
 		};
 		if (econfig) {
-			const target = [...econfig].find((e) => e.name === 'e_reward');
+			const target = (econfig ?? []).find((e) => e.name === 'e_reward');
 			if (target) {
 				const vipLevels = target?.option?.vipLevels ?? [];
 				setTutorial(vipLevels);

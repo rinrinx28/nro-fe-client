@@ -57,30 +57,6 @@ export default function StoreProvider({
 
 	// Auto Call Request;
 	useEffect(() => {
-		const listClan = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/clan');
-				storeRef.current?.dispatch(setClans(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		const listConfig = async () => {
-			try {
-				const { data } = await apiClient.get('/no-call/list/econfig');
-				storeRef.current?.dispatch(setConfigs(data));
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
-			}
-		};
-		if (storeRef) {
-			listConfig();
-			listClan();
-		}
-	}, [storeRef]);
-
-	// Auto Save fingerprintJS and reload;
-	useEffect(() => {
 		const setFp = async (token: string) => {
 			const fp = await FingerprintJS.load();
 
@@ -118,7 +94,26 @@ export default function StoreProvider({
 		} else {
 			saveFp();
 		}
-		return () => {};
+		const listClan = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/clan');
+				storeRef.current?.dispatch(setClans(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		const listConfig = async () => {
+			try {
+				const { data } = await apiClient.get('/no-call/list/econfig');
+				storeRef.current?.dispatch(setConfigs(data));
+			} catch (err: any) {
+				console.log(err.response.data.message.message);
+			}
+		};
+		if (storeRef) {
+			listConfig();
+			listClan();
+		}
 	}, [storeRef]);
 
 	return <Provider store={storeRef.current}>{children}</Provider>;
