@@ -31,7 +31,7 @@ function Navbar() {
 						className="w-1/4 absolute pointer-events-none -top-2 -right-1 rotate-12"
 					/>
 					<Image
-						src={'/image/logo_nro.webp'}
+						src={'/image/logo_nro.gif'}
 						alt="logo_nro"
 						width={150}
 						height={32}
