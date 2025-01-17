@@ -192,7 +192,7 @@ function Resigter() {
 								))}
 								<option value={'8'}>Máy Chủ 8-9-10</option>
 								<option value={'11'}>Máy Chủ 11</option>
-								{Array.from({ length: 3 }).map((_, i) => (
+								{Array.from({ length: 2 }).map((_, i) => (
 									<option
 										disabled
 										key={i + 'resigter_server'}
