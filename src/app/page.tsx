@@ -49,7 +49,7 @@ export default function Page() {
 	return (
 		<div
 			id="home_page"
-			className="flex flex-col gap-2 justify-center items-center w-full select-none">
+			className="flex flex-col gap-2 justify-center items-center w-full ">
 			<Home />
 			<div className="w-full bg-cover bg-repeat bg-top">
 				<div className="flex flex-col items-center p-2 w-full justify-center gap-4">

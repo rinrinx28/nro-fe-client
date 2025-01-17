@@ -376,7 +376,7 @@ function Home() {
 	return (
 		<div
 			// style={{ backgroundImage: "url('/image/background/2_main.webp')" }}
-			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right select-none font-chakra-petch">
+			className="min-h-screen flex flex-col w-full justify-center items-center gap-4 p-4 bg-no-repeat bg-cover bg-right  font-chakra-petch">
 			{/* Hero */}
 			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full mt-10">
 				<div className="flex relative">
@@ -598,7 +598,7 @@ function Home() {
 				</div>
 			)}
 			{/* Game Info */}
-			<div className="grid lg:grid-cols-2 grid-cols-1 max-w-7xl w-full gap-4 select-none h-fit p-2 ">
+			<div className="grid lg:grid-cols-2 grid-cols-1 max-w-7xl w-full gap-4  h-fit p-2 ">
 				{/* Left Size Game Board */}
 				<div className="flex flex-col gap-5 w-full h-full">
 					{/* Background game */}

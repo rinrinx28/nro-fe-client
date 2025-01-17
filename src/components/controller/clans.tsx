@@ -348,7 +348,7 @@ function Clans() {
 			<dialog
 				id="clan_box_screen"
 				className="modal z-[1000]">
-				<div className="p-2 select-none modal-box w-full max-w-7xl">
+				<div className="p-2  modal-box w-full max-w-7xl">
 					<div className=" bg-black/80 box w-full h-full flex flex-col backdrop-blur-lg rounded-lg">
 						{/* Layout Clans */}
 						<div className="flex flex-col w-full h-full gap-2 font-chakra-petch text-orange-500 p-2">

@@ -142,7 +142,7 @@ function History() {
 
 	return (
 		<div className="w-full flex items-center justify-center p-8">
-			<div className="relative max-w-7xl w-full select-none flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
+			<div className="relative max-w-7xl w-full  flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
 				<div
 					className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
 					style={{

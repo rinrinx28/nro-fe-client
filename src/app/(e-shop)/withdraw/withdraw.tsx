@@ -278,7 +278,7 @@ function Withdraw() {
 	return (
 		<div
 			// style={{ backgroundImage: "url('/image/background/logo_withdraw.webp')" }}
-			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover select-none bg-gray-300">
+			className="min-h-screen w-full flex flex-col justify-center items-center p-4 gap-4 bg-no-repeat bg-cover  bg-gray-300">
 			<div className="flex flex-col gap-2 w-full max-w-7xl rounded-box shadow-lg shadow-white/80 bg-white/50 backdrop-blur-lg text-black p-8">
 				<h1 className="w-full text-center font-chakra-petch font-bold uppercase text-4xl text-amber-800">
 					Rút Vàng
@@ -398,8 +398,11 @@ function Withdraw() {
 									}}
 								/>
 							</div>
-							<div className="label hidden">
-								<span className="label-text-alt">Bottom Left label</span>
+							<div className="label">
+								<span className="label-text-alt">
+									Tên nhân vật chú ý ghi thường, không dấu cách, chuẩn tên trong
+									game!
+								</span>
 							</div>
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">

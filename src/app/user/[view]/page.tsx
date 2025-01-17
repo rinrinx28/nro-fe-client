@@ -384,7 +384,7 @@ function Profile() {
 									</p>
 								</div>
 							</div>
-							<div className="flex flex-row gap-2 border-t border-current py-2 items-center select-none">
+							<div className="flex flex-row gap-2 border-t border-current py-2 items-center ">
 								{user?.meta?.vip && user?.meta?.vip !== 0 && (
 									<div
 										data-tip={`VIP ${user?.meta?.vip ?? '0'}`}
@@ -2243,7 +2243,7 @@ function TableMission(props: { showNotice: any }) {
 							</p>
 						</div>
 					</div>
-					<div className="overflow-hidden w-full select-none">
+					<div className="overflow-hidden w-full ">
 						<div className="flex flex-row gap-5 w-full overflow-auto">
 							{daily.map((d, i) => {
 								const { dailyPointsTarget = 0 } = d;
@@ -2443,7 +2443,7 @@ function TableVIP(props: { showNotice: any }) {
 							</p>
 						</div>
 					</div>
-					<div className="overflow-auto w-full select-none">
+					<div className="overflow-auto w-full ">
 						<div className="grid grid-flow-col gap-5">
 							{vipClaim.map((v, i) => {
 								const { level = i + 1, dailyPointsTarget = 0 } = v;
