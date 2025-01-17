@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { setUserBet, UserBet } from '@/lib/redux/storage/user/userBet';
 import apiClient from '@/lib/server/apiClient';

@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import '@/components/css/chat.css';
 import '@/components/css/clans.css';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';

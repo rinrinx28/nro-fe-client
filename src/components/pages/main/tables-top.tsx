@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import { Clan, setclanTops } from '@/lib/redux/storage/top/clanTop';

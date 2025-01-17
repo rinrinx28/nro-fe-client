@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { useEffect, useRef, useState } from 'react';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
 import { GiPerspectiveDiceSixFacesTwo } from 'react-icons/gi';
@@ -430,7 +431,7 @@ function Home() {
 					}`}>
 					Máy Chủ Gộp
 				</button>
-				{Array.from({ length: 3 }).map((_, k) => (
+				{Array.from({ length: 4 }).map((_, k) => (
 					<button
 						key={`${k}-button`}
 						onClick={() => {

@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import React, { createContext, useContext, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import moment from 'moment';
@@ -6,7 +7,6 @@ import { useAppDispatch, useAppSelector } from '../redux/hook';
 import { MiniGame, setMinigame } from '../redux/storage/minigame/minigame';
 import { updateUser, User } from '../redux/storage/user/user';
 import { setUserStore } from '../redux/storage/user/users';
-import { Bot, setBot } from '../redux/storage/eshop/bots';
 import { Message, setMessage } from '../redux/storage/user/message';
 import { setUserBet, UserBet } from '../redux/storage/user/userBet';
 import {

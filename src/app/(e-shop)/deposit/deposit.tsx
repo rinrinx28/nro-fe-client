@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
@@ -6,11 +7,10 @@ import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { FaMinus } from 'react-icons/fa';
 import apiClient from '@/lib/server/apiClient';
 import moment from 'moment';
-import { Bot, setBot } from '@/lib/redux/storage/eshop/bots';
-import { EConfig, setConfigs } from '@/lib/redux/storage/eshop/config';
+import { Bot } from '@/lib/redux/storage/eshop/bots';
+import { EConfig } from '@/lib/redux/storage/eshop/config';
 import { setService } from '@/lib/redux/storage/eshop/service';
 import Modal from '@/components/controller/Modal';
-import { setClans } from '@/lib/redux/storage/clan/clans';
 import { useSocket } from '@/lib/server/socket';
 import { io, Socket } from 'socket.io-client';
 
@@ -22,13 +22,12 @@ const urlConfig = {
 
 function Deposit() {
 	const user = useAppSelector((state) => state.user);
-	const bots = useAppSelector((state) => state.bots);
 	const econfig = useAppSelector((state) => state.econfig);
 	const services = useAppSelector((state) => state.services);
 	const dispatch = useAppDispatch();
 
 	const [eshop, setEshop] = useState<EConfig>({});
-	// const [botD, setBotD] = useState<Bot[]>([]);
+	const [botD, setBotD] = useState<Bot[]>([]);
 	const [tutorial, setTutorial] = useState<any[]>([]);
 	const [field, setField] = useState<InputField>({
 		type: '0',
@@ -106,15 +105,15 @@ function Deposit() {
 				return; // Stop submission if input is invalid
 			}
 
-			let bot_status = [...(bots ?? [])]
-				.filter((b) => user.server === b.server)
-				.filter(
-					(b) => b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
-				);
+			let bot_status = (botD ?? []).filter(
+				(b) =>
+					user.server === b.server &&
+					b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
+			);
 
 			if (bot_status.length === 0) {
 				return showNoticeEShop(
-					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
+					'Hệ thông nạp/rút đang cập nhật anh em chờ trong 5s sẽ xuất hiện bot!',
 				);
 			}
 
@@ -166,7 +165,10 @@ function Deposit() {
 	useEffect(() => {
 		if (socket) {
 			socket.on('bot.status', (payload: Bot) => {
-				dispatch(setBot(payload));
+				setBotD((bots: Bot[]) => [
+					...bots.filter((bt: Bot) => bt?.id !== payload.id),
+					payload,
+				]);
 			});
 
 			socket.on(
@@ -578,25 +580,23 @@ function Deposit() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{[...(bots ?? [])]
-									.filter((b) => user.server === b.server)
+								{(botD ?? [])
 									.filter(
 										(b) =>
+											user.server === b.server &&
 											b.type_money === (field.typeGold === 'gold' ? '3' : '2'),
 									)
-									.map((b, i) => {
-										return (
-											<tr key={i + 'deposit_bot'}>
-												<th>{i + 1}</th>
-												<td>{b.name ?? 'nro'}</td>
-												<td>{b.map ?? 'nro'}</td>
-												<td>{b.zone ?? 'nro'}</td>
-												<td className="font-sf-trans-robotics">
-													{new Intl.NumberFormat('vi').format(b.money ?? 0)}
-												</td>
-											</tr>
-										);
-									})}
+									.map((b, i) => (
+										<tr key={`${i}_deposit_bot`}>
+											<th>{i + 1}</th>
+											<td>{b.name ?? 'nro'}</td>
+											<td>{b.map ?? 'nro'}</td>
+											<td>{b.zone ?? 'nro'}</td>
+											<td className="font-sf-trans-robotics">
+												{new Intl.NumberFormat('vi').format(b.money ?? 0)}
+											</td>
+										</tr>
+									))}
 							</tbody>
 						</table>
 					</div>

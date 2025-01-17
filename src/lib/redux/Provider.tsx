@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { useRef, useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { makeStore, AppStore } from './store';

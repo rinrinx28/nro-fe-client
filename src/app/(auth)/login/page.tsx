@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { updateUser } from '@/lib/redux/storage/user/user';

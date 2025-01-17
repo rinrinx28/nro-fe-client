@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
@@ -20,7 +21,6 @@ const urlConfig = {
 
 function Withdraw() {
 	const user = useAppSelector((state) => state.user);
-	const bots = useAppSelector((state) => state.bots);
 	const services = useAppSelector((state) => state.services);
 	const econfig = useAppSelector((state) => state.econfig);
 	const dispatch = useAppDispatch();
@@ -33,6 +33,7 @@ function Withdraw() {
 	const [isLoadSub, setLoadSub] = useState<boolean>(false);
 	const [msg, setMsg] = useState<string>('');
 	const [eshop, setEshop] = useState<EConfig>({});
+	const [botD, setBotD] = useState<Bot[]>([]);
 	const socketAuth = useRef<Socket | null>(null);
 
 	const socket = useSocket();
@@ -116,14 +117,14 @@ function Withdraw() {
 					);
 			}
 
-			let bot_status = [...(bots ?? [])]
-				.filter((b) => user.server === b.server)
-				.filter(
-					(b) => b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
-				);
+			let bot_status = (botD ?? []).filter(
+				(b) =>
+					user.server === b.server &&
+					b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
+			);
 			if (bot_status.length === 0)
 				return showNoticeEShop(
-					'Hệ thống nạp rút đang quá tải, xin vui lòng đợi trong giây lát',
+					'Hệ thông nạp/rút đang cập nhật anh em chờ trong 5s sẽ xuất hiện bot!',
 				);
 			if (!socketAuth.current) {
 				return showNoticeEShop('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
@@ -168,7 +169,10 @@ function Withdraw() {
 	useEffect(() => {
 		if (socket) {
 			socket.on('bot.status', (payload: Bot) => {
-				dispatch(setBot(payload));
+				setBotD((bots: Bot[]) => [
+					...bots.filter((bt: Bot) => bt?.id !== payload.id),
+					payload,
+				]);
 			});
 
 			socket.on(
@@ -543,38 +547,35 @@ function Withdraw() {
 							</thead>
 							<tbody>
 								{/* row 1 */}
-								{[...(bots ?? [])]
-									.filter((b) => user.server === b.server)
+								{(botD ?? [])
 									.filter(
 										(b) =>
+											user.server === b.server &&
 											b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
 									)
-									.map((b, i) => {
-										return (
-											<tr key={i + 'deposit_bot'}>
-												<th>{i + 1}</th>
-												<td>{b.name ?? 'nro'}</td>
-												<td>{b.map ?? 'nro'}</td>
-												<td>{b.zone ?? 'nro'}</td>
-												<td className="font-sf-trans-robotics">
-													{new Intl.NumberFormat('vi').format(b.money ?? 0)}
-												</td>
-											</tr>
-										);
-									})}
+									.map((b, i) => (
+										<tr key={`${i}_deposit_bot`}>
+											<th>{i + 1}</th>
+											<td>{b.name ?? 'nro'}</td>
+											<td>{b.map ?? 'nro'}</td>
+											<td>{b.zone ?? 'nro'}</td>
+											<td className="font-sf-trans-robotics">
+												{new Intl.NumberFormat('vi').format(b.money ?? 0)}
+											</td>
+										</tr>
+									))}
 							</tbody>
 						</table>
-
-						{[...(bots ?? [])]
-							.filter((b) => user.server === b.server)
-							.filter(
-								(b) => b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
-							).length === 0 &&
-							user.isLogin && (
-								<div className="text-center w-full bg-white text-orange-500">
-									Hệ thống rút đang quá tải, xin quay lại trong vài phút!
-								</div>
-							)}
+						{(botD ?? []).filter(
+							(b) =>
+								user.server === b.server &&
+								b.type_money === (field.typeGold === 'gold' ? '1' : '0'),
+						).length === 0 && (
+							<div className="text-center w-full bg-white text-orange-500">
+								Hệ thông nạp/rút đang cập nhật anh em chờ trong 5s sẽ xuất hiện
+								bot!
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

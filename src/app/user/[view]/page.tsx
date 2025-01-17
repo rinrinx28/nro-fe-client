@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { Service, setService } from '@/lib/redux/storage/eshop/service';
 import { setServer } from '@/lib/redux/storage/minigame/server';

@@ -1,4 +1,5 @@
 'use client';
+'use cache';
 import dynamic from 'next/dynamic';
 
 // Lazy load components
@@ -12,7 +13,7 @@ const Deposit = dynamic(() => import('./deposit'), {
 			/>
 		</div>
 	), // Tùy chọn: Hiển thị trạng thái loading
-	ssr: false, // Tắt render phía server nếu không cần
+	ssr: true, // Tắt render phía server nếu không cần
 });
 
 export default function Page() {
