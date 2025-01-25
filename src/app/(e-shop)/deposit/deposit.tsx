@@ -398,6 +398,7 @@ function Deposit() {
 							</select>
 						</label>
 						<label className="form-control w-full p-2 text-orange-500 font-protest-strike-regular">
+							<p>Tên nhân vật</p>
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -411,13 +412,14 @@ function Deposit() {
 									className="grow"
 									placeholder="Tên nhân vật"
 									name="playerName"
+									value={field.playerName || ''}
 									onChange={(e) => {
 										const value = e.target.value;
 
 										// Update field state
 										setField((f) => ({
 											...f,
-											playerName: value,
+											playerName: value.toLowerCase(),
 										}));
 
 										// Check if playerName is empty

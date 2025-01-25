@@ -377,13 +377,14 @@ function Withdraw() {
 									className="grow"
 									placeholder="Tên nhân vật"
 									name="playerName"
+									value={field.playerName || ''}
 									onChange={(e) => {
 										const value = e.target.value;
 
 										// Update field state
 										setField((f) => ({
 											...f,
-											playerName: value,
+											playerName: value.toLowerCase(),
 										}));
 
 										// Check if playerName is empty
