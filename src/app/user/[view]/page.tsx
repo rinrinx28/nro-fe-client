@@ -170,7 +170,7 @@ function UserContext() {
 					</div>
 				</div>
 				{/* Tab */}
-				{params.view === 'profile' && <Profile />}
+				{params.view === 'profile' && <Profile onClick={showChangePwd}/>}
 				{params.view === 'history_bet' && <HistoryBet />}
 				{params.view === 'history_activity' && <HistoryActivity />}
 				{params.view === 'history_service' && <HistoryService />}
@@ -293,7 +293,7 @@ function UserContext() {
 }
 
 // Cài Đặt Tài Khoản
-function Profile() {
+function Profile({onClick}:{onClick?: any}) {
 	const user = useAppSelector((state) => state.user);
 	const clans = useAppSelector((state) => state.clans);
 	const users = useAppSelector((state) => state.userTop);
@@ -581,6 +581,12 @@ function Profile() {
 								</p>
 							</div>
 						</div>
+						<button
+							onClick={onClick}
+							className="flex flex-row gap-2 items-center py-2 px-4 bg-orange-500 rounded-box text-black cursor-pointer font-protest-strike-regular capitalize text-xl hover:bg-black hover:text-orange-500 hover:duration-300 active:hover:scale-90">
+							<RiLockPasswordLine size={24} />
+							Đổi Mật Khẩu
+						</button>
 					</div>
 				</div>
 			)}
