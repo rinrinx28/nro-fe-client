@@ -34,14 +34,17 @@ function Resigter() {
 			let username = formData.get('username');
 			let name = formData.get('name');
 			let email = formData.get('email');
+			let server = formData.get('server');
 			if (!username) throw new Error('Xin vui lòng nhập tên đăng nhập');
 			if (!name) throw new Error('Xin vui lòng nhập tên hiển thị');
 			if (!email) throw new Error('Xin vui lòng nhập email');
 			if (!password) throw new Error('Xin vui lòng nhập mật khẩu');
+			if (!server) throw new Error('Bạn chưa chọn máy chủ');
 			password = password.toString();
 			username = username.toString();
 			name = name.toString();
 			email = email.toString();
+			server = server.toString();
 			if (password.length < 6)
 				throw new Error('Độ dài mật khẩu tối thiểu là 6 ký tự');
 			await apiClient.post('/auth/resigter', {
@@ -49,6 +52,7 @@ function Resigter() {
 				name,
 				username,
 				email,
+				server,
 				hash: finger,
 			});
 			router.push('/login');
