@@ -808,7 +808,8 @@ const ClanList: React.FC<{ setView: any; setMember: any; search: string }> = (
 	// Auto Update List Clan
 	useEffect(() => {
 		if (!clans) return;
-		setChannel(clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)));
+		const list_clans = clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0));
+		setChannel(list_clans);
 	}, [clans]);
 
 	// Auto Status Config;

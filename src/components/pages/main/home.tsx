@@ -267,7 +267,7 @@ const Home: React.FC = () => {
 
 	// Update realtime chat;
 	useEffect(() => {
-		if (!server || !messages || !Array.isArray(messages)) return;
+		if (!server || !messages) return;
 
 		const filteredMessages = messages
 			.filter((m) => m.server === server || m.server === 'all')
@@ -280,7 +280,7 @@ const Home: React.FC = () => {
 
 	// Update banner
 	useEffect(() => {
-		if (!econfig || !Array.isArray(econfig)) return;
+		if (!econfig) return;
 
 		const target = econfig.find((e) => e.name === 'e_banner');
 		if (!target) {
