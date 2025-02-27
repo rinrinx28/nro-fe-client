@@ -1,6 +1,5 @@
 'use client';
-'use cache';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineFieldNumber } from 'react-icons/ai';
 import { GiPerspectiveDiceSixFacesTwo } from 'react-icons/gi';
 import {
@@ -61,7 +60,7 @@ const slogans = [
 	'Giao Dịch Tự Động - An Toàn - Chất Lượng',
 ];
 
-function Home() {
+const Home: React.FC = () => {
 	// Redux
 	const user = useAppSelector((state) => state.user);
 	const jackpot = useAppSelector((state) => state.jackpot);
@@ -146,12 +145,11 @@ function Home() {
 
 	const placeBet = async () => {
 		const { amount, place, typeBet } = betField;
-		const { isLogin, token } = user;
+		const { isLogin } = user;
 
 		// Input validation
 		if (!isLogin) {
-			resetBetFildAndNotice('Bạn chưa đăng nhập');
-			return;
+			return resetBetFildAndNotice('Bạn chưa đăng nhập');
 		}
 
 		if (!gameBox || !gameBox._id) {
@@ -239,74 +237,58 @@ function Home() {
 		setMsg((m) => ({ ...m, server: server.toString() }));
 		// get Data mini sv;
 		socket.emit('info.mini', server);
-	}, [server]);
+	}, [server, socket]);
 
 	// Update Realtime Minigame with Server
 	useEffect(() => {
-		if (server) {
-			const target = [...minigame].find((m) => m.server === server);
-			setGameBox(target);
-		}
-		return () => {
-			setGameBox({});
-		};
-	}, [server, minigame]);
+		if (!server) return;
+		const target = [...minigame].find((m) => m.server === server);
+		setGameBox(target);
+	}, [server]);
 
 	useEffect(() => {
-		if (gameBox) {
-			const loop = setInterval(() => {
-				let now = moment().unix();
-				let timeEnd = moment(gameBox?.timeEnd).unix();
-				let time = Math.floor(timeEnd - now);
-				if (time < 0) {
-					setCounter(null);
-				} else {
-					setCounter(time);
-				}
-			}, 1e3);
-			return () => {
+		if (!gameBox) return;
+
+		const endTime = moment(gameBox.timeEnd).unix();
+		const loop = setInterval(() => {
+			const now = moment().unix();
+			const time = Math.floor(endTime - now);
+
+			if (time < 0) {
+				setCounter(null);
 				clearInterval(loop);
-			};
-			// }
-		}
+			} else {
+				setCounter(time);
+			}
+		}, 1000);
+
+		return () => clearInterval(loop);
 	}, [gameBox]);
 
 	// Update realtime chat;
 	useEffect(() => {
-		if (server && messages && messages.length > 0) {
-			const targets = [...messages]
-				?.filter((m) => m?.server === server || m?.server === 'all')
-				.sort(
-					(a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
-				);
-			let new_main_server = targets;
-			let new_channel: Message[] = [];
-			for (const msg of new_main_server) {
-				if (new_channel.length >= 10) {
-					new_channel.shift(); // Removes the oldest message if the array exceeds 10 messages
-				}
-				new_channel.push(msg);
-			}
-			if (new_channel.length > 0) {
-				setChannel(
-					new_channel?.sort(
-						(a, b) => moment(a?.createdAt).unix() - moment(b?.createdAt).unix(),
-					),
-				);
-			} else {
-				setChannel([]);
-			}
-		}
+		if (!server || !messages || !Array.isArray(messages)) return;
+
+		const filteredMessages = messages
+			.filter((m) => m.server === server || m.server === 'all')
+			.sort((a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix());
+
+		const latestMessages = filteredMessages.slice(-10); // Lấy 10 tin nhắn cuối
+
+		setChannel(latestMessages.length > 0 ? latestMessages : []);
 	}, [server, messages]);
 
 	// Update banner
 	useEffect(() => {
-		if (econfig) {
-			const target = [...econfig].find((e) => e.name === 'e_banner');
-			if (target) {
-				setBanner(target?.option?.banner ?? []);
-			}
+		if (!econfig || !Array.isArray(econfig)) return;
+
+		const target = econfig.find((e) => e.name === 'e_banner');
+		if (!target) {
+			setBanner([]);
+			return;
 		}
+
+		setBanner(target.option?.banner ?? []);
 	}, [econfig]);
 
 	useEffect(() => {
@@ -330,38 +312,37 @@ function Home() {
 				clearTimeout(autoClose);
 			};
 		};
-		if (user.isLogin || user.token) {
-			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
-				path: '/socket.io/',
-				transports: ['websocket'],
-				secure: true,
-				reconnectionAttempts: 5, // Limit reconnection attempts
-				auth: {
-					token: `${user.token}`, // Ensure to pass a valid token
-				},
-			});
-			socketAuth.current = socket_auth;
+		if (!user.isLogin || !user.token) return;
+		const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+			path: '/socket.io/',
+			transports: ['websocket'],
+			secure: true,
+			reconnectionAttempts: 5, // Limit reconnection attempts
+			auth: {
+				token: `${user.token}`, // Ensure to pass a valid token
+			},
+		});
+		socketAuth.current = socket_auth;
 
-			socket_auth.on(
-				'minigame.place.re',
-				(data: { message: string; user?: any }) => {
-					showModleSocket(data.message);
-					dispatch(updateUser(data.user));
-					setLoad(false);
-				},
-			);
-
-			socket_auth.on('error', (data: { message: string }) => {
+		socket_auth.on(
+			'minigame.place.re',
+			(data: { message: string; user?: any }) => {
 				showModleSocket(data.message);
+				dispatch(updateUser(data.user));
 				setLoad(false);
-			});
-			return () => {
-				socketAuth.current = null;
-				socket_auth.off('error');
-				socket_auth.off('minigame.place.re');
-				socket_auth.disconnect();
-			};
-		}
+			},
+		);
+
+		socket_auth.on('error', (data: { message: string }) => {
+			showModleSocket(data.message);
+			setLoad(false);
+		});
+		return () => {
+			socketAuth.current = null;
+			socket_auth.off('error');
+			socket_auth.off('minigame.place.re');
+			socket_auth.disconnect();
+		};
 	}, [user, socketAuth, dispatch]);
 
 	const openTutorialJackpot = () => {
@@ -1463,6 +1444,6 @@ function Home() {
 			</Modal>
 		</div>
 	);
-}
+};
 
 export default Home;

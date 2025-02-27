@@ -9,7 +9,7 @@ import { MdOutlineHistory } from 'react-icons/md';
 import { useAppSelector } from '@/lib/redux/hook';
 import { IoLogOut } from 'react-icons/io5';
 
-function Navbar() {
+const Navbar: React.FC = () => {
 	const user = useAppSelector((state) => state.user);
 
 	const logout = () => {
@@ -22,8 +22,6 @@ function Navbar() {
 			<div className="flex flex-row items-center gap-2">
 				<Link
 					href={'/'}
-					replace
-					prefetch={false}
 					className="btn btn-link relative">
 					<img
 						src="/image/background/border-btn-hat-noel.png"
@@ -43,35 +41,27 @@ function Navbar() {
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/'}
-							replace
-							prefetch={false}>
+							href={'/'}>
 							Trang Chủ
 						</Link>
 					</li>
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/deposit'}
-							replace
-							prefetch={true}>
+							href={'/deposit'}>
 							Nạp Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
 							className="bg-black rounded-lg text-lg btn btn-ghost"
-							href={'/withdraw'}
-							replace
-							prefetch={true}>
+							href={'/withdraw'}>
 							Rút Vàng
 						</Link>
 					</li>
 					<li>
 						<Link
 							href={'/user/table_vip'}
-							replace
-							prefetch={true}
 							className="bg-black rounded-lg text-lg btn btn-ghost">
 							<FaTable size={24} />
 							Điểm Danh VIP
@@ -86,22 +76,16 @@ function Navbar() {
 					<>
 						<Link
 							href="/login"
-							replace
-							prefetch={true}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg  lg:inline-block hidden uppercase text-orange-500">
 							Đăng Nhập
 						</Link>
 						<Link
 							href="/resigter"
-							replace
-							prefetch={true}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg  lg:inline-block hidden uppercase text-orange-500">
 							Đăng Ký
 						</Link>
 						<Link
 							href={'/login'}
-							replace
-							prefetch={true}
 							className="px-4 py-2 border bg-black border-orange-500 rounded-lg text-orange-500 lg:hidden inline-block">
 							<RiLoginBoxFill size={24} />
 						</Link>
@@ -184,8 +168,6 @@ function Navbar() {
 									<li>
 										<Link
 											href={'/user/profile'}
-											replace
-											prefetch={true}
 											className="flex flex-col items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:hover:bg-orange-500 lg:hover:text-white lg:hover:duration-300">
 											<div className="flex flex-row items-center gap-2">
 												<div className="avatar">
@@ -216,8 +198,6 @@ function Navbar() {
 										<li>
 											<Link
 												href="/login"
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<RiLoginBoxFill size={24} />
 												<p>Đăng nhập</p>
@@ -226,8 +206,6 @@ function Navbar() {
 										<li>
 											<Link
 												href="/resigter"
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<RiLoginBoxFill size={24} />
 												<p>Đăng Ký</p>
@@ -238,8 +216,6 @@ function Navbar() {
 								<li>
 									<Link
 										href="/"
-										replace
-										prefetch={false}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<RiHome3Fill size={24} />
 										<p>Trang Chủ</p>
@@ -248,8 +224,6 @@ function Navbar() {
 								<li>
 									<Link
 										href="/deposit"
-										replace
-										prefetch={true}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<PiHandDepositFill size={24} />
 										<p>Nạp vàng</p>
@@ -258,8 +232,6 @@ function Navbar() {
 								<li>
 									<Link
 										href="/withdraw"
-										replace
-										prefetch={true}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<PiHandWithdrawFill size={24} />
 										<p>Rút vàng</p>
@@ -270,8 +242,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/profile'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaRegUser size={24} />
 												Cài Đặt Tài Khoản
@@ -280,8 +250,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/trade_gold'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaExchangeAlt size={24} />
 												Chuyển Vàng
@@ -290,8 +258,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/exchange_diamon'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<FaExchangeAlt size={24} />
 												Đổi Vàng
@@ -300,8 +266,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_service'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch Sử giao dịch
@@ -310,8 +274,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_bet'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch sử cược
@@ -320,8 +282,6 @@ function Navbar() {
 										<li>
 											<Link
 												href={'/user/history_activity'}
-												replace
-												prefetch={true}
 												className="link decoration-transparent flex justify-start items-center gap-2">
 												<MdOutlineHistory size={24} />
 												Lịch Sử Hoạt Động
@@ -332,8 +292,6 @@ function Navbar() {
 								<li>
 									<Link
 										href={'/user/table_misson'}
-										replace
-										prefetch={true}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<FaTable size={24} />
 										Bảng Nhiệm Vụ
@@ -342,8 +300,6 @@ function Navbar() {
 								<li>
 									<Link
 										href={'/user/table_vip'}
-										replace
-										prefetch={true}
 										className="link decoration-transparent flex justify-start items-center gap-2">
 										<FaTable size={24} />
 										Điểm Danh VIP
@@ -368,6 +324,6 @@ function Navbar() {
 			</div>
 		</div>
 	);
-}
+};
 
 export default Navbar;

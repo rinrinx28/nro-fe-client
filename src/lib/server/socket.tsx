@@ -1,5 +1,5 @@
 'use client';
-'use cache';
+('');
 import React, { createContext, useContext, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import moment from 'moment';
@@ -179,11 +179,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 		const reLoadUser = async () => {
 			try {
 				let token = localStorage.getItem('token');
-				const { data } = await apiClient.get('/auth/relogin', {
-					headers: {
-						Authorization: `Bearer ${token ?? ''}`,
-					},
-				});
+				const { data } = await apiClient.get('/auth/relogin');
 				dispatch(updateUser({ isLogin: true, token: token, ...data }));
 			} catch (err: any) {
 				localStorage.removeItem('token');
@@ -199,7 +195,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			socket.off('clan.reload');
 			socket.off('user.reload');
 		};
-	}, []);
+	}, [dispatch]);
 
 	// Auto update use realtime;
 	useEffect(() => {

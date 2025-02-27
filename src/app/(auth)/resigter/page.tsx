@@ -1,30 +1,21 @@
 'use client';
-'use cache';
-
 import { useAppSelector } from '@/lib/redux/hook';
 import apiClient from '@/lib/server/apiClient';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FaMinus } from 'react-icons/fa';
+import { FaMinus, FaUser } from 'react-icons/fa';
+import { IoKey, IoMailSharp } from 'react-icons/io5';
+import { MdOutlineDriveFileRenameOutline } from 'react-icons/md';
 
-interface ResigterField {
-	username?: string;
-	name?: string;
-	password?: string;
-	server?: string;
-	email?: string;
-}
 function Resigter() {
 	const user = useAppSelector((state) => state.user);
 	const finger = useAppSelector((state) => state.finger);
-	const [field, setField] = useState<ResigterField>({});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
 
 	const router = useRouter();
 
 	const showNotice = (message: string) => {
-		setLoad(false);
 		let div = document.getElementById('notice_resigter') as HTMLDialogElement;
 		if (div) {
 			div.show();
@@ -33,22 +24,45 @@ function Resigter() {
 		return;
 	};
 
-	const resigter = async () => {
+	const resigter = async (e: React.FormEvent) => {
 		try {
+			e.preventDefault();
 			setLoad(true);
-			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
-			if (!field || !field.password || field.password?.length < 6)
-				return showNotice('Độ dài mật khẩu tối thiểu là 6 ký tự');
-			await apiClient.post('/auth/resigter', { ...field, hash: finger });
+			if (user.isLogin) throw new Error('Bạn đã đăng nhập!');
+			const formData = new FormData(e.target as HTMLFormElement);
+			let password = formData.get('password');
+			let username = formData.get('username');
+			let name = formData.get('name');
+			let email = formData.get('email');
+			if (!username) throw new Error('Xin vui lòng nhập tên đăng nhập');
+			if (!name) throw new Error('Xin vui lòng nhập tên hiển thị');
+			if (!email) throw new Error('Xin vui lòng nhập email');
+			if (!password) throw new Error('Xin vui lòng nhập mật khẩu');
+			password = password.toString();
+			username = username.toString();
+			name = name.toString();
+			email = email.toString();
+			if (password.length < 6)
+				throw new Error('Độ dài mật khẩu tối thiểu là 6 ký tự');
+			await apiClient.post('/auth/resigter', {
+				password,
+				name,
+				username,
+				email,
+				hash: finger,
+			});
 			router.push('/login');
+			return;
 		} catch (err: any) {
-			const {
-				data: { message },
-			} = err.response;
-			showNotice(message.message);
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
+			showNotice(message);
 			setLoad(false);
-		} finally {
-			setLoad(false);
+			return;
 		}
 	};
 
@@ -67,10 +81,7 @@ function Resigter() {
 			<div className="flex md:flex-row-reverse flex-col-reverse w-full lg:max-w-4xl bg-white rounded-box shadow-xl">
 				{/* From Login */}
 				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						resigter();
-					}}
+					onSubmit={resigter}
 					className="flex flex-col gap-2 w-full justify-around py-4 px-2 text-orange-500 z-10">
 					<div className="flex flex-col gap-5 w-full">
 						<h1 className="font-michelangelo w-full text-center text-6xl">
@@ -78,20 +89,13 @@ function Resigter() {
 						</h1>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-								</svg>
+								<FaUser />
 								<input
 									type="text"
 									className="grow"
 									placeholder="Tên đăng nhập"
-									onChange={(e) =>
-										setField((f) => ({ ...f, username: e.target.value }))
-									}
+									name="username"
+									required
 								/>
 							</div>
 							<div className="label hidden">
@@ -100,21 +104,13 @@ function Resigter() {
 						</label>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-								</svg>
+								<MdOutlineDriveFileRenameOutline />
 								<input
 									type="text"
 									className="grow"
 									placeholder="Tên hiển thị"
 									required
-									onChange={(e) =>
-										setField((f) => ({ ...f, name: e.target.value }))
-									}
+									name="name"
 								/>
 							</div>
 							<div className="label hidden">
@@ -123,21 +119,13 @@ function Resigter() {
 						</label>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-								</svg>
+								<IoMailSharp />
 								<input
 									type="email"
 									className="grow"
 									placeholder="Nhập Email"
 									required
-									onChange={(e) =>
-										setField((f) => ({ ...f, email: e.target.value }))
-									}
+									name="email"
 								/>
 							</div>
 							<div className="label hidden">
@@ -146,25 +134,13 @@ function Resigter() {
 						</label>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path
-										fillRule="evenodd"
-										d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<IoKey />
 								<input
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu"
 									required
-									onChange={(e) =>
-										setField((f) => ({ ...f, password: e.target.value }))
-									}
+									name="password"
 								/>
 							</div>
 							<div className="label hidden">
@@ -174,9 +150,7 @@ function Resigter() {
 						<label className="form-control w-full">
 							<select
 								required
-								onChange={(e) =>
-									setField((f) => ({ ...f, server: e.target.value }))
-								}
+								name="server"
 								className="select select-bordered select-lg w-full bg-black">
 								<option
 									disabled

@@ -1,5 +1,4 @@
 'use client';
-'use cache';
 import '@/components/css/chat.css';
 import '@/components/css/clans.css';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
@@ -10,7 +9,7 @@ import { EConfig } from '@/lib/redux/storage/eshop/config';
 import apiClient from '@/lib/server/apiClient';
 import { useSocket } from '@/lib/server/socket';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	FaAddressBook,
 	FaMinus,
@@ -96,7 +95,7 @@ interface FieldUpdateClan {
 	description?: string;
 }
 
-function Clans() {
+const Clans: React.FC = () => {
 	// Redux
 	const user = useAppSelector((state) => state.user);
 	const clans = useAppSelector((state) => state.clans);
@@ -115,29 +114,30 @@ function Clans() {
 	const socket = useSocket();
 	const dispatch = useAppDispatch();
 
+	const onClose = () => {
+		if (myClan) {
+			setView('members');
+		} else {
+			setView('clans_list');
+		}
+	};
+
 	// Auto Select My Clans
 	useEffect(() => {
-		if (user.isLogin && user.meta && user.meta.clanId) {
-			const { clanId = null } = user.meta;
-			if (clanId && !myClan) {
-				setView('members');
-				const findClan = [...clans].find((c) => c._id === clanId);
-				if (findClan) {
-					setMyClan(findClan);
-				}
-			}
-		}
+		if (!user.isLogin && !user.meta) return;
+		const clanId = user.meta?.clanId || null;
+		if (!clanId) return;
+		setView('members');
+		const findClan = clans.find((c) => c._id === clanId);
+		if (!findClan) return;
+		setMyClan(findClan);
 	}, [user, clans]);
 
 	// Auto get list Message;
 	useEffect(() => {
 		const listMsgClan = async (clanId: string) => {
 			try {
-				const { data } = await apiClient.get(`/clan/list/msg/${clanId}`, {
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				});
+				const { data } = await apiClient.get(`/clan/list/msg/${clanId}`);
 				dispatch(setMsgClans(data));
 			} catch (err: any) {
 				console.log(err.response.data.message.message);
@@ -155,11 +155,7 @@ function Clans() {
 		};
 		const listColleter = async (clanId: string) => {
 			try {
-				const { data } = await apiClient.get(`/clan/invite/list/${clanId}`, {
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				});
+				const { data } = await apiClient.get(`/clan/invite/list/${clanId}`);
 				const { invites } = data;
 				for (const invite of invites) {
 					dispatch(setInviteClan(invite));
@@ -168,31 +164,11 @@ function Clans() {
 				console.log(err.response.data.message.message);
 			}
 		};
-		if (myClan && myClan?._id) {
-			listMsgClan(myClan?._id);
-			listClanMember(myClan?._id);
-			listColleter(myClan?._id);
-		}
-	}, [myClan]);
-
-	useEffect(() => {
-		const dialog = document.getElementById(
-			'clan_box_screen',
-		) as HTMLDialogElement;
-		if (dialog) {
-			dialog.addEventListener('close', (e) => {
-				if (myClan) {
-					setView('members');
-				} else {
-					setView('clans_list');
-				}
-			});
-
-			return () => {
-				dialog.removeEventListener('close', (e) => {});
-			};
-		}
-	}, [myClan]);
+		if (!myClan || !myClan._id) return;
+		listMsgClan(myClan._id);
+		listClanMember(myClan._id);
+		listColleter(myClan._id);
+	}, [myClan, dispatch]);
 
 	const showNoticeClan = (message: string) => {
 		let dialog = document.getElementById('clan_notice_q') as HTMLDialogElement;
@@ -204,8 +180,8 @@ function Clans() {
 
 	// send Chat Clan;
 	const sendChatClan = () => {
-		setLoad(true);
 		try {
+			setLoad(true);
 			const { content } = fieldMsgClan;
 			if (!content || content.length === 0) return showNoticeClan('');
 			if (!user.isLogin) return showNoticeClan('');
@@ -231,17 +207,9 @@ function Clans() {
 				return showNoticeClan('Bạn không tham gia vào Bang Hội');
 			if (!myClan || !myClan?._id)
 				return showNoticeClan('Không tìm thấy bang hội');
-			const { data } = await apiClient.post(
-				'/clan/delete',
-				{
-					clanId: myClan?._id,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/clan/delete', {
+				clanId: myClan?._id,
+			});
 			showNoticeClan(data.message);
 			setMyClan({});
 			setView('clans_list');
@@ -257,17 +225,9 @@ function Clans() {
 				return showNoticeClan('Bạn không tham gia vào Bang Hội');
 			if (!myClan || !myClan?._id)
 				return showNoticeClan('Không tìm thấy bang hội');
-			const { data } = await apiClient.post(
-				'/clan/leave',
-				{
-					clanId: myClan?._id,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/clan/leave', {
+				clanId: myClan?._id,
+			});
 			showNoticeClan(data.message);
 			setMyClan({});
 			setView('clans_list');
@@ -287,18 +247,10 @@ function Clans() {
 				return showNoticeClan(
 					'Bạn không thể đuổi thành viên này, xin vui lòng thử lại',
 				);
-			const { data } = await apiClient.post(
-				'/clan/kick',
-				{
-					clanId: myClan?._id,
-					memberId: target,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/clan/kick', {
+				clanId: myClan?._id,
+				memberId: target,
+			});
 			showNoticeClan(data.message);
 			setView('members');
 		} catch (err: any) {
@@ -313,6 +265,7 @@ function Clans() {
 	const updateView = (data: any) => {
 		setView(data);
 	};
+
 	const updateTarget = (data: any) => {
 		setTarget(data);
 	};
@@ -346,6 +299,7 @@ function Clans() {
 				</div>
 			</div>
 			<dialog
+				onClose={onClose}
 				id="clan_box_screen"
 				className="modal z-[1000]">
 				<div className="p-2  modal-box w-full max-w-7xl">
@@ -791,10 +745,12 @@ function Clans() {
 			</dialog>
 		</>
 	);
-}
+};
 
 // Clans List
-const ClanList = (props: { setView: any; setMember: any; search: string }) => {
+const ClanList: React.FC<{ setView: any; setMember: any; search: string }> = (
+	props,
+) => {
 	const { setMember, setView, search } = props;
 	const clans = useAppSelector((state) => state.clans);
 	const user = useAppSelector((state) => state.user);
@@ -828,41 +784,39 @@ const ClanList = (props: { setView: any; setMember: any; search: string }) => {
 	};
 
 	const sendColleter = async (clanId: string) => {
-		setLoad((e) => !e);
 		try {
-			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/clan/invite/create',
-				{
-					clanId: clanId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			setLoad(true);
+			if (!user.isLogin) throw new Error('Bạn chưa đăng nhập');
+			const { data } = await apiClient.post('/clan/invite/create', {
+				clanId: clanId,
+			});
 			showNoticeClan(data.message);
+			setLoad(false);
 		} catch (err: any) {
-			return showNoticeClan(err.response.data.message.message);
-		} finally {
-			setLoad((e) => !e);
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
+			showNoticeClan(message);
+			setLoad(false);
+			return;
 		}
 	};
 
 	// Auto Update List Clan
 	useEffect(() => {
-		if (clans && clans.length > 0) {
-			setChannel([...clans].sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)));
-		}
+		if (!clans) return;
+		setChannel(clans.sort((a, b) => (b?.score ?? 0) - (a?.score ?? 0)));
 	}, [clans]);
 
 	// Auto Status Config;
 	useEffect(() => {
+		if (!eConfig) return;
 		const target = [...eConfig].find((c) => c.name === 'e_clan');
-		if (target) {
-			setConfig(target);
-		}
+		if (!target) return;
+		setConfig(target);
 	}, [eConfig]);
 	return (
 		<div className="flex flex-col gap-2 overflow-auto h-[400px] w-full p-2 bg-black/30 rounded-lg scroll-smooth snap-y">
@@ -947,11 +901,11 @@ const ClanList = (props: { setView: any; setMember: any; search: string }) => {
 	);
 };
 
-const MemberList = (props: {
+const MemberList: React.FC<{
 	member: MemberClan[];
 	setTarget: any;
 	myClan?: Clan | null;
-}) => {
+}> = (props) => {
 	const user = useAppSelector((state) => state.user);
 	const { member, setTarget, myClan } = props;
 	return (
@@ -1034,7 +988,9 @@ const MemberList = (props: {
 	);
 };
 
-const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
+const ClanColleter: React.FC<{ showNoticeClan: any; myClan?: Clan | null }> = (
+	props,
+) => {
 	const { showNoticeClan, myClan } = props;
 	const invites = useAppSelector((state) => state.invites);
 	const user = useAppSelector((state) => state.user);
@@ -1042,17 +998,9 @@ const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
 	const addMember = async (inviteId: string) => {
 		try {
 			if (!user.isLogin) return;
-			const { data } = await apiClient.post(
-				'/clan/invite/acpect',
-				{
-					inviteId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/clan/invite/acpect', {
+				inviteId,
+			});
 			showNoticeClan(data.message);
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
@@ -1061,17 +1009,9 @@ const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
 	const removeMember = async (inviteId: string) => {
 		try {
 			if (!user.isLogin) return;
-			const { data } = await apiClient.post(
-				'/clan/invite/remove',
-				{
-					inviteId,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/clan/invite/remove', {
+				inviteId,
+			});
 			showNoticeClan(data.message);
 		} catch (err: any) {
 			showNoticeClan(err.response.data.message.message);
@@ -1127,11 +1067,9 @@ const ClanColleter = (props: { showNoticeClan: any; myClan?: Clan | null }) => {
 	);
 };
 
-const ClanCreateQ = ({ setView }: { setView: any }) => {
+const ClanCreateQ: React.FC<{ setView: any }> = ({ setView }) => {
 	const user = useAppSelector((state) => state.user);
-	const [field, setField] = useState<FieldCreateClan>({
-		type: '1',
-	});
+	const [clanType, setClanType] = useState<string>('1');
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
 	const eConfig = useAppSelector((state) => state.econfig);
@@ -1143,59 +1081,62 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 
 	// Auto Status Config;
 	useEffect(() => {
+		if (!eConfig) return;
 		const target = eConfig.find((c) => c.name === 'e_clan');
-		if (target) {
-			setConfig(target);
-		}
+		if (!target) return;
+		setConfig(target);
 	}, [eConfig]);
 
 	useEffect(() => {
-		if (config) {
-			let { option } = config;
-			if (option) {
-				let {
-					price = [
-						10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
-						5000000000, 5000000000, 5000000000,
-					],
-				} = option;
-				setPrices(price);
-			}
-		}
+		if (!config) return;
+		let { option } = config;
+		if (!option) return;
+		let {
+			price = [
+				10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
+				5000000000, 5000000000, 5000000000,
+			],
+		} = option;
+		setPrices(price);
 	}, [config]);
 
-	const createClan = async () => {
-		setLoad(true);
+	const createClan = async (e: React.FormEvent) => {
 		try {
-			const { type, description, name } = field;
-			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
-			if (!type || type.length === 0)
-				return showNoticeClan('Xin vui lòng chọn biểu tượng Bang hội');
-			if (!description || description.length === 0)
-				return showNoticeClan('Xin vui lòng điền giới thiệu bang hội');
-			if (!name || name.length === 0)
-				return showNoticeClan('Xin vui lòng đặt tên Bang Hội');
-			const { data } = await apiClient.post(
-				'/clan/create',
-				{
-					meta: { ...field, type: Number(type) },
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			e.preventDefault();
+			setLoad(true);
+			if (!user.isLogin) throw new Error('Bạn chưa đăng nhập');
+			const formData = new FormData(e.target as HTMLFormElement);
+			let type = formData.get('type');
+			let description = formData.get('description');
+			let name = formData.get('name');
+
+			if (!type) throw new Error('Xin vui lòng chọn biểu tượng Bang hội');
+			if (!description)
+				throw new Error('Xin vui lòng điền giới thiệu bang hội');
+			if (!name) throw new Error('Xin vui lòng đặt tên Bang Hội');
+
+			type = type.toString();
+			description = description.toString();
+			name = name.toString();
+
+			const { data } = await apiClient.post('/clan/create', {
+				meta: { description, name, type: Number(type) },
+			});
 
 			const { message } = data;
 			showNoticeClan(message);
 			setView('members');
+			setLoad(false);
 		} catch (err: any) {
-			const { message } = err.response.data.message;
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
 			showNoticeClan(message);
 			setLoad(false);
-		} finally {
-			setLoad(false);
+			return;
 		}
 	};
 
@@ -1211,17 +1152,14 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 	return (
 		<div className="w-full flex justify-center items-center">
 			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					createClan();
-				}}
+				onSubmit={createClan}
 				className="flex flex-col w-full max-w-md gap-4">
 				<label className="input input-bordered flex items-center gap-2 text-nowrap">
 					Tên Bang Hội
 					<input
 						type="text"
 						className="grow"
-						onChange={(e) => setField((f) => ({ ...f, name: e.target.value }))}
+						name="name"
 					/>
 				</label>
 				<label className="input input-bordered flex items-center gap-2">
@@ -1229,18 +1167,15 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 					<input
 						type="text"
 						className="grow"
-						onChange={(e) =>
-							setField((f) => ({ ...f, description: e.target.value }))
-						}
+						name="description"
 					/>
 				</label>
 				<label className="flex items-center gap-2">
 					<select
-						defaultValue={'1'}
-						onChange={(e) => {
-							setField((f) => ({ ...f, type: e.target.value }));
-						}}
-						className="select w-full max-w-xs">
+						value={clanType}
+						name="type"
+						className="select w-full max-w-xs"
+						onChange={(e) => setClanType(e.target.value)}>
 						{Array.from({ length: 9 }).map((_, i) => {
 							return (
 								<option
@@ -1252,9 +1187,9 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						})}
 					</select>
 					<img
-						src={`/image/banghoi/b${field.type ?? '1'}.webp`}
+						src={`/image/banghoi/b${clanType}.webp`}
 						style={{ width: '52px', height: 'auto' }}
-						alt={`type_clan_${field.type ?? '1'}_b`}
+						alt={`type_clan_${clanType}_b`}
 					/>
 				</label>
 				<label className="input input-bordered flex items-center gap-2">
@@ -1264,7 +1199,7 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 						className="grow font-number-font"
 						disabled
 						value={new Intl.NumberFormat('vi').format(
-							prices[parseInt(field.type ?? '1', 10) - 1] ?? 10000000,
+							prices[parseInt(clanType, 10) - 1] ?? 10000000,
 						)}
 					/>
 				</label>
@@ -1309,13 +1244,10 @@ const ClanCreateQ = ({ setView }: { setView: any }) => {
 	);
 };
 
-const ClanSettingQ = ({
-	setView,
-	myClan,
-}: {
+const ClanSettingQ: React.FC<{
 	setView: any;
 	myClan?: Clan | null;
-}) => {
+}> = ({ setView, myClan }) => {
 	const user = useAppSelector((state) => state.user);
 	const [field, setField] = useState<FieldUpdateClan>({});
 	const [msg, setMsg] = useState<string>('');
@@ -1329,54 +1261,50 @@ const ClanSettingQ = ({
 
 	// Auto Status Config;
 	useEffect(() => {
+		if (!eConfig) return;
 		const target = eConfig.find((c) => c.name === 'e_clan');
-		if (target) {
-			setConfig(target);
-		}
+		if (!target) return;
+		setConfig(target);
 	}, [eConfig]);
 
 	useEffect(() => {
-		if (config) {
-			let { option } = config;
-			if (option) {
-				let {
-					price = [
-						10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
-						5000000000, 5000000000, 5000000000,
-					],
-				} = option;
-				setPrices(price);
-			}
-		}
+		if (!config) return;
+		let { option } = config;
+		if (!option) return;
+		let {
+			price = [
+				10000000, 100000000, 1000000000, 3000000000, 3000000000, 3000000000,
+				5000000000, 5000000000, 5000000000,
+			],
+		} = option;
+		setPrices(price);
 	}, [config]);
 
-	const updateClan = async () => {
-		setLoad(true);
+	const updateClan = async (e: React.FormEvent) => {
 		try {
-			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
-			if (!myClan) return showNoticeClan('Đã xảy ra lỗi, xin vui lòng thử lại');
-			const { data } = await apiClient.post(
-				'/clan/update',
-				{
-					data: { ...field },
-					clanId: myClan?._id ?? '',
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			e.preventDefault();
+			setLoad(true);
+			if (!user.isLogin) throw new Error('Bạn chưa đăng nhập');
+			if (!myClan) throw new Error('Đã xảy ra lỗi, xin vui lòng thử lại');
+			const { data } = await apiClient.post('/clan/update', {
+				data: { ...field },
+				clanId: myClan?._id ?? '',
+			});
 
 			const { message } = data;
 			showNoticeClan(message);
 			setView('members');
+			setLoad(false);
 		} catch (err: any) {
-			const { message } = err.response.data.message;
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
 			showNoticeClan(message);
 			setLoad(false);
-		} finally {
-			setLoad(false);
+			return;
 		}
 	};
 
@@ -1392,10 +1320,7 @@ const ClanSettingQ = ({
 	return (
 		<div className="w-full flex justify-center items-center">
 			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					updateClan();
-				}}
+				onSubmit={updateClan}
 				className="flex flex-col w-full max-w-md gap-4">
 				<label className="input input-bordered flex items-center gap-2 text-nowrap">
 					Tên Bang Hội
@@ -1493,49 +1418,41 @@ const ClanSettingQ = ({
 	);
 };
 
-const ClanTransferQ = ({
-	setView,
-	myClan,
-}: {
+const ClanTransferQ: React.FC<{
 	setView: any;
 	myClan?: Clan | null;
-}) => {
+}> = ({ setView, myClan }) => {
 	const user = useAppSelector((state) => state.user);
 	const [field, setField] = useState<string | null>(null);
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
 
 	const tranferClan = async () => {
-		setLoad(true);
 		try {
-			if (!user.isLogin) return showNoticeClan('Bạn chưa đăng nhập');
-			if (!field)
-				return showNoticeClan('Xin vui lòng nhập ID chủ bang hội mới');
-			if (!myClan) return showNoticeClan('Đã xảy ra lỗi, xin vui lòng thử lại');
-			if (field.length !== 24)
-				return showNoticeClan('ID người dùng không hợp lệ');
-			const { data } = await apiClient.post(
-				'/clan/tranfer',
-				{
-					new_ownerId: field,
-					clanId: myClan?._id ?? '',
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			setLoad(true);
+			if (!user.isLogin) throw new Error('Bạn chưa đăng nhập');
+			if (!field) throw new Error('Xin vui lòng nhập ID chủ bang hội mới');
+			if (!myClan) throw new Error('Đã xảy ra lỗi, xin vui lòng thử lại');
+			if (field.length !== 24) throw new Error('ID người dùng không hợp lệ');
+			const { data } = await apiClient.post('/clan/tranfer', {
+				new_ownerId: field,
+				clanId: myClan?._id ?? '',
+			});
 
 			const { message } = data;
 			showNoticeClan(message);
 			setView('members');
+			setLoad(false);
 		} catch (err: any) {
-			const { message } = err.response.data.message;
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
 			showNoticeClan(message);
 			setLoad(false);
-		} finally {
-			setLoad(false);
+			return;
 		}
 	};
 

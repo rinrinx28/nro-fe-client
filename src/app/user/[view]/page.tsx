@@ -1,5 +1,4 @@
 'use client';
-'use cache';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { Service, setService } from '@/lib/redux/storage/eshop/service';
 import { setServer } from '@/lib/redux/storage/minigame/server';
@@ -83,15 +82,9 @@ function UserContext() {
 	const changePwd = async () => {
 		try {
 			if (!user.isLogin) return showNotice('Bạn chưa đăng nhập');
-			const { data } = await apiClient.post(
-				'/auth/change/pwd',
-				{ ...fieldChangePwd },
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
-			);
+			const { data } = await apiClient.post('/auth/change/pwd', {
+				...fieldChangePwd,
+			});
 			showNotice(data.message);
 			closeChangePwd();
 			router.push('/user/profile');
@@ -170,7 +163,7 @@ function UserContext() {
 					</div>
 				</div>
 				{/* Tab */}
-				{params.view === 'profile' && <Profile onClick={showChangePwd}/>}
+				{params.view === 'profile' && <Profile onClick={showChangePwd} />}
 				{params.view === 'history_bet' && <HistoryBet />}
 				{params.view === 'history_activity' && <HistoryActivity />}
 				{params.view === 'history_service' && <HistoryService />}
@@ -293,7 +286,7 @@ function UserContext() {
 }
 
 // Cài Đặt Tài Khoản
-function Profile({onClick}:{onClick?: any}) {
+function Profile({ onClick }: { onClick?: any }) {
 	const user = useAppSelector((state) => state.user);
 	const clans = useAppSelector((state) => state.clans);
 	const users = useAppSelector((state) => state.userTop);
@@ -1197,11 +1190,7 @@ function HistoryService() {
 	useEffect(() => {
 		const getServices = async () => {
 			try {
-				const res = await apiClient.get(`/service/history?limited=${limited}`, {
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				});
+				const res = await apiClient.get(`/service/history?limited=${limited}`);
 				const { data, page, totalItems, totalPages } = res.data;
 				for (const service of data) {
 					dispatch(setService(service));
@@ -1241,11 +1230,6 @@ function HistoryService() {
 		try {
 			const res = await apiClient.get(
 				`/service/history?page=${pageNumber}&limited=${limited}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			for (const service of data) {
@@ -1265,11 +1249,6 @@ function HistoryService() {
 		try {
 			const res = await apiClient.get(
 				`/service/history?page=${pageNumber}&limited=${limited}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			for (const service of data) {
@@ -1578,11 +1557,6 @@ function HistoryBet() {
 			try {
 				const res = await apiClient.get(
 					`/user/history/bet?limited=${limited}&server=${server}`,
-					{
-						headers: {
-							Authorization: `Bearer ${user.token ?? ''}`,
-						},
-					},
 				);
 				const { data, page, totalItems, totalPages } = res.data;
 				for (const bet of data) {
@@ -1668,11 +1642,6 @@ function HistoryBet() {
 		try {
 			const res = await apiClient.get(
 				`/user/history/bet?page=${pageNumber}&limited=${limited}&server=${server}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			for (const bet of data) {
@@ -1692,11 +1661,6 @@ function HistoryBet() {
 		try {
 			const res = await apiClient.get(
 				`/user/history/bet?page=${pageNumber}&limited=${limited}&server=${server}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			for (const bet of data) {
@@ -2000,11 +1964,6 @@ function HistoryActivity() {
 			try {
 				const res = await apiClient.get(
 					`/user/history/active?limited=${limited}`,
-					{
-						headers: {
-							Authorization: `Bearer ${user.token ?? ''}`,
-						},
-					},
 				);
 				const { data, page, totalItems, totalPages } = res.data;
 				setActives(data);
@@ -2026,11 +1985,6 @@ function HistoryActivity() {
 		try {
 			const res = await apiClient.get(
 				`/user/history/active?page=${pageNumber}&limited=${limited}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			setActives(data);
@@ -2048,11 +2002,6 @@ function HistoryActivity() {
 		try {
 			const res = await apiClient.get(
 				`/user/history/active?page=${pageNumber}&limited=${limited}`,
-				{
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				},
 			);
 			const { data, page, totalItems, totalPages } = res.data;
 			setActives(data);
@@ -2204,11 +2153,7 @@ function TableMission(props: { showNotice: any }) {
 
 	const claimDaily = async (index: number) => {
 		try {
-			const { data } = await apiClient.get(`/user/claim/daily/${index}`, {
-				headers: {
-					Authorization: `Bearer ${user.token ?? ''}`,
-				},
-			});
+			const { data } = await apiClient.get(`/user/claim/daily/${index}`);
 			const { message } = data;
 			showNotice(message);
 			dispatch(updateUser(data.data));
@@ -2404,11 +2349,7 @@ function TableVIP(props: { showNotice: any }) {
 
 	const claimVip = async () => {
 		try {
-			const { data } = await apiClient.get(`/user/claim/vip`, {
-				headers: {
-					Authorization: `Bearer ${user.token ?? ''}`,
-				},
-			});
+			const { data } = await apiClient.get(`/user/claim/vip`);
 			const { message } = data;
 			showNotice(message);
 			dispatch(updateUser(data.data));

@@ -1,5 +1,4 @@
 'use client';
-'use cache';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { EConfig } from '@/lib/redux/storage/eshop/config';
 import { Clan, setclanTops } from '@/lib/redux/storage/top/clanTop';
@@ -20,14 +19,12 @@ function TablesTop() {
 
 	// Update data ESHOP;
 	useEffect(() => {
-		if (econfig) {
-			const e_shop = econfig.filter(
-				(e) => e.name === 'e_clan' || e.name === 'e_user_rank',
-			);
-			if (e_shop) {
-				setEshop(e_shop);
-			}
-		}
+		if (!econfig) return;
+		const e_shop = econfig.filter(
+			(e) => e.name === 'e_clan' || e.name === 'e_user_rank',
+		);
+		if (!e_shop) return;
+		setEshop(e_shop);
 	}, [econfig]);
 
 	// Auto TOP
@@ -50,9 +47,10 @@ function TablesTop() {
 		};
 		rankClan();
 		rankUser();
-	}, []);
+	}, [dispatch]);
 
 	useEffect(() => {
+		if (!socket) return;
 		socket.on('auto.rank.info', (data: { clans: Clan[]; users: any[] }) => {
 			dispatch(setclanTops(data.clans));
 			dispatch(setuserToptores(data.users));

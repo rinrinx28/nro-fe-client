@@ -1,5 +1,4 @@
 'use client';
-'use cache';
 import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '@/lib/redux/hook';
 import { FaMusic } from 'react-icons/fa';
@@ -16,19 +15,15 @@ const Home = dynamic(() => import('@/components/pages/main/home'), {
 			/>
 		</div>
 	), // Tùy chọn: Hiển thị trạng thái loading
-	ssr: true, // Tắt render phía server nếu không cần
+	ssr: false, // Tắt render phía server nếu không cần
 });
 const History = dynamic(() => import('@/components/pages/main/history'), {
-	ssr: true, // Tắt render phía server nếu không cần
-});
-const TablesTop = dynamic(() => import('@/components/pages/main/tables-top'), {
-	ssr: true, // Tắt render phía server nếu không cần
+	ssr: false, // Tắt render phía server nếu không cần
 });
 
-function getYouTubeVideoId(url: string) {
-	const urlObj = new URL(url);
-	return urlObj.searchParams.get('v');
-}
+const TablesTop = dynamic(() => import('@/components/pages/main/tables-top'), {
+	ssr: false, // Tắt render phía server nếu không cần
+});
 
 export default function Page() {
 	const econfig = useAppSelector((state) => state.econfig);

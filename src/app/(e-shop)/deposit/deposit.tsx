@@ -1,5 +1,4 @@
 'use client';
-'use cache';
 import { getNumbetFromString } from '@/components/pages/main/home';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { InputField, TypeEShop } from '../(dto)/dto.eShop';
@@ -223,11 +222,7 @@ function Deposit() {
 	useEffect(() => {
 		const getServices = async () => {
 			try {
-				const res = await apiClient.get(`/service/history`, {
-					headers: {
-						Authorization: `Bearer ${user.token ?? ''}`,
-					},
-				});
+				const res = await apiClient.get(`/service/history`);
 				const { data, page, totalItems, totalPages } = res.data;
 				for (const service of data) {
 					dispatch(setService(service));

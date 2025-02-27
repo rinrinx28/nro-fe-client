@@ -1,12 +1,14 @@
 'use client';
 
+import React from 'react';
+
 interface ConfigModal {
 	id: string;
 	children: React.ReactNode;
 	customClass?: string;
 }
 
-function Modal({ id, customClass, children }: ConfigModal) {
+const Modal: React.FC<ConfigModal> = ({ id, customClass, children }) => {
 	return (
 		<dialog
 			id={id}
@@ -48,6 +50,6 @@ function Modal({ id, customClass, children }: ConfigModal) {
 			</form>
 		</dialog>
 	);
-}
+};
 
 export default Modal;

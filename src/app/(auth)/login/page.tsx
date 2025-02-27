@@ -1,23 +1,16 @@
 'use client';
-'use cache';
-
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import apiClient from '@/lib/server/apiClient';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { FaMinus } from 'react-icons/fa';
-
-interface LoginField {
-	username?: string;
-	password?: string;
-}
+import React, { useEffect, useState } from 'react';
+import { FaMinus, FaUser } from 'react-icons/fa';
+import { IoKey } from 'react-icons/io5';
 
 function Login() {
 	const user = useAppSelector((state) => state.user);
 	const finger = useAppSelector((state) => state.finger);
-	const [field, setField] = useState<LoginField>({});
 	const [msg, setMsg] = useState<string>('');
 	const [isLoad, setLoad] = useState<boolean>(false);
 
@@ -33,12 +26,21 @@ function Login() {
 		return;
 	};
 
-	const login = async () => {
+	const login = async (e: React.FormEvent) => {
 		try {
+			e.preventDefault();
 			setLoad(true);
 			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
+			const formData = new FormData(e.target as HTMLFormElement);
+			let password = formData.get('password');
+			let username = formData.get('username');
+			if (!username) throw new Error('Xin vui lòng nhập tên đăng nhập');
+			if (!password) throw new Error('Xin vui lòng nhập mật khẩu');
+			password = password.toString();
+			username = username.toString();
 			const { data } = await apiClient.post('/auth/login', {
-				...field,
+				password,
+				username,
 				hash: finger,
 			});
 			const { access_token } = data;
@@ -52,10 +54,15 @@ function Login() {
 			);
 			router.push('/');
 		} catch (err: any) {
-			const { message } = err.response.data;
-			showNotice(message.message);
-		} finally {
+			let message = '';
+			if (err.response) {
+				message = err.response.data.message;
+			} else {
+				message = err.message;
+			}
+			showNotice(message);
 			setLoad(false);
+			return;
 		}
 	};
 
@@ -73,10 +80,7 @@ function Login() {
 			<div className="flex md:flex-row flex-col w-full lg:max-w-4xl bg-white rounded-box shadow-xl">
 				{/* From Login */}
 				<form
-					onSubmit={(e) => {
-						e.preventDefault();
-						login();
-					}}
+					onSubmit={login}
 					className="flex flex-col gap-2 w-full justify-around py-4 px-2 z-10">
 					<div className="flex flex-col gap-5 w-full ">
 						<h1 className="font-michelangelo w-full text-center text-6xl">
@@ -84,43 +88,23 @@ function Login() {
 						</h1>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-								</svg>
+								<FaUser />
 								<input
 									type="text"
 									className="grow"
 									placeholder="Tên đăng nhập"
-									onChange={(e) =>
-										setField((f) => ({ ...f, username: e.target.value }))
-									}
+									name="username"
 								/>
 							</div>
 						</label>
 						<label className="form-control w-full">
 							<div className="input input-bordered bg-transparent input-lg flex items-center gap-2">
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 16 16"
-									fill="currentColor"
-									className="h-4 w-4 opacity-70">
-									<path
-										fillRule="evenodd"
-										d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-										clipRule="evenodd"
-									/>
-								</svg>
+								<IoKey />
 								<input
 									type="password"
 									className="grow"
 									placeholder="Nhập mật khẩu"
-									onChange={(e) =>
-										setField((f) => ({ ...f, password: e.target.value }))
-									}
+									name="password"
 								/>
 							</div>
 						</label>

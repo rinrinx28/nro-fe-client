@@ -6,10 +6,13 @@ const urlConfig = {
 	sv: 'https://api.nrogame.me',
 };
 
+let token = localStorage.getItem('get') || '';
+
 const apiClient = axios.create({
 	baseURL: urlConfig.sv,
 	headers: {
 		'Content-Type': 'application/json',
+		Authorization: `Bearer ${token}`,
 	},
 });
 
