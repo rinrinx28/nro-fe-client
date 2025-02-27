@@ -2,6 +2,7 @@
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hook';
 import { updateUser } from '@/lib/redux/storage/user/user';
 import apiClient from '@/lib/server/apiClient';
+import { AxiosError } from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -32,12 +33,12 @@ function Login() {
 			setLoad(true);
 			if (user.isLogin) return showNotice('Bạn đã đăng nhập!');
 			const formData = new FormData(e.target as HTMLFormElement);
-			let password = formData.get('password');
-			let username = formData.get('username');
+			const username = formData.get('username')?.toString() || null;
+			const password = formData.get('password')?.toString() || null;
 			if (!username) throw new Error('Xin vui lòng nhập tên đăng nhập');
 			if (!password) throw new Error('Xin vui lòng nhập mật khẩu');
-			password = password.toString();
-			username = username.toString();
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 			const { data } = await apiClient.post('/auth/login', {
 				password,
 				username,
@@ -52,14 +53,22 @@ function Login() {
 					token: access_token,
 				}),
 			);
+			clearTimeout(timeoutId);
+			setLoad(false);
 			router.push('/');
-		} catch (err: any) {
-			let message = '';
-			if (err.response) {
-				message = err.response.data.message;
-			} else {
-				message = err.message;
+		} catch (error: any) {
+			let message = 'Đã xảy ra lỗi không xác định';
+
+			if (error instanceof AxiosError) {
+				if (error.code === 'ECONNABORTED') {
+					message = 'Kết nối quá thời gian, vui lòng thử lại';
+				} else {
+					message = error.response?.data?.message.message || error.message;
+				}
+			} else if (error instanceof Error) {
+				message = error.message;
 			}
+
 			showNotice(message);
 			setLoad(false);
 			return;

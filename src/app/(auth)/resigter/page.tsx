@@ -61,8 +61,8 @@ function Resigter() {
 				},
 			);
 			clearTimeout(timeoutId);
-			router.push('/login');
 			setLoad(false);
+			router.push('/login');
 			return;
 		} catch (error: any) {
 			let message = 'Đã xảy ra lỗi không xác định';
