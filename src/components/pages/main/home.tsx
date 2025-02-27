@@ -241,10 +241,10 @@ const Home: React.FC = () => {
 
 	// Update Realtime Minigame with Server
 	useEffect(() => {
-		if (!server) return;
+		if (!server || !minigame) return;
 		const target = [...minigame].find((m) => m.server === server);
 		setGameBox(target);
-	}, [server]);
+	}, [server, minigame]);
 
 	useEffect(() => {
 		if (!gameBox) return;

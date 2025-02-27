@@ -164,7 +164,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 			socket.off('invite.remove');
 			socket.off('jackpot.update');
 		};
-	}, [dispatch]);
+	}, [dispatch, socket]);
 
 	// Auto update when got event from the Server
 	useEffect(() => {
