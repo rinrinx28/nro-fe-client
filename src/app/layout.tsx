@@ -37,7 +37,6 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	// Post merge check
 	return (
 		<html
 			lang="en"
