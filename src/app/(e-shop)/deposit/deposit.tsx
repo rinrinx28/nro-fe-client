@@ -162,83 +162,84 @@ function Deposit() {
 
 	// Auto get Bot Info
 	useEffect(() => {
-		if (socket) {
-			socket.on('bot.status', (payload: Bot) => {
-				setBotD((bots: Bot[]) => [
-					...bots.filter((bt: Bot) => bt?.id !== payload.id),
-					payload,
-				]);
-			});
+		if (!socket) return;
+		const handleBotStatus = (payload: Bot) => {
+			setBotD((prevBots) => [
+				...prevBots.filter((bt) => bt.id !== payload.id),
+				payload,
+			]);
+		};
 
-			socket.on(
-				'notification.user',
-				(payload: { uid: string; message: string }) => {
-					const { message, uid } = payload;
-					if (user && uid === user._id) {
-						showNoticeEShop(message);
-						setLoadSub(false);
-						setLoad(false);
-					}
-				},
-			);
-
-			return () => {
-				socket.off('bot.status');
-				socket.off('notification.user');
-			};
-		}
-	}, [socket, user, showNoticeEShop]);
-
-	// Update data ESHOP;
-	useEffect(() => {
-		const e_shop = econfig.find((e) => e.name === 'e_shop');
-		if (e_shop) {
-			setEshop(e_shop);
-		}
-	}, [econfig]);
-
-	// Show Tutorial
-	useEffect(() => {
-		const showTutorialVIP = () => {
-			let dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
-			if (dialog) {
-				dialog.show();
+		const handleNotification = (payload: { uid: string; message: string }) => {
+			if (user && payload.uid === user._id) {
+				showNoticeEShop(payload.message);
+				setLoadSub(false);
+				setLoad(false);
 			}
 		};
-		if (econfig) {
-			const target = [...econfig].find((e) => e.name === 'e_reward');
-			if (target) {
-				const vipLevels = target?.option?.vipLevels ?? [];
-				setTutorial(vipLevels);
-				let timeout = setTimeout(() => {
-					showTutorialVIP();
-				}, 1e3);
+		socket.on('bot.status', handleBotStatus);
+		socket.on('notification.user', handleNotification);
 
-				return () => clearTimeout(timeout);
-			}
+		return () => {
+			socket.off('bot.status', handleBotStatus);
+			socket.off('notification.user', handleNotification);
+		};
+	}, [socket, user, showNoticeEShop, setBotD, setLoadSub, setLoad]);
+
+	// Update ESHOP data
+	useEffect(() => {
+		const shopConfig = econfig.find((e) => e.name === 'e_shop');
+		if (shopConfig) {
+			setEshop(shopConfig);
 		}
 	}, [econfig]);
 
+	// Tutorial handler
 	useEffect(() => {
-		const getServices = async () => {
+		const rewardConfig = econfig.find((e) => e.name === 'e_reward');
+		if (!rewardConfig) return;
+
+		const vipLevels = rewardConfig.option?.vipLevels ?? [];
+		setTutorial(vipLevels);
+
+		const dialog = document.getElementById('tutorial_vip') as HTMLDialogElement;
+		const timeout = setTimeout(() => {
+			dialog?.show();
+		}, 1000);
+
+		return () => clearTimeout(timeout);
+	}, [econfig]);
+
+	// Service fetcher
+	useEffect(() => {
+		const fetchServices = async () => {
 			try {
-				const res = await apiClient.get(`/service/history`);
-				const { data, page, totalItems, totalPages } = res.data;
-				for (const service of data) {
+				const res = await apiClient.get<{
+					data: any[];
+					page: number;
+					totalItems: number;
+					totalPages: number;
+				}>('/service/history');
+
+				res.data.data.forEach((service) => {
 					dispatch(setService(service));
-				}
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
+				});
+			} catch (error) {
+				console.error('Failed to fetch services:', error);
 			}
 		};
-		if (user.isLogin) {
-			getServices();
-		}
-	}, [user]);
 
+		if (user.isLogin) {
+			fetchServices();
+		}
+	}, [user.isLogin, dispatch]);
+
+	// Auth socket handler
 	useEffect(() => {
-		const showModleSocket = (message: string) => {
-			let dialog = document.getElementById(
+		if (!user.isLogin || !user.token) return;
+
+		const showModal = (message: string) => {
+			const dialog = document.getElementById(
 				'eshop_deposit',
 			) as HTMLDialogElement;
 			if (dialog) {
@@ -246,47 +247,33 @@ function Deposit() {
 				setMsg(message);
 			}
 		};
-		if (user.isLogin || user.token) {
-			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
-				path: '/socket.io/',
-				transports: ['websocket'],
-				secure: true,
-				reconnectionAttempts: 5, // Limit reconnection attempts
-				auth: {
-					token: `${user.token}`, // Ensure to pass a valid token
-				},
-			});
-			socketAuth.current = socket_auth;
 
-			// socket_auth.on(
-			// 	'service.create.re',
-			// 	(data: { message: string; user?: any }) => {
-			// 		setLoadSub(false);
-			// 		setLoad(false);
-			// 		showModleSocket(data.message);
-			// 	},
-			// );
+		socketAuth.current = io(`${urlConfig.sv}/auth`, {
+			path: '/socket.io/',
+			transports: ['websocket'],
+			secure: true,
+			reconnectionAttempts: 5,
+			auth: { token: user.token },
+		});
 
-			socket_auth.on('service.cancel.re', (data: { message: string }) => {
-				setLoadSub(false);
-				setLoad(false);
-				showModleSocket(data.message);
-			});
+		const socket = socketAuth.current;
+		socket.on('service.cancel.re', (data: { message: string }) => {
+			setLoadSub(false);
+			setLoad(false);
+			showModal(data.message);
+		});
 
-			socket_auth.on('error', (data: { message: string }) => {
-				setLoadSub(false);
-				setLoad(false);
-				showModleSocket(data.message);
-			});
-			return () => {
-				socketAuth.current = null;
-				socket_auth.off('error');
-				socket_auth.off('service.create.re');
-				socket_auth.off('service.cancel.re');
-				socket_auth.disconnect();
-			};
-		}
-	}, [user, socketAuth]);
+		socket.on('error', (data: { message: string }) => {
+			setLoadSub(false);
+			setLoad(false);
+			showModal(data.message);
+		});
+
+		return () => {
+			socket.disconnect();
+			socketAuth.current = null;
+		};
+	}, [user.isLogin, user.token, socketAuth, setMsg, setLoadSub, setLoad]);
 
 	return (
 		<div

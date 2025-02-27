@@ -142,9 +142,11 @@ const History: React.FC = () => {
 			<div className="relative max-w-7xl w-full  flex flex-col justify-start gap-4 border-none rounded-btn p-4 shadow-xl shadow-current backdrop-blur-lg">
 				<div
 					className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
-					style={{
-						backgroundImage: "url('/image/background/border-btn-top.png')",
-					}}></div>
+					style={
+						{
+							// backgroundImage: "url('/image/background/border-btn-top.png')",
+						}
+					}></div>
 				<div
 					className="flex flex-row w-full justify-start items-center gap-2 text-2xl font-protest-strike-regular uppercase text-amber-500"
 					style={{

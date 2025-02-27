@@ -361,11 +361,11 @@ const Home: React.FC = () => {
 			{/* Hero */}
 			<div className="max-w-7xl flex flex-col items-center text-orange-500 w-full mt-10">
 				<div className="flex relative">
-					<img
+					{/* <img
 						src="/image/background/border-btn-hat-noel-2.png"
 						alt="Border frame 2"
 						className="w-1/4 absolute pointer-events-none -top-[1.3rem] -left-[1.1rem] -rotate-6 -z-[1]"
-					/>
+					/> */}
 					<h1 className=" lg:text-3xl text-xl font-bold uppercase">
 						nrogame.me
 					</h1>
@@ -550,11 +550,11 @@ const Home: React.FC = () => {
 					href={'https://zalo.me/g/evqnqk421'}
 					target="_blank"
 					className="relative flex flex-row gap-2 items-center rounded-box p-3 bg-orange-500 text-white font-chakra-petch active:hover:scale-90 hover:duration-300">
-					<img
+					{/* <img
 						src="/image/background/border-btn-hat-noel.png"
 						alt="Border frame 2"
 						className="w-full absolute pointer-events-none -top-[2.25rem] -right-[3.1rem] rotate-12"
-					/>
+					/> */}
 					<SiZalo size={24} />
 					Hỗ Trợ
 				</Link>
@@ -584,12 +584,12 @@ const Home: React.FC = () => {
 				<div className="flex flex-col gap-5 w-full h-full">
 					{/* Background game */}
 					<div className="w-full flex flex-col justify-center items-center rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current">
-						<img
+						{/* <img
 							src="/image/background/border-btn-top.png"
 							alt="Border frame 2"
 							style={{ width: '100%', margin: '0 auto' }}
 							className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0"
-						/>
+						/> */}
 						<svg
 							className="svg -z-[1] pointer-events-none"
 							height="100%"
@@ -767,12 +767,12 @@ const Home: React.FC = () => {
 					</div>
 					{/* Game Controll */}
 					<div className="w-full flex flex-col justify-center items-center bg-cover bg-black/80 rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
-						<img
+						{/* <img
 							src="/image/background/border-btn-top.png"
 							alt="Border frame 2"
 							style={{ width: '100%', margin: '0 auto' }}
 							className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0 z-[1]"
-						/>
+						/> */}
 						<svg
 							className="svg pointer-events-none"
 							height="100%"
@@ -1066,11 +1066,11 @@ const Home: React.FC = () => {
 								onClick={placeBet}
 								disabled={isLoad}
 								className="max-w-sm w-full btn btn-outline btn-active items-center flex relative text-orange-500 group-hover:text-black group-hover:bg-orange-500">
-								<img
+								{/* <img
 									src="/image/background/border-btn-full.png"
 									alt="Border frame 2"
 									className="w-full h-16 absolute pointer-events-none -top-2 -left-0"
-								/>
+								/> */}
 								{!isLoad ? (
 									<>
 										<GiPerspectiveDiceSixFacesTwo size={24} />
@@ -1085,12 +1085,12 @@ const Home: React.FC = () => {
 				</div>
 				{/* Right size chat Box */}
 				<div className="relative w-full h-full">
-					<img
+					{/* <img
 						src="/image/background/border-btn-top.png"
 						alt="Border frame 2"
 						style={{ width: '100%', margin: '0 auto' }}
 						className="max-w-[100%] h-auto absolute pointer-events-none -top-5 -left-0"
-					/>
+					/> */}
 					<div className="rounded-box border-ani border-none w-full flex flex-col h-full">
 						<svg
 							className="svg pointer-events-none -z-[1]"
@@ -1252,11 +1252,11 @@ const Home: React.FC = () => {
 									}}
 								/>
 								<div className="relative">
-									<img
+									{/* <img
 										src="/image/background/border-btn-snow-ice-small.png"
 										alt="Border frame 2"
 										className="w-full absolute pointer-events-none -bottom-[10px] -right-[20px]"
-									/>
+									/> */}
 									<button
 										type="submit"
 										className="border border-orange-500 rounded-box text-center p-2 active:hover:scale-90 hover:duration-300">

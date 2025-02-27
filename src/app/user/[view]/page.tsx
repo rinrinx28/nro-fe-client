@@ -293,6 +293,31 @@ function Profile({ onClick }: { onClick?: any }) {
 	const [top, setTop] = useState<number | null>(null);
 	const [myClan, setMyClan] = useState<Clan>();
 
+	const handleCopy = () => {
+		try {
+			navigator.clipboard.writeText(user?._id || '').then(() => {
+				const textElement = document.getElementById('user_id');
+				const tooltipElement = document.getElementById('data_tip');
+
+				if (textElement && tooltipElement) {
+					// Thêm hiệu ứng màu cam
+					textElement.classList.add('text-orange-500');
+
+					// Thay đổi tooltip thành "Copied!"
+					tooltipElement.setAttribute('data-tip', 'Copied!');
+
+					// Reset sau 3 giây
+					setTimeout(() => {
+						textElement.classList.remove('text-orange-500');
+						tooltipElement.setAttribute('data-tip', 'Copy');
+					}, 3000);
+				}
+			});
+		} catch (error) {
+			console.log('Copy failed:', error);
+		}
+	};
+
 	useEffect(() => {
 		if (user.isLogin && clans) {
 			const { clanId } = user.meta ?? {};
@@ -323,6 +348,7 @@ function Profile({ onClick }: { onClick?: any }) {
 			}
 		}
 	}, [user, users]);
+
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
 			<div className="flex flex-row gap-2 items-center">
@@ -347,29 +373,7 @@ function Profile({ onClick }: { onClick?: any }) {
 									className="tooltip"
 									data-tip="Copy"
 									id="data_tip"
-									onClick={() => {
-										try {
-											navigator.clipboard
-												.writeText('27165d1b-06c3-4fa9-86af-2af53906ce38')
-												.then(() => {
-													let text = document.getElementById('user_id');
-													let data_tip = document.getElementById('data_tip');
-													if (text && data_tip) {
-														// Thêm class màu cam khi sao chép thành công
-														text.classList.add('text-orange-500');
-
-														// Thay đổi giá trị của data-tip
-														data_tip.setAttribute('data-tip', 'Copied!');
-
-														// Loại bỏ màu và khôi phục lại giá trị data-tip sau 1 giây
-														setTimeout(() => {
-															text.classList.remove('text-orange-500');
-															data_tip.setAttribute('data-tip', 'Copy'); // Đặt lại giá trị gốc
-														}, 1000);
-													}
-												});
-										} catch (error: any) {}
-									}}>
+									onClick={handleCopy}>
 									<p
 										id="user_id"
 										className="badge badge-outline lg:text-base text-xs cursor-pointer">
@@ -872,14 +876,14 @@ function ExchangeGold(props: { showNotice: any }) {
 						onClick={exchange}
 						disabled={isLoad}
 						className="relative flex items-center h-[90px] group">
-						<div className="absolute w-full top-0 ">
+						{/* <div className="absolute w-full top-0 ">
 							<img
 								src="/image/background/border-btn-2.png"
 								alt="Border frame 2"
 								style={{ width: '100%', margin: '0 auto', height: '90px' }}
 								className="pointer-events-none"
 							/>
-						</div>
+						</div> */}
 						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hover:bg-orange-500 group-hover:text-white group-hover:duration-300 group-active:group-hover:scale-90">
 							{!isLoad ? (
 								<>
@@ -1145,14 +1149,14 @@ function TradeGold(props: { showNotice: any }) {
 						onClick={tranfer}
 						disabled={isLoad}
 						className="relative flex items-center h-[90px] group">
-						<div className="absolute w-full top-0 ">
+						{/* <div className="absolute w-full top-0 ">
 							<img
 								src="/image/background/border-btn-2.png"
 								alt="Border frame 2"
 								style={{ width: '100%', margin: '0 auto', height: '90px' }}
 								className="pointer-events-none"
 							/>
-						</div>
+						</div> */}
 						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hoverbg-orange-500 group-hovertext-white group-hoverduration-300 group-active:group-hoverscale-90">
 							{!isLoad ? (
 								<>

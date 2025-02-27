@@ -69,9 +69,11 @@ function TablesTop() {
 				<div className="relative lg:max-w-7xl w-full  flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
 					<div
 						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
-						style={{
-							backgroundImage: "url('/image/background/border-btn-top.png')",
-						}}></div>
+						style={
+							{
+								// backgroundImage: "url('/image/background/border-btn-top.png')",
+							}
+						}></div>
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-slate-500 font-protest-strike-regular uppercase"
 						style={{
@@ -130,9 +132,11 @@ function TablesTop() {
 				<div className="relative lg:max-w-7xl w-full  flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
 					<div
 						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
-						style={{
-							backgroundImage: "url('/image/background/border-btn-top.png')",
-						}}></div>
+						style={
+							{
+								// backgroundImage: "url('/image/background/border-btn-top.png')",
+							}
+						}></div>
 					<div
 						className="flex flex-row w-full justify-start items-center gap-2 text-2xl text-amber-500 font-protest-strike-regular uppercase"
 						style={{

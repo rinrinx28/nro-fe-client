@@ -12,6 +12,11 @@ import { setService } from '@/lib/redux/storage/eshop/service';
 import { useSocket } from '@/lib/server/socket';
 import { io, Socket } from 'socket.io-client';
 
+interface SocketData {
+	message: string;
+	user?: any;
+}
+
 const urlConfig = {
 	dev: 'http://localhost:3037',
 	vps: 'http://144.126.145.81:3037',
@@ -166,61 +171,70 @@ function Withdraw() {
 
 	// Auto get Bot Info
 	useEffect(() => {
-		if (socket) {
-			socket.on('bot.status', (payload: Bot) => {
-				setBotD((bots: Bot[]) => [
-					...bots.filter((bt: Bot) => bt?.id !== payload.id),
-					payload,
-				]);
-			});
+		if (!socket) return;
+		const handleBotStatus = (payload: Bot) => {
+			setBotD((prevBots) => [
+				...prevBots.filter((bt) => bt.id !== payload.id),
+				payload,
+			]);
+		};
 
-			socket.on(
-				'notification.user',
-				(payload: { uid: string; message: string }) => {
-					const { message, uid } = payload;
-					if (user && uid === user._id) {
-						showNoticeEShop(message);
-						setLoadSub(false);
-						setLoad(false);
-					}
-				},
-			);
+		const handleNotification = (payload: { uid: string; message: string }) => {
+			if (user && payload.uid === user._id) {
+				showNoticeEShop(payload.message);
+				setLoadSub(false);
+				setLoad(false);
+			}
+		};
+		socket.on('bot.status', handleBotStatus);
+		socket.on('notification.user', handleNotification);
 
-			return () => {
-				socket.off('bot.status');
-				socket.off('notification.user');
-			};
-		}
-	}, [socket, user, showNoticeEShop]);
+		return () => {
+			socket.off('bot.status', handleBotStatus);
+			socket.off('notification.user', handleNotification);
+		};
+	}, [socket, user, showNoticeEShop, setBotD, setLoadSub, setLoad]);
 
-	// Update data ESHOP;
+	// Update ESHOP data
 	useEffect(() => {
-		const e_shop = econfig.find((e) => e.name === 'e_shop');
-		if (e_shop) {
-			setEshop(e_shop);
+		const shopConfig = econfig.find((e) => e.name === 'e_shop');
+		if (shopConfig) {
+			setEshop(shopConfig);
 		}
 	}, [econfig]);
 
+	// Service fetcher
 	useEffect(() => {
-		const getServices = async () => {
+		const fetchServices = async () => {
 			try {
-				const res = await apiClient.get(`/service/history`);
-				const { data, page, totalItems, totalPages } = res.data;
-				for (const service of data) {
+				const res = await apiClient.get<{
+					data: any[];
+					page: number;
+					totalItems: number;
+					totalPages: number;
+				}>('/service/history');
+
+				res.data.data.forEach((service) => {
 					dispatch(setService(service));
-				}
-			} catch (err: any) {
-				console.log(err.response.data.message.message);
+				});
+			} catch (error) {
+				console.error('Failed to fetch services:', error);
 			}
 		};
-		if (user.isLogin) {
-			getServices();
-		}
-	}, []);
 
+		if (user.isLogin) {
+			fetchServices();
+		}
+	}, [user.isLogin, dispatch]);
+
+	// Auth socket handler
 	useEffect(() => {
-		const showModleSocket = (message: string) => {
-			let dialog = document.getElementById(
+		// Chỉ khởi tạo socket nếu user đã login và có token
+		if (!user.isLogin || !user.token) return;
+
+		// Hàm hiển thị dialog
+		const showWithdrawDialog = (message: string) => {
+			const dialog = document.getElementById(
 				'eshop_withdraw',
 			) as HTMLDialogElement;
 			if (dialog) {
@@ -228,47 +242,41 @@ function Withdraw() {
 				setMsg(message);
 			}
 		};
-		if (user.isLogin || user.token) {
-			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
-				path: '/socket.io/',
-				transports: ['websocket'],
-				secure: true,
-				reconnectionAttempts: 5, // Limit reconnection attempts
-				auth: {
-					token: `${user.token}`, // Ensure to pass a valid token
-				},
-			});
-			socketAuth.current = socket_auth;
 
-			socket_auth.on(
-				'service.create.re',
-				(data: { message: string; user?: any }) => {
-					setLoadSub(false);
-					setLoad(false);
-					showModleSocket(data.message);
-				},
-			);
+		// Khởi tạo socket
+		const socket = io(`${urlConfig.sv}/auth`, {
+			path: '/socket.io/',
+			transports: ['websocket'],
+			secure: true,
+			reconnectionAttempts: 5,
+			auth: {
+				token: user.token,
+			},
+		});
 
-			socket_auth.on('service.cancel.re', (data: { message: string }) => {
-				setLoadSub(false);
-				setLoad(false);
-				showModleSocket(data.message);
-			});
+		socketAuth.current = socket;
 
-			socket_auth.on('error', (data: { message: string }) => {
-				setLoadSub(false);
-				setLoad(false);
-				showModleSocket(data.message);
-			});
-			return () => {
-				socketAuth.current = null;
-				socket_auth.off('error');
-				socket_auth.off('service.create.re');
-				socket_auth.off('service.cancel.re');
-				socket_auth.disconnect();
-			};
-		}
-	}, [user, socketAuth]);
+		// Handler chung cho các sự kiện socket
+		const handleSocketEvent = (data: SocketData) => {
+			setLoadSub(false);
+			setLoad(false);
+			showWithdrawDialog(data.message);
+		};
+
+		// Đăng ký các sự kiện
+		socket.on('service.create.re', handleSocketEvent);
+		socket.on('service.cancel.re', handleSocketEvent);
+		socket.on('error', handleSocketEvent);
+
+		// Cleanup function
+		return () => {
+			socket.off('service.create.re', handleSocketEvent);
+			socket.off('service.cancel.re', handleSocketEvent);
+			socket.off('error', handleSocketEvent);
+			socket.disconnect();
+			socketAuth.current = null;
+		};
+	}, [user.isLogin, user.token, socketAuth, setMsg, setLoadSub, setLoad]);
 
 	return (
 		<div

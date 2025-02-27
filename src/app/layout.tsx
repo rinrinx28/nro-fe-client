@@ -95,7 +95,7 @@ export default function RootLayout({
 				/>
 			</head>
 			<body
-				className={`antialiased min-h-screen transition-all duration-300 flex flex-col`}>
+				className={`antialiased min-h-screen transition-all duration-300 flex flex-col overflow-x-hidden`}>
 				<Providers>
 					<SocketProvider>
 						{/* <FallingSnow /> */}

@@ -23,11 +23,11 @@ const Navbar: React.FC = () => {
 				<Link
 					href={'/'}
 					className="btn btn-link relative">
-					<img
+					{/* <img
 						src="/image/background/border-btn-hat-noel.png"
 						alt="Border frame 2"
 						className="w-1/4 absolute pointer-events-none -top-2 -right-1 rotate-12"
-					/>
+					/> */}
 					<Image
 						src={'/image/logo_nro.webp'}
 						alt="logo_nro"
@@ -99,12 +99,12 @@ const Navbar: React.FC = () => {
 							prefetch={true}
 							className="relative flex items-center h-[90px] group">
 							<div className="absolute w-full top-0 ">
-								<img
+								{/* <img
 									src="/image/background/border-btn-top.png"
 									alt="Border frame 2"
 									style={{ width: '100%', margin: '0 auto', height: '90px' }}
 									className="pointer-events-none"
-								/>
+								/> */}
 							</div>
 							<div className="lg:flex hidden fle-row items-center gap-2 bg-black rounded-lg border border-orange-500 p-4 lg:group-hover:bg-orange-500 lg:group-hover:text-white lg:group-hover:duration-300">
 								<div className="flex flex-row items-center gap-2">

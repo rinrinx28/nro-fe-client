@@ -20,7 +20,7 @@ function CircularMenu() {
 		}
 	};
 	return (
-		<div className="container text-orange-500 text-lg">
+		<div className="container text-orange-500 text-lg z-[999]">
 			<button
 				onClick={triggerMenu}
 				id="menu-toggle"
