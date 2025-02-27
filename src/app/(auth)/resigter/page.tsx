@@ -31,43 +31,49 @@ function Resigter() {
 			setLoad(true);
 			if (user.isLogin) throw new Error('Bạn đã đăng nhập!');
 			const formData = new FormData(e.target as HTMLFormElement);
-			let password = formData.get('password');
-			let username = formData.get('username');
-			let name = formData.get('name');
-			let email = formData.get('email');
-			let server = formData.get('server');
+			const username = formData.get('username')?.toString() || null;
+			const password = formData.get('password')?.toString() || null;
+			const name = formData.get('name')?.toString() || null;
+			const email = formData.get('email')?.toString() || null;
+			const server = formData.get('server')?.toString() || null;
 			if (!username) throw new Error('Xin vui lòng nhập tên đăng nhập');
 			if (!name) throw new Error('Xin vui lòng nhập tên hiển thị');
 			if (!email) throw new Error('Xin vui lòng nhập email');
 			if (!password) throw new Error('Xin vui lòng nhập mật khẩu');
 			if (!server) throw new Error('Bạn chưa chọn máy chủ');
-			password = password.toString();
-			username = username.toString();
-			name = name.toString();
-			email = email.toString();
-			server = server.toString();
 			if (password.length < 6)
 				throw new Error('Độ dài mật khẩu tối thiểu là 6 ký tự');
-			await apiClient.post('/auth/resigter', {
-				password,
-				name,
-				username,
-				email,
-				server,
-				hash: finger,
-			});
+			if (server.length === 0) throw new Error('Xin vui lòng chọn máy chủ');
+			const controller = new AbortController();
+			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+			await apiClient.post(
+				'/auth/resigter',
+				{
+					password,
+					name,
+					username,
+					email,
+					server,
+					hash: finger,
+				},
+				{
+					signal: controller.signal,
+				},
+			);
+			clearTimeout(timeoutId);
 			router.push('/login');
 			setLoad(false);
 			return;
 		} catch (error: any) {
-			// Xử lý lỗi cụ thể
 			let message = 'Đã xảy ra lỗi không xác định';
 
 			if (error instanceof AxiosError) {
-				// Xử lý lỗi từ axios
-				message = error.response?.data?.message || error.message;
+				if (error.code === 'ECONNABORTED') {
+					message = 'Kết nối quá thời gian, vui lòng thử lại';
+				} else {
+					message = error.response?.data?.message.message || error.message;
+				}
 			} else if (error instanceof Error) {
-				// Xử lý custom errors
 				message = error.message;
 			}
 
@@ -161,11 +167,12 @@ function Resigter() {
 						<label className="form-control w-full">
 							<select
 								required
+								defaultValue=""
 								name="server"
 								className="select select-bordered select-lg w-full bg-black">
 								<option
-									disabled
-									selected>
+									value=""
+									disabled>
 									Chọn Máy Chủ
 								</option>
 								{Array.from({ length: 7 }).map((_, i) => (
@@ -212,7 +219,6 @@ function Resigter() {
 					}}
 					className="h-[600px] w-full bg-no-repeat bg-cover bg-center rounded-l-box md:inline-block hidden"></div>
 			</div>
-			{/* You can open the modal using document.getElementById('ID').showModal() method */}
 			<dialog
 				id="notice_resigter"
 				className="modal z-[1100]">
