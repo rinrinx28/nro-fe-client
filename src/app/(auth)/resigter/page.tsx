@@ -1,6 +1,7 @@
 'use client';
 import { useAppSelector } from '@/lib/redux/hook';
 import apiClient from '@/lib/server/apiClient';
+import { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaMinus, FaUser } from 'react-icons/fa';
@@ -56,14 +57,20 @@ function Resigter() {
 				hash: finger,
 			});
 			router.push('/login');
+			setLoad(false);
 			return;
-		} catch (err: any) {
-			let message = '';
-			if (err.response) {
-				message = err.response.data.message;
-			} else {
-				message = err.message;
+		} catch (error: any) {
+			// Xử lý lỗi cụ thể
+			let message = 'Đã xảy ra lỗi không xác định';
+
+			if (error instanceof AxiosError) {
+				// Xử lý lỗi từ axios
+				message = error.response?.data?.message || error.message;
+			} else if (error instanceof Error) {
+				// Xử lý custom errors
+				message = error.message;
 			}
+
 			showNotice(message);
 			setLoad(false);
 			return;
