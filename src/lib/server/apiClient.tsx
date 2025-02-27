@@ -6,14 +6,25 @@ const urlConfig = {
 	sv: 'https://api.nrogame.me',
 };
 
-let token = localStorage.getItem('get') || '';
-
 const apiClient = axios.create({
 	baseURL: urlConfig.sv,
 	headers: {
 		'Content-Type': 'application/json',
-		Authorization: `Bearer ${token}`,
 	},
 });
+
+// Request Interceptor: Thêm token vào header của mỗi request
+apiClient.interceptors.request.use(
+	(config) => {
+		const accessToken = localStorage.getItem('token');
+		if (accessToken) {
+			config.headers.Authorization = `Bearer ${accessToken}`;
+		}
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	},
+);
 
 export default apiClient;

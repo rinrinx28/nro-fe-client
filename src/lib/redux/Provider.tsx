@@ -52,15 +52,7 @@ export default function StoreProvider({
 			const { visitorId } = await fp.get();
 			storeRef.current?.dispatch(setFinger(visitorId));
 			apiClient
-				.post(
-					'/auth/relogin',
-					{ hash: visitorId },
-					{
-						headers: {
-							Authorization: `Bearer ${token ?? ''}`,
-						},
-					},
-				)
+				.post('/auth/relogin', { hash: visitorId })
 				.then((res) => {
 					storeRef.current?.dispatch(
 						updateUser({ isLogin: true, token: token, ...res.data }),
