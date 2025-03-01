@@ -53,7 +53,7 @@ function Login() {
 					token: access_token,
 				}),
 			);
-			clearTimeout(timeoutId);
+			clearTimeout(timeoutId);6 
 			setLoad(false);
 			router.push('/');
 		} catch (error: any) {
