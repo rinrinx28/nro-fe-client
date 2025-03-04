@@ -740,7 +740,7 @@ function Deposit() {
 									<tr
 										key={i + 'tutorial_daily'}
 										className={`text-center ${
-											i % 2 !== 0 ? 'bg-base-200 text-white' : ''
+											i % 2 !== 0 ? 'bg-white text-black' : ''
 										}`}>
 										<th>{i + 1}</th>
 										<td>

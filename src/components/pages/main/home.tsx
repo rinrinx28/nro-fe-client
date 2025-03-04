@@ -613,7 +613,7 @@ const Home: React.FC = () => {
 							</div>
 							<div className=" flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Mã phiên:</p>
-								<p className="text-white drop-shadow-md font-number-font normal-case font-bold">
+								<p className="text-black drop-shadow-md font-number-font normal-case font-bold">
 									{/* {gameBox?.isEnd ? (
 										<>
 											{gameBox._id}{' '}
@@ -628,7 +628,7 @@ const Home: React.FC = () => {
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Máy Chủ:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
+								<p className="text-black drop-shadow-md font-number-font font-bold">
 									{server.replace('8', '8-9-10') ?? (
 										<span className="loading loading-bars loading-sm"></span>
 									)}
@@ -636,7 +636,7 @@ const Home: React.FC = () => {
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Kết Quả Trước:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
+								<p className="text-black drop-shadow-md font-number-font font-bold">
 									{(gameBox?.lastResult &&
 										gameBox?.lastResult.split('-')[0]) ?? (
 										<span className="loading loading-dots loading-sm"></span>
@@ -645,7 +645,7 @@ const Home: React.FC = () => {
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Còn:</p>
-								<p className="text-white drop-shadow-md font-number-font font-bold">
+								<p className="text-black drop-shadow-md font-number-font font-bold">
 									{counter ?? (
 										<span className="loading loading-dots loading-sm"></span>
 									)}
@@ -654,7 +654,7 @@ const Home: React.FC = () => {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Chẵn:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
+									<p className="text-black drop-shadow-md font-number-font font-bold">
 										{new Intl.NumberFormat('vi').format(
 											gameBox?.resultUser?.c ?? 0,
 										)}
@@ -662,7 +662,7 @@ const Home: React.FC = () => {
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Lẻ:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
+									<p className="text-black drop-shadow-md font-number-font font-bold">
 										{new Intl.NumberFormat('vi').format(
 											gameBox?.resultUser?.l ?? 0,
 										)}
@@ -672,7 +672,7 @@ const Home: React.FC = () => {
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Tài:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
+									<p className="text-black drop-shadow-md font-number-font font-bold">
 										{new Intl.NumberFormat('vi').format(
 											gameBox?.resultUser?.t ?? 0,
 										)}
@@ -680,7 +680,7 @@ const Home: React.FC = () => {
 								</div>
 								<div className="flex flex-row gap-2">
 									<p className="text-orange-500">Xỉu:</p>
-									<p className="text-white drop-shadow-md font-number-font font-bold">
+									<p className="text-black drop-shadow-md font-number-font font-bold">
 										{new Intl.NumberFormat('vi').format(
 											gameBox?.resultUser?.x ?? 0,
 										)}
@@ -689,14 +689,14 @@ const Home: React.FC = () => {
 							</div>
 							<div className="flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 								<p className="text-orange-500">Thời Gian Hoạt Động:</p>
-								<p className="text-white font-number-font font-bold">
+								<p className="text-black font-number-font font-bold">
 									{server === '24' ? '24/24' : '6h - 23h50'}
 								</p>
 							</div>
 							{server === '24' && (
 								<div className=" flex flex-row w-full justify-start items-center mb-m:gap-2 gap-1 text-sm mb-l:text-base text-white mb-m:font-chakra-petch font-bold uppercase">
 									<p className="text-orange-500">Jackpot:</p>
-									<p className="text-white font-number-font font-bold">
+									<p className="text-black font-number-font font-bold">
 										{new Intl.NumberFormat('vi').format(jackpot?.score ?? 0)}
 									</p>
 									<button
@@ -766,7 +766,7 @@ const Home: React.FC = () => {
 						</div>
 					</div>
 					{/* Game Controll */}
-					<div className="w-full flex flex-col justify-center items-center bg-cover bg-black/80 rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
+					<div className="w-full flex flex-col justify-center items-center bg-cover bg-white rounded-box p-2 gap-4 border-ani border-none shadow-lg shadow-current h-full">
 						{/* <img
 							src="/image/background/border-btn-top.png"
 							alt="Border frame 2"
@@ -802,7 +802,7 @@ const Home: React.FC = () => {
 										/>
 									</div>
 								</div>
-								<p className={`text-white font-number-font font-bold`}>
+								<p className="text-black font-number-font font-bold">
 									{new Intl.NumberFormat('vi').format(user.money ?? 0)}
 								</p>
 							</div>
@@ -1033,7 +1033,7 @@ const Home: React.FC = () => {
 										}));
 									}}
 									type="text"
-									className="outline-none border-0  w-full py-3 px-2 bg-transparent font-bold text-white"
+									className="outline-none border-0  w-full py-3 px-2 bg-transparent font-bold text-black"
 									value={new Intl.NumberFormat('vi').format(
 										parseInt(
 											betField.amount.length > 0 ? betField.amount : '0',

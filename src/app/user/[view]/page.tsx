@@ -902,89 +902,89 @@ function ExchangeGold(props: { showNotice: any }) {
 }
 
 function TradeGold(props: { showNotice: any }) {
-	const { showNotice } = props;
+	// const { showNotice } = props;
 	const user = useAppSelector((state) => state.user);
-	const [isLoad, setLoad] = useState<boolean>(false);
-	const [field, setField] = useState<{
-		targetId?: string;
-		amount?: number;
-		server?: string;
-	}>({
-		server: user.server,
-	});
+	// const [isLoad, setLoad] = useState<boolean>(false);
+	// const [field, setField] = useState<{
+	// 	targetId?: string;
+	// 	amount?: number;
+	// 	server?: string;
+	// }>({
+	// 	server: user.server,
+	// });
 
-	const socketAuth = useRef<Socket | null>(null);
-	const socket = useSocket();
+	// const socketAuth = useRef<Socket | null>(null);
+	// const socket = useSocket();
 
-	const tranfer = async () => {
-		try {
-			if (!socketAuth.current) {
-				return showNotice('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
-			}
-			setLoad(true);
-			socketAuth.current.emit('service.tranfer.money', {
-				...field,
-				targetId: field.targetId?.toLocaleLowerCase(),
-				uid: user._id,
-			});
-		} catch (err: any) {}
-	};
+	// const tranfer = async () => {
+	// 	try {
+	// 		if (!socketAuth.current) {
+	// 			return showNotice('Bạn chưa đăng nhập, xin vui lòng đăng nhập');
+	// 		}
+	// 		setLoad(true);
+	// 		socketAuth.current.emit('service.tranfer.money', {
+	// 			...field,
+	// 			targetId: field.targetId?.toLocaleLowerCase(),
+	// 			uid: user._id,
+	// 		});
+	// 	} catch (err: any) {}
+	// };
 
-	useEffect(() => {
-		const showModleSocket = (message: string) => {
-			showNotice(message);
-		};
-		if (user.isLogin || user.token) {
-			const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
-				path: '/socket.io/',
-				transports: ['websocket'],
-				secure: true,
-				reconnectionAttempts: 5, // Limit reconnection attempts
-				auth: {
-					token: `${user.token}`, // Ensure to pass a valid token
-				},
-			});
-			socketAuth.current = socket_auth;
+	// useEffect(() => {
+	// 	const showModleSocket = (message: string) => {
+	// 		showNotice(message);
+	// 	};
+	// 	if (user.isLogin || user.token) {
+	// 		const socket_auth: Socket = io(`${urlConfig.sv}/auth`, {
+	// 			path: '/socket.io/',
+	// 			transports: ['websocket'],
+	// 			secure: true,
+	// 			reconnectionAttempts: 5, // Limit reconnection attempts
+	// 			auth: {
+	// 				token: `${user.token}`, // Ensure to pass a valid token
+	// 			},
+	// 		});
+	// 		socketAuth.current = socket_auth;
 
-			socket_auth.on(
-				'service.tranfer.money.re',
-				(data: { message: string; user?: any }) => {
-					setLoad(false);
-					showModleSocket(data.message);
-				},
-			);
+	// 		socket_auth.on(
+	// 			'service.tranfer.money.re',
+	// 			(data: { message: string; user?: any }) => {
+	// 				setLoad(false);
+	// 				showModleSocket(data.message);
+	// 			},
+	// 		);
 
-			socket_auth.on('error', (data: { message: string }) => {
-				setLoad(false);
-				showModleSocket(data.message);
-			});
-			return () => {
-				socketAuth.current = null;
-				socket_auth.off('error');
-				socket_auth.off('service.tranfer.money.re');
-				socket_auth.disconnect();
-			};
-		}
-	}, [user, socketAuth]);
+	// 		socket_auth.on('error', (data: { message: string }) => {
+	// 			setLoad(false);
+	// 			showModleSocket(data.message);
+	// 		});
+	// 		return () => {
+	// 			socketAuth.current = null;
+	// 			socket_auth.off('error');
+	// 			socket_auth.off('service.tranfer.money.re');
+	// 			socket_auth.disconnect();
+	// 		};
+	// 	}
+	// }, [user, socketAuth]);
 
-	useEffect(() => {
-		const showModleSocket = (message: string) => {
-			showNotice(message);
-		};
-		socket.on(
-			'notification.user',
-			(payload: { uid: string; message: string }) => {
-				const { message, uid } = payload;
-				if (user && uid === user._id) {
-					setLoad(false);
-					showModleSocket(message);
-				}
-			},
-		);
-		return () => {
-			socket.off('notification.user');
-		};
-	}, [socket, user]);
+	// useEffect(() => {
+	// 	const showModleSocket = (message: string) => {
+	// 		showNotice(message);
+	// 	};
+	// 	socket.on(
+	// 		'notification.user',
+	// 		(payload: { uid: string; message: string }) => {
+	// 			const { message, uid } = payload;
+	// 			if (user && uid === user._id) {
+	// 				setLoad(false);
+	// 				showModleSocket(message);
+	// 			}
+	// 		},
+	// 	);
+	// 	return () => {
+	// 		socket.off('notification.user');
+	// 	};
+	// }, [socket, user]);
 
 	return (
 		<div className="flex flex-col bg-white/30 py-4 px-8 rounded-box w-full gap-4 text-black slide-in-right font-chakra-petch overflow-hidden">
@@ -994,11 +994,13 @@ function TradeGold(props: { showNotice: any }) {
 					Chuyển Vàng
 				</h1>
 			</div>
-
 			{!user.isLogin && (
 				<div className="flex flex-col gap-5">Bạn chưa đăng nhập ...</div>
 			)}
 			{user.isLogin && (
+				<div className="flex flex-col gap-5">Tính năng đang được bảo trì!</div>
+			)}
+			{/* {user.isLogin && (
 				<div className="flex flex-col gap-2">
 					<div className="form-control w-full">
 						<div className="label">
@@ -1149,14 +1151,6 @@ function TradeGold(props: { showNotice: any }) {
 						onClick={tranfer}
 						disabled={isLoad}
 						className="relative flex items-center h-[90px] group">
-						{/* <div className="absolute w-full top-0 ">
-							<img
-								src="/image/background/border-btn-2.png"
-								alt="Border frame 2"
-								style={{ width: '100%', margin: '0 auto', height: '90px' }}
-								className="pointer-events-none"
-							/>
-						</div> */}
 						<div className="flex flex-row gap-2 font-protest-strike-regular items-center justify-center w-full rounded-box py-4 px-4 bg-black text-orange-500 group-hoverbg-orange-500 group-hovertext-white group-hoverduration-300 group-active:group-hoverscale-90">
 							{!isLoad ? (
 								<>
@@ -1169,7 +1163,7 @@ function TradeGold(props: { showNotice: any }) {
 						</div>
 					</button>
 				</div>
-			)}
+			)} */}
 		</div>
 	);
 }
