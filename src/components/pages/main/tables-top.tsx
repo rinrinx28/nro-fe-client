@@ -66,7 +66,7 @@ function TablesTop() {
 			className="flex justify-center items-center w-full p-8">
 			<div className="flex 2xl:flex-row flex-col items-start gap-2 w-full max-w-7xl justify-start">
 				{/* Table Top User */}
-				<div className="relative lg:max-w-7xl w-full  flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
+				<div className="relative w-full flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-amber-200 to-yellow-400 z-10">
 					<div
 						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
 						style={
@@ -96,7 +96,7 @@ function TablesTop() {
 							return (
 								<div
 									key={i + 'top_user_winner'}
-									className="snap-center flash cursor-pointer text-white flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center font-cygnito-mono px-1">
+									className="snap-center flash cursor-pointer text-white flex lg:flex-row flex-col justify-between w-full max-w-2xl bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center font-cygnito-mono px-1">
 									{/* <div className="avatar animate-bounce z-[100] duration-1000">
 										<div className="mb-l:size-24 size-16 bg-transparent">
 											<img
@@ -105,7 +105,7 @@ function TablesTop() {
 											/>
 										</div>
 									</div> */}
-									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
+									<div className="flex flex-col items-center justify-center lg:text-base text-sm">
 										<p>
 											#{i + 1} | {name}
 										</p>
@@ -129,7 +129,7 @@ function TablesTop() {
 				</div>
 
 				{/* Table Top Clan Rank */}
-				<div className="relative lg:max-w-7xl w-full  flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
+				{/* <div className="relative lg:max-w-7xl w-full  flex flex-col justify-start gap-2 border border-current rounded-btn p-4 shadow-xl shadow-current bg-gradient-to-r from-slate-900 to-slate-700 z-10">
 					<div
 						className="h-[85px] absolute -top-6 left-0 w-full bg-repeat pointer-events-none"
 						style={
@@ -160,19 +160,10 @@ function TablesTop() {
 								<div
 									key={i + 'top_user_winner'}
 									className="snap-center flash cursor-pointer flex lg:flex-row flex-col justify-between w-full max-w-lg bg-gradient-to-r from-amber-200 to-yellow-500 rounded-full items-center text-white font-cygnito-mono px-1">
-									{/* <div className="avatar animate-bounce z-[100]">
-										<div className="mb-l:size-24 size-16 bg-transparent z-50">
-											<img
-												src={`/image/banghoi/b${type ?? '1'}.webp`}
-												alt="Avatar Tailwind CSS Component"
-											/>
-										</div>
-									</div> */}
 									<div className="flex flex-col items-center justify-center lg:text-base text-sm w-full">
 										<p>
 											{name} | TOP {i + 1}
 										</p>
-										{/* <p>Phần Thưởng</p> */}
 										<div className="flex flex-row gap-1 items-center justify-center">
 											<p className="text-nowrap">
 												{new Intl.NumberFormat('vi').format(prizes[i])} Vàng /
@@ -188,7 +179,7 @@ function TablesTop() {
 							);
 						})}
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</div>
 	);
